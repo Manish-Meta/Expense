@@ -121,26 +121,6 @@ const EmployeeDashboard = () => {
 console.log(filtredData)
 
 
-     const CardComp =({Icons, title, count, inc})=>{
-    return (
-        <div className='p-2  bg-orange- rounded-xl border border-[#d9770633]'>
-            <div className="p-3  flex justify-between">
-                <div className="">
-                    <h5 className='text-xs lg:text-md font-medium text-[#92400E] uppercase'>{title}</h5>
-                    <p className='text-xl font-bold'>{count}</p>
-                    <span className='text-[12px] text-[#92400E] font-medium '>{inc}</span>
-                </div>
-
-                <div className="bg-yellow-50  border border-[#d9770633] text-amber-700 w-10 h-10 flex items-center justify-center rounded-md p-1">
-                    <Icons className="size-5"/>
-                </div>
-            </div>
-            <div className="bg-orange-50 w-full rounded-full h-1 relative">
-                <div className="bg-[#ffbc92] rounded-full overflow-hidden w-24  h-full absolute top-0 left-0 "></div>
-            </div>
-        </div>
-    )
-}
   return (
    <div className='p-3 space-y-4 '>
        <section className='py-7 space-y-7 lg:space-y-0 bg-linear-to-r  from-orange-50 via-50% to-white border-[#d9770633]  borders p-4 rounded-md  lg:flex items-center justify-between '>
@@ -323,5 +303,25 @@ export default EmployeeDashboard
 
 // card components
 
+export const CardComp =({Icons, title, count, inc})=>{
+    return (
+        <div className='p-2  bg-orange- rounded-xl border border-[#d9770633]'>
+            <div className="p-3  flex justify-between">
+                <div className="">
+                    <h5 className='text-xs lg:text-md font-medium text-[#92400E] uppercase'>{title}</h5>
+                    <p className='text-xl font-bold'>{count}</p>
+                    <span className='text-[12px] text-[#92400E] font-medium '>{inc}</span>
+                </div>
+
+                <div className="bg-yellow-50  border border-[#d9770633] text-amber-700 w-10 h-10 flex items-center justify-center rounded-md p-1">
+                    <Icons className="size-5"/>
+                </div>
+            </div>
+            <div className="bg-orange-50 w-full rounded-full h-1 relative">
+                <div className="bg-[#ffbc92] rounded-full overflow-hidden w-24  h-full absolute top-0 left-0 "></div>
+            </div>
+        </div>
+    )
+}
 
 
