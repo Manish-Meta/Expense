@@ -1,8 +1,9 @@
 import { Album, ArrowUp, Calendar, CircleXIcon, DollarSign, Download, Edit2, Edit3, Eye, HdIcon, PlusCircle, Receipt, RefreshCw, Search, Ticket, TicketCheck, Timer } from 'lucide-react'
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 const EmployeeDashboard = () => {
-
+    const navigate=useNavigate()
     const statuses = [ "All Status", "Pending", "Approved", "Rejected", "Need Info", "Draft", "Processing", "Reimbursement", "Escalated", "Paid" ];
     const ctg =["All Categories", "Travel", "Meals & entertainment", "Transpotaion", "Accomendation","Offie Suplliers"];
     const [searchKeys, setSearchKeys] = useState("Uber")
@@ -157,8 +158,9 @@ console.log(filtredData)
                     {/* buttons for applies */}
 
                 <div className="flex gap-2">
+
                     <button className='p-1 text-xs border bg-white border-[#d9770633]  rounded-md flex items-center gap-2'><Calendar className='size-3'/> This Month</button>
-                    <button className='p-1 text-xs  bg-[#d97706] text-white flex items-center gap-2 rounded-md' ><PlusCircle className='size-3'/> New Expense</button>
+                    <button type="button" onClick={()=>navigate("/employee/submit")} className='p-1 text-xs  bg-[#d97706] text-white flex items-center gap-2 rounded-md' ><PlusCircle className='size-3'/> New Expense</button>
                 </div>
             </section>
 

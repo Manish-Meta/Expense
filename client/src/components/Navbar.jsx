@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
 import {
   Search,
   Bell,
@@ -10,14 +11,23 @@ import {
   ChartSpline,
   CircleX,
   PowerIcon,
-} from "lucide-react";
+} from "lucide-react"
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const goTo = (path) => {
+    navigate(path)
+    setIsOpen(false)
+  }
+
+  const isActive = (path) => location.pathname === path
 
   return (
     <>
-      {/* Navbar */}
+      {/* TOP NAVBAR */}
       <nav className="w-full bg-white border-b border-[#d9770633] sticky top-0 z-50 px-4 py-2 flex items-center justify-between">
         {/* Search */}
         <div className="flex items-center w-full md:w-1/3 relative">
@@ -54,8 +64,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/*  MOBILE side VIEW */}
-      {/* Overlay */}
+      {/* OVERLAY */}
       <div
         className={`fixed inset-0 bg-black/50 z-40 lg:hidden transition-opacity duration-300 ${
           isOpen ? "opacity-100 visible" : "opacity-0 invisible"
@@ -63,12 +72,12 @@ const Navbar = () => {
         onClick={() => setIsOpen(false)}
       />
 
-      {/* Drawer */}
+      {/* MOBILE DRAWER */}
       <div
         className={`lg:hidden fixed top-0 left-0 h-full w-72 bg-white z-50 transform transition-transform duration-300
         ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
       >
-        {/* Close Button */}
+        {/* Close */}
         <button
           onClick={() => setIsOpen(false)}
           className="absolute top-3 right-3"
@@ -87,23 +96,43 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Menu */}
+        {/* MENU */}
         <ul className="px-4 space-y-2">
-          <li className="flex items-center gap-2 p-3 text-xs font-medium rounded-lg hover:bg-yellow-200 cursor-pointer">
+          <li
+            onClick={() => goTo("/employee")}
+            className={`flex items-center gap-2 p-3 text-xs font-medium rounded-lg cursor-pointer
+              ${
+                isActive("/employee")
+                  ? "bg-orange-100 text-orange-700"
+                  : "hover:bg-yellow-200"
+              }`}
+          >
             <LayoutDashboardIcon size={16} />
             Dashboard
           </li>
-          <li className="flex items-center gap-2 p-3 text-xs font-medium rounded-lg hover:bg-yellow-200 cursor-pointer">
+
+          <li
+            onClick={() => goTo("/employee/submit")}
+            className={`flex items-center gap-2 p-3 text-xs font-medium rounded-lg cursor-pointer
+              ${
+                isActive("/employee/submit")
+                  ? "bg-orange-100 text-orange-700"
+                  : "hover:bg-yellow-200"
+              }`}
+          >
             <BadgeIndianRupee size={16} />
-            Submit
+            Submit Expense
           </li>
-          <li className="flex items-center gap-2 p-3 text-xs font-medium rounded-lg hover:bg-yellow-200 cursor-pointer">
+
+          <li
+            className="flex items-center gap-2 p-3 text-xs font-medium rounded-lg hover:bg-yellow-200 cursor-pointer"
+          >
             <ChartSpline size={16} />
             Expense Reports
           </li>
         </ul>
 
-        {/* Bottom User */}
+        {/* USER FOOTER */}
         <div className="absolute bottom-6 left-0 w-full px-4">
           <div className="bg-gray-100 p-3 rounded-xl flex items-center gap-3">
             <div className="bg-orange-400 p-2 rounded-full">
@@ -122,7 +151,7 @@ const Navbar = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
