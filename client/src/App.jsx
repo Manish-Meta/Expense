@@ -34,13 +34,14 @@ const App = () => {
       <Route path="/employee" element={<Layout />}>
         <Route index element={<EmployeeDashboard />} />
         <Route path="submit" element={<SubmitExpense />} />
+        <Route path="reports" element={<EmployeeReports/>}/>
       </Route>
 
 =======
       <Route path="/" element={<RoleSelection/>}/>
       <Route path="/login" element={<AuthenticateUser/>}/>
       <Route path="/employee" element={<Layout/>}/>
-      <Route path="/employee/reports" element={<EmployeeReports/>}/>
+      {/* <Route path="/employee/reports" element={<EmployeeReports/>}/> */}
 
     
       <Route path="*" element={<Navigate to="/" />} />
