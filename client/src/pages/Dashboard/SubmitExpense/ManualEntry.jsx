@@ -49,11 +49,14 @@ export default function ManualEntry({ category, onDone }) {
         </div>
 
         <input
-          type="date"
-          className="input"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
+  type="date"
+  className="input"
+  value={toISODate(date)}
+  onChange={(e) =>
+    setDate(fromISODate(e.target.value))
+  }
+/>
+
       </div>
 
   

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { validateExpense } from "../../../utils/expenseValidator"
+import { toISODate, fromISODate } from "../../../utils/dateUtils"
 
 export default function ReviewSubmit({ category, data, onBack }) {
   const [merchant, setMerchant] = useState(data?.merchant || "")
@@ -80,11 +81,13 @@ export default function ReviewSubmit({ category, data, onBack }) {
         </div>
 
         <input
-          type="date"
-          className="input"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-        />
+      type="date"
+      className="input"
+      value={toISODate(date)}        
+      onChange={(e) =>
+        setDate(fromISODate(e.target.value)) 
+          }
+          />
 
        
         <div className="bg-orange-50 p-3 rounded-lg flex items-center gap-2">
