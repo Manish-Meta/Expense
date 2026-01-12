@@ -8,7 +8,6 @@ export default function ReviewSubmit({ category, data, onBack }) {
   const [date, setDate] = useState(data?.date || "")
   const [purpose, setPurpose] = useState(data?.purpose || "")
   const [error, setError] = useState("")
-
   useEffect(() => {
     if (!merchant || !amount || !date) {
       setError("Please fill all required fields")
@@ -57,7 +56,7 @@ export default function ReviewSubmit({ category, data, onBack }) {
       </h2>
 
       <div className="space-y-4">
-    =
+    Merchant Name:
         <input
           className="input"
           placeholder="Merchant / Vendor *"
@@ -65,7 +64,7 @@ export default function ReviewSubmit({ category, data, onBack }) {
           onChange={(e) => setMerchant(e.target.value)}
         />
 
-      =
+      Amount:
         <div className="relative">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
             ₹
@@ -79,7 +78,7 @@ export default function ReviewSubmit({ category, data, onBack }) {
             }
           />
         </div>
-
+      Date: 
         <input
       type="date"
       className="input"

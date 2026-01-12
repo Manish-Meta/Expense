@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 import { validateExpense } from "../../../utils/expenseValidator"
+import { toISODate, fromISODate } from "../../../utils/dateUtils"
+
 
 export default function ManualEntry({ category, onDone }) {
   const [merchant, setMerchant] = useState("")
@@ -49,16 +51,15 @@ export default function ManualEntry({ category, onDone }) {
         </div>
 
         <input
-  type="date"
-  className="input"
-  value={toISODate(date)}
-  onChange={(e) =>
-    setDate(fromISODate(e.target.value))
-  }
-/>
+            type="date"
+            className="input"
+            value={toISODate(date)}
+            onChange={(e) =>
+              setDate(fromISODate(e.target.value))
+            }
+            />
 
       </div>
-
   
       <input
         className="input"
@@ -66,7 +67,6 @@ export default function ManualEntry({ category, onDone }) {
         value={merchant}
         onChange={(e) => setMerchant(e.target.value)}
       />
-
       <div className="bg-orange-50 p-3 rounded-lg flex items-center gap-2">
         <span className="font-medium">{category.title}</span>
         {category.limitText && (
