@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from "react";
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [selectedrole, setSelectedRole] = useState("validator");
+  const [selectedrole, setSelectedRole] = useState("admin");
   const [localSelectedRole, setLocalSelectedRole] = useState("");
   const [valid, setValid] = useState(false);
   return (

@@ -5,6 +5,7 @@ import ValidatorDashboard from '../pages/Validator/ValidatorDashboard'
 import ValidatorReport from '../pages/Validator/ValidatorReport'
 import { Navigate, Routes, Route } from 'react-router-dom'
 import SubmitExpense from '../pages/Dashboard/SubmitExpense'
+import AdminAnalytics from "../pages/Admin/Analytics/AdminAnalytics"
 import useGlobalContext from '../config/GlobalStateContext'
 
 const Routters = () => {
@@ -25,13 +26,12 @@ const dashboardConfig = {
       { path: "history", label: "history", element: <ValidatorReport /> }
     ]
   },
-//   admin: {
-//     default: "dashboard",
-//     routes: [
-//       { path: "dashboard", label: "Dashboard", element: <AdminHome /> },
-//       { path: "users", label: "Users", element: <AdminUsers /> }
-//     ]
-//   }
+   admin: {
+  default: "analytics",
+  routes: [
+    { path: "analytics", label: "Analytics", element: <AdminAnalytics /> },
+  ],
+},
 }
 
  const config = dashboardConfig[localSelectedRole || selectedrole];

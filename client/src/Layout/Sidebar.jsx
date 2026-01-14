@@ -29,7 +29,8 @@ console.log(localSelectedRole)
     {
     nav : "Report",
     link :"/report"
-  }
+  },
+  
 
 
 ]
@@ -48,6 +49,10 @@ console.log(localSelectedRole)
 ]
  
  const admin = [
+  {
+    nav:"Analytics",
+    link:"/analytics"
+  },
     {
     nav : "Dashboard",
     link :"dashboard"
