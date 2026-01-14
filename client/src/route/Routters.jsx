@@ -6,6 +6,7 @@ import ValidatorReport from '../pages/Validator/ValidatorReport'
 import { Navigate, Routes, Route } from 'react-router-dom'
 import SubmitExpense from '../pages/Dashboard/SubmitExpense'
 import AdminAnalytics from "../pages/Admin/Analytics/AdminAnalytics"
+import AdminAudit from '../pages/Admin/Audit&Compliance/Audit'
 import useGlobalContext from '../config/GlobalStateContext'
 
 const Routters = () => {
@@ -30,6 +31,7 @@ const dashboardConfig = {
   default: "analytics",
   routes: [
     { path: "analytics", label: "Analytics", element: <AdminAnalytics /> },
+    { path: "audit", label: "Audit", element: <AdminAudit/> }
   ],
 },
 }
