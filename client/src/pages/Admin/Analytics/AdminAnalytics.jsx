@@ -7,6 +7,7 @@ import {
   Activity,
   PieChart as PieIcon,
   Calendar,
+  BarChart3,
   Building2,
 } from "lucide-react"
 
@@ -23,7 +24,6 @@ import {
   Cell,
   Sector,
 } from "recharts"
-
 
 
 const kpis = [
@@ -96,12 +96,47 @@ const monthlyData = [
 ]
 
 const departments = [
-  { name: "Sales", employees: 89, spend: "$895K" },
-  { name: "Marketing", employees: 45, spend: "$568K" },
-  { name: "Engineering", employees: 78, spend: "$435K" },
-  { name: "Operations", employees: 22, spend: "$581K" },
+  {
+    name: "Sales",
+    employees: 89,
+    spend: "$895K",
+    budget: "94% of $950K",
+    avg: "$10051",
+    compliance: "92.1%",
+    category: "Travel",
+    color: "bg-blue-500",
+  },
+  {
+    name: "Marketing",
+    employees: 45,
+    spend: "$568K",
+    budget: "95% of $600K",
+    avg: "$12620",
+    compliance: "88.9%",
+    category: "Events",
+    color: "bg-green-500",
+  },
+  {
+    name: "Engineering",
+    employees: 78,
+    spend: "$435K",
+    budget: "87% of $500K",
+    avg: "$5571",
+    compliance: "96.2%",
+    category: "Software",
+    color: "bg-orange-500",
+  },
+  {
+    name: "Operations",
+    employees: 22,
+    spend: "$581K",
+    budget: "106% of $550K",
+    avg: "$26428",
+    compliance: "91.7%",
+    category: "Travel",
+    color: "bg-purple-500",
+  },
 ]
-
 
 
 const renderPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }) => {
@@ -123,7 +158,6 @@ const renderPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, n
 }
 
 
-
 export default function AdminAnalytics() {
   const [hoveredKpi, setHoveredKpi] = useState(null)
   const [activeCategory, setActiveCategory] = useState(null)
@@ -141,12 +175,12 @@ export default function AdminAnalytics() {
               key={i}
               onMouseEnter={() => setHoveredKpi(i)}
               onMouseLeave={() => setHoveredKpi(null)}
-              className="relative bg-white rounded-2xl p-5 shadow-sm"
+              className="relative bg-white rounded-2xl p-5 shadow hover:shadow-lg transition"
             >
               <div className="flex justify-between">
                 <div>
                   <p className="text-sm text-gray-600">{kpi.title}</p>
-                  <p className="text-2xl font-bold mt-1">{kpi.value}</p>
+                  <p className="text-2xl font-bold">{kpi.value}</p>
                 </div>
                 <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${kpi.iconBg}`}>
                   <Icon className={kpi.iconColor} />
@@ -158,7 +192,7 @@ export default function AdminAnalytics() {
               </p>
 
               {hoveredKpi === i && (
-                <div className="absolute inset-0 bg-white rounded-2xl shadow-xl flex items-center justify-center p-4 text-sm text-gray-700 text-center z-10">
+                <div className="absolute inset-0 bg-white rounded-2xl shadow-xl flex items-center justify-center p-4 text-sm text-center z-10">
                   {kpi.detail}
                 </div>
               )}
@@ -167,28 +201,26 @@ export default function AdminAnalytics() {
         })}
       </div>
 
-      
+ 
       <div className="bg-white rounded-2xl p-2 shadow flex gap-2">
-        {["overview", "departments"].map((tab) => (
+        {["overview", "departments", "categories", "performance", "predictions"].map(tab => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`flex-1 py-2 rounded-xl text-sm font-medium transition ${
-              activeTab === tab
-                ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white"
-                : "text-gray-600 hover:bg-slate-100"
-            }`}
+            className={`flex-1 py-2 rounded-xl text-sm font-medium transition
+              ${activeTab === tab
+                ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow"
+                : "text-gray-600 hover:bg-slate-100"}`}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
           </button>
         ))}
       </div>
 
-    
+ 
       {activeTab === "overview" && (
         <>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-
            
             <div className="bg-white rounded-2xl p-5 shadow">
               <div className="flex items-center gap-2 mb-2">
@@ -209,17 +241,13 @@ export default function AdminAnalytics() {
               </ResponsiveContainer>
             </div>
 
-            <div className="bg-white rounded-2xl p-5 shadow relative overflow-visible">
+            <div className="bg-white rounded-2xl p-5 shadow relative">
               <div className="flex items-center gap-2 mb-2">
                 <PieIcon className="text-green-600" />
                 <h3 className="font-semibold">Category Distribution</h3>
               </div>
 
-              <div
-                className="grid grid-cols-2 gap-4 items-center"
-                onMouseLeave={() => setActiveCategory(null)}
-              >
-           
+              <div className="grid grid-cols-2 gap-4 items-center">
                 <div className="relative">
                   <ResponsiveContainer width="100%" height={240}>
                     <PieChart>
@@ -228,12 +256,11 @@ export default function AdminAnalytics() {
                         dataKey="percent"
                         innerRadius={55}
                         outerRadius={95}
-                        paddingAngle={2}
                         label={renderPieLabel}
-                        labelLine={false}
                         activeIndex={activeCategory}
                         activeShape={(p) => <Sector {...p} outerRadius={p.outerRadius + 6} />}
                         onMouseEnter={(_, i) => setActiveCategory(i)}
+                        onMouseLeave={() => setActiveCategory(null)}
                       >
                         {categoryData.map((c, i) => (
                           <Cell key={i} fill={c.color} />
@@ -243,7 +270,7 @@ export default function AdminAnalytics() {
                   </ResponsiveContainer>
 
                   {activeCategory !== null && (
-                    <div className="absolute right-[-36px] top-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl p-4 w-60 text-sm z-30">
+                    <div className="absolute right-[-40px] top-1/2 -translate-y-1/2 bg-white rounded-xl shadow-xl p-4 w-56 text-sm">
                       <p className="font-semibold">{categoryData[activeCategory].name}</p>
                       <p>Amount: <b>${categoryData[activeCategory].amount}K</b></p>
                       <p>Share: <b>{categoryData[activeCategory].percent}%</b></p>
@@ -256,21 +283,11 @@ export default function AdminAnalytics() {
                     <div
                       key={i}
                       onMouseEnter={() => setActiveCategory(i)}
-                      className="flex justify-between items-center px-3 py-2 rounded-xl bg-slate-50 hover:bg-white hover:shadow cursor-pointer"
+                      onMouseLeave={() => setActiveCategory(null)}
+                      className="flex justify-between items-center px-3 py-2 rounded-xl bg-slate-50 hover:bg-white hover:shadow"
                     >
-                      <div className="flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: c.color }} />
-                        <div>
-                          <p className="text-xs font-medium">{c.name}</p>
-                          <p className="text-xs text-gray-500">${c.amount}K</p>
-                        </div>
-                      </div>
-                      <span
-                        className="text-xs px-2 py-1 rounded-full font-semibold"
-                        style={{ backgroundColor: `${c.color}22`, color: c.color }}
-                      >
-                        {c.percent}%
-                      </span>
+                      <span className="text-xs font-medium">{c.name}</span>
+                      <span className="text-xs font-semibold">{c.percent}%</span>
                     </div>
                   ))}
                 </div>
@@ -278,7 +295,6 @@ export default function AdminAnalytics() {
             </div>
           </div>
 
-        
           <div className="bg-white rounded-2xl p-6 shadow">
             <div className="flex items-center gap-2 mb-4">
               <Calendar className="text-orange-600" />
@@ -299,26 +315,48 @@ export default function AdminAnalytics() {
       )}
 
       {activeTab === "departments" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-6">
           {departments.map((d, i) => (
             <div key={i} className="bg-white rounded-2xl p-6 shadow">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center">
-                    <Building2 className="text-indigo-600" />
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${d.color}`}>
+                    <Building2 className="text-white" />
                   </div>
                   <div>
                     <p className="font-semibold">{d.name}</p>
                     <p className="text-xs text-gray-500">{d.employees} employees</p>
                   </div>
                 </div>
-                <p className="text-xl font-bold">{d.spend}</p>
+                <p className="text-2xl font-bold">{d.spend}</p>
               </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="bg-blue-50 p-4 rounded-xl">
+                  <p className="text-xs text-blue-600">Budget Usage</p>
+                  <p className="text-sm font-semibold">{d.budget}</p>
+                </div>
+                <div className="bg-green-50 p-4 rounded-xl">
+                  <p className="text-xs text-green-600">Avg/Employee</p>
+                  <p className="font-semibold">{d.avg}</p>
+                </div>
+                <div className="bg-purple-50 p-4 rounded-xl">
+                  <p className="text-xs text-purple-600">Compliance</p>
+                  <p className="font-semibold">{d.compliance}</p>
+                </div>
+                <div className="bg-orange-50 p-4 rounded-xl">
+                  <p className="text-xs text-orange-600">Top Category</p>
+                  <p className="font-semibold">{d.category}</p>
+                </div>
+              </div>
+
+              <button className="mt-4 w-full border rounded-xl py-2 text-sm hover:bg-slate-50">
+                View Detailed Analytics
+              </button>
             </div>
           ))}
         </div>
       )}
-
     </div>
   )
 }
