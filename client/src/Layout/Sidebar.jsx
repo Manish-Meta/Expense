@@ -27,7 +27,8 @@ const Sidebar = () => {
     {
     nav : "Report",
     link :"/report"
-  }
+  },
+  
 
 
 ]
@@ -46,6 +47,10 @@ const Sidebar = () => {
 ]
  
  const admin = [
+  {
+    nav:"Analytics",
+    link:"/analytics"
+  },
     {
     nav : "Dashboard",
     link :"/dashboard"
@@ -62,10 +67,7 @@ const Sidebar = () => {
     nav : "Audit & Compliance",
     link : "/audit"
   },
-  {
-    nav: "Analytics", 
-    link: "/analytics", 
-  },
+  
   {
     nav:"Configuration",
     link:"/configuration"
@@ -130,33 +132,33 @@ function logout(){
             {
               selectedrole == "employee" ?
               <div className={`${isActive == "employee" ?"active":""}  flex-1 rounded-xl h-20 flex flex-col items-center justify-center`} onClick={()=> setterFunc("employee")} >
-              <User2 className=" size-4" />
-              <p className=" text-[10px] font-medium">{userData?.roles_name}</p>
+              <User2 className="text-white size-5" />
+              <p className="cursor-pointer text-white text-[10px] font-medium">Employee</p>
             </div>
             : selectedrole == "validator" ? ( 
               <>
               <div className={`${isActive == "employee" ?"active":""}  flex-1 rounded-xl h-20 flex flex-col items-center justify-center`} onClick={()=> setterFunc("employee")} >
-              <User2 className="text-black size-4" />
-              <p className="text-black text-[10px] font-medium">Employee</p>
+              <User2 className="text-white size-5" />
+              <p className="cursor-pointer text-white text-[10px] font-medium">Employee</p>
             </div>
              <div className={`${ isActive == "validator" ?"active":""} flex-1 rounded-xl h-20 flex flex-col items-center justify-center`}  onClick={()=> setterFunc("validator")} >
               <User2 className="text-black size-4" />
-              <p className="text-black text-[10px]" >Validator</p>
+              <p className="cursor-pointer text-black text-[10px]" >Validator</p>
             </div>
               </>
             ): <>
-             <div className={`${isActive == "employee" ?"active":""}  flex-1 rounded-xl  flex flex-col items-center justify-center`} onClick={()=> setterFunc("employee")} >
-              <User2 className="text-black size-4" />
-              <p className="text-black text-[10px] font-medium">Employee</p>
+             <div className={`${isActive == "employee" ?"active":""}  flex-1 rounded-xl h-20 flex flex-col items-center justify-center`} onClick={()=> setterFunc("employee")} >
+              <User2 className="text-black size-5" />
+              <p className="cursor-pointer text-black text-[10px] font-medium">Employee</p>
             </div>
              <div className={`${ isActive == "validator" ?"active":""} flex-1 rounded-xl  flex flex-col items-center justify-center`} onClick={()=> setterFunc("validator")} >
               <User2 className="text-black size-4" />
-              <p className="text-black text-[10px]" >Validator</p>
+              <p className="cursor-pointer text-black text-[10px]" >Validator</p>
             </div>
            <div className={`${isActive == "admin" ?"active":""} flex-1 rounded-xl  flex flex-col items-center justify-center`}
           onClick={()=> setterFunc("admin")} >
               <User2 className="text-black size-4" />
-              <p className="text-black text-[10px]">Admin</p>
+              <p className="cursor-pointer text-black text-[10px]">Admin</p>
             </div></>
             }
            </div>
@@ -188,7 +190,7 @@ function logout(){
             </div>
           </div>
 
-          <button className="mt-3 text-xs flex gap-2 items-center" onClick={logout}>
+          <button className="cursor-pointer mt-3 text-xs flex gap-2 items-center" onClick={logout}>
             <PowerIcon className="size-3" />
             Sign out
           </button>
