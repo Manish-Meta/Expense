@@ -13,7 +13,9 @@ import {
   ChevronDown,
   Building2,
   Target,
-  Globe
+  Globe,
+  Gauge,
+  Zap
 } from "lucide-react"
 
 import {
@@ -156,6 +158,53 @@ const topVendors = [
   { name: "Uber", icon: "U", color: "bg-blue-600", tx: 567, avg: "$174.23", tag: "Transport", spend: "$99K" },
 ]
 
+const performanceMetrics = [
+  {
+    title: "Processing Efficiency",
+    value: "94.2%",
+    target: "Target: 95%",
+    change: "+2.1%",
+    description: "Percentage of expenses processed within SLA",
+    icon: Gauge,
+    bg: "bg-blue-50",
+    bar: "bg-orange-500",
+    progress: 94.2,
+  },
+  {
+    title: "Auto-Approval Rate",
+    value: "67.8%",
+    target: "Target: 70%",
+    change: "+5.3%",
+    description: "Low-risk expenses automatically approved",
+    icon: Zap,
+    bg: "bg-green-50",
+    bar: "bg-orange-500",
+    progress: 67.8,
+  },
+  {
+    title: "Reimbursement Speed",
+    value: "5.2 days",
+    target: "Target: 5 days",
+    change: "-0.8 days",
+    negative: true,
+    description: "Average time from approval to payment",
+    icon: Clock,
+    bg: "bg-yellow-50",
+    bar: "bg-orange-500",
+    progress: 84,
+  },
+  {
+    title: "Policy Compliance",
+    value: "91.7%",
+    target: "Target: 95%",
+    change: "+1.9%",
+    description: "Expenses compliant with company policies",
+    icon: ShieldCheck,
+    bg: "bg-purple-50",
+    bar: "bg-orange-500",
+    progress: 91.7,
+  },
+]
 
 const departments = [
   {
@@ -600,6 +649,63 @@ export default function AdminAnalytics() {
     
   </div>
 )}
+{activeTab === "performance" && (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    {performanceMetrics.map((item, i) => {
+      const Icon = item.icon
+
+      return (
+        <div
+          key={i}
+          className={`rounded-2xl p-6 shadow-lg ${item.bg} hover:shadow-xl transition`}
+        >
+          {/* Header */}
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-slate-900">
+              {item.title}
+            </h3>
+
+            <span
+              className={`text-xs px-3 py-1 rounded-full font-semibold
+                ${item.negative
+                  ? "bg-red-100 text-red-600"
+                  : "bg-green-100 text-green-600"
+                }`}
+            >
+              {item.change}
+            </span>
+          </div>
+
+          {/* Value */}
+          <div className="flex justify-between items-end mb-3">
+            <p className="text-4xl font-bold text-slate-900">
+              {item.value}
+            </p>
+
+            <span className="text-sm px-3 py-1 rounded-full bg-white shadow">
+              {item.target}
+            </span>
+          </div>
+
+          {/* Progress */}
+          <div className="w-full h-3 bg-white rounded-full overflow-hidden mb-4">
+            <div
+              className={`h-full rounded-full ${item.bar}`}
+              style={{ width: `${item.progress}%` }}
+            />
+          </div>
+
+         
+          <div className="flex items-center gap-3 text-sm text-gray-600">
+            <Icon className="text-gray-500" size={18} />
+            <span>{item.description}</span>
+          </div>
+        </div>
+      )
+    })}
+  </div>
+)}
+
 
     </div>
   )

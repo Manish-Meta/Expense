@@ -67,12 +67,9 @@ console.log(localSelectedRole)
   },
   {
     nav : "Audit & Compliance",
-    link : "Auduit"
+    link : "/audit"
   },
-  {
-    nav: "Analytics", 
-    link: "Analytics", 
-  },
+  
   {
     nav:"Configuration",
     link:"Configuration"
@@ -126,32 +123,32 @@ function setterFunc (e){
               selectedrole == "employee" ?
               <div className={`${isActive == "employee" ?"active":""}  flex-1 rounded-xl h-20 flex flex-col items-center justify-center`} onClick={()=> setterFunc("employee")} >
               <User2 className="text-white size-5" />
-              <p className="text-white text-[10px] font-medium">Employee</p>
+              <p className="cursor-pointer text-white text-[10px] font-medium">Employee</p>
             </div>
             : selectedrole == "validator" ? ( 
               <>
               <div className={`${isActive == "employee" ?"active":""}  flex-1 rounded-xl h-20 flex flex-col items-center justify-center`} onClick={()=> setterFunc("employee")} >
               <User2 className="text-white size-5" />
-              <p className="text-white text-[10px] font-medium">Employee</p>
+              <p className="cursor-pointer text-white text-[10px] font-medium">Employee</p>
             </div>
              <div className={`${ isActive == "validator" ?"active":""} flex-1 rounded-xl h-20 flex flex-col items-center justify-center`}  onClick={()=> setterFunc("validator")} >
               <User2 className="text-black size-4" />
-              <p className="text-black text-[10px]" >Validator</p>
+              <p className="cursor-pointer text-black text-[10px]" >Validator</p>
             </div>
               </>
             ): <>
              <div className={`${isActive == "employee" ?"active":""}  flex-1 rounded-xl h-20 flex flex-col items-center justify-center`} onClick={()=> setterFunc("employee")} >
               <User2 className="text-black size-5" />
-              <p className="text-black text-[10px] font-medium">Employee</p>
+              <p className="cursor-pointer text-black text-[10px] font-medium">Employee</p>
             </div>
              <div className={`${ isActive == "validator" ?"active":""} flex-1 rounded-xl h-20 flex flex-col items-center justify-center`} onClick={()=> setterFunc("validator")} >
               <User2 className="text-black size-4" />
-              <p className="text-black text-[10px]" >Validator</p>
+              <p className="cursor-pointer text-black text-[10px]" >Validator</p>
             </div>
            <div className={`${isActive == "admin" ?"active":""} flex-1 rounded-xl h-20 flex flex-col items-center justify-center`}
           onClick={()=> setterFunc("admin")} >
               <User2 className="text-black size-4" />
-              <p className="text-black text-[10px]">Admin</p>
+              <p className="cursor-pointer text-black text-[10px]">Admin</p>
             </div></>
             }
            </div>
@@ -183,7 +180,7 @@ function setterFunc (e){
             </div>
           </div>
 
-          <button className="mt-3 text-xs flex gap-2 items-center">
+          <button className="cursor-pointer mt-3 text-xs flex gap-2 items-center">
             <PowerIcon className="size-3" />
             Sign out
           </button>
