@@ -661,15 +661,15 @@ export default function AdminAnalytics() {
         >
           {/* Header */}
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-slate-900">
+            <h3 className="text-sm font-semibold text-slate-900">
               {item.title}
             </h3>
 
             <span
-              className={`text-xs px-3 py-1 rounded-full font-semibold
+              className={`text-sm px-3 py-1 rounded-full font-semibold
                 ${item.negative
-                  ? "bg-red-100 text-red-600"
-                  : "bg-green-100 text-green-600"
+                  ? "bg-red-100 text-red-400"
+                  : "bg-green-100 text-green-400"
                 }`}
             >
               {item.change}
@@ -678,7 +678,7 @@ export default function AdminAnalytics() {
 
           {/* Value */}
           <div className="flex justify-between items-end mb-3">
-            <p className="text-4xl font-bold text-slate-900">
+            <p className="text-1xl font-bold text-slate-900">
               {item.value}
             </p>
 
@@ -697,7 +697,7 @@ export default function AdminAnalytics() {
 
          
           <div className="flex items-center gap-3 text-sm text-gray-600">
-            <Icon className="text-gray-500" size={18} />
+            <Icon className="text-gray-400" size={18} />
             <span>{item.description}</span>
           </div>
         </div>
