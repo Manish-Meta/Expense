@@ -9,6 +9,7 @@ import AdminAnalytics from "../pages/Admin/Analytics/AdminAnalytics"
 import AdminAudit from '../pages/Admin/Audit&Compliance/Audit'
 import useGlobalContext from '../config/GlobalStateContext'
 import AdminDashboard from '../pages/Admin/AdminDashboard'
+import AdminConfig from '../pages/Admin/Configuration/AdminConfig'
 import NotFound from '../pages/NotFoundPage'
 import Apporvals from '../pages/Admin/Apporvals/Apporvals'
 
@@ -40,6 +41,8 @@ const dashboardConfig = {
      { path: "dashboard", label: "Dashboard", element: <AdminDashboard/> },
      { path: "approvals", label: "Dashboard", element: <Apporvals/> },
     { path: "analytics", label: "Analytics", element: <AdminAnalytics /> },
+    { path: "audit", label: "Audit", element: <AdminAudit/> },
+    { path: "configuration", label: "Configuration", element: <AdminConfig/>}
     { path: "audit", label: "Audit", element: <AdminAudit/> },
       { path: "*", label: "Report", element: <NotFound/> }
   ],

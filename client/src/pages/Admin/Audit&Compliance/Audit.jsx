@@ -215,7 +215,7 @@ export default function AdminAudit() {
           return (
             <div
               key={i}
-              onMouseEnter={() => setHoveredKpi(i)}
+              // onMouseEnter={() => setHoveredKpi(i)}
               onMouseLeave={() => setHoveredKpi(null)}
               className="relative bg-white rounded-2xl p-5 shadow hover:shadow-lg transition"
             >

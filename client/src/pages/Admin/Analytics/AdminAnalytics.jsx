@@ -167,7 +167,7 @@ const performanceMetrics = [
     description: "Percentage of expenses processed within SLA",
     icon: Gauge,
     bg: "bg-blue-50",
-    bar: "bg-orange-500",
+    bar: "bg-orange-300",
     progress: 94.2,
   },
   {
@@ -258,7 +258,7 @@ const kpis = [
     icon: DollarSign,
     iconBg: "bg-green-100",
     iconColor: "text-green-600",
-    detail: "Total approved and reimbursed expenses",
+    // detail: "Total approved and reimbursed expenses",
   },
   {
     title: "Active Employees",
@@ -268,7 +268,7 @@ const kpis = [
     icon: Users,
     iconBg: "bg-blue-100",
     iconColor: "text-blue-600",
-    detail: "Employees submitting expenses",
+    // detail: "Employees submitting expenses",
   },
   {
     title: "Processing Time",
@@ -278,7 +278,7 @@ const kpis = [
     icon: Clock,
     iconBg: "bg-orange-100",
     iconColor: "text-orange-600",
-    detail: "Average approval turnaround",
+    // detail: "Average approval turnaround",
   },
   {
     title: "Compliance Rate",
@@ -288,7 +288,7 @@ const kpis = [
     icon: ShieldCheck,
     iconBg: "bg-purple-100",
     iconColor: "text-purple-600",
-    detail: "Policy compliant expenses",
+    // detail: "Policy compliant expenses",
   },
 ]
 
@@ -350,36 +350,29 @@ export default function AdminAnalytics() {
   
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {kpis.map((kpi, i) => {
-          const Icon = kpi.icon
-          return (
-            <div
-              key={i}
-              onMouseEnter={() => setHoveredKpi(i)}
-              onMouseLeave={() => setHoveredKpi(null)}
-              className="relative bg-white rounded-2xl p-5 shadow hover:shadow-lg transition"
-            >
-              <div className="flex justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">{kpi.title}</p>
-                  <p className="text-2xl font-bold">{kpi.value}</p>
-                </div>
-                <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${kpi.iconBg}`}>
-                  <Icon className={kpi.iconColor} />
-                </div>
-              </div>
+  const Icon = kpi.icon
+  return (
+    <div
+      key={i}
+      className="bg-white rounded-2xl p-5 shadow hover:shadow-lg transition"
+    >
+      <div className="flex justify-between">
+        <div>
+          <p className="text-sm text-gray-600">{kpi.title}</p>
+          <p className="text-2xl font-bold">{kpi.value}</p>
+        </div>
+        <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${kpi.iconBg}`}>
+          <Icon className={kpi.iconColor} />
+        </div>
+      </div>
 
-              <p className="text-xs mt-3 text-orange-600">
-                {kpi.trend} {kpi.subtitle}
-              </p>
+      <p className="text-xs mt-3 text-orange-600">
+        {kpi.trend} {kpi.subtitle}
+      </p>
+    </div>
+  )
+})}
 
-              {hoveredKpi === i && (
-                <div className="absolute inset-0 bg-white rounded-2xl shadow-xl flex items-center justify-center p-4 text-sm text-center z-10">
-                  {kpi.detail}
-                </div>
-              )}
-            </div>
-          )
-        })}
       </div>
 
       
@@ -659,26 +652,24 @@ export default function AdminAnalytics() {
           key={i}
           className={`rounded-2xl p-6 shadow-lg ${item.bg} hover:shadow-xl transition`}
         >
-          {/* Header */}
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-lg font-semibold text-slate-900">
+            <h3 className="text-sm font-semibold text-slate-900">
               {item.title}
             </h3>
 
             <span
-              className={`text-xs px-3 py-1 rounded-full font-semibold
+              className={`text-sm px-3 py-1 rounded-full font-semibold
                 ${item.negative
-                  ? "bg-red-100 text-red-600"
-                  : "bg-green-100 text-green-600"
+                  ? "bg-red-100 text-red-400"
+                  : "bg-green-100 text-green-400"
                 }`}
             >
               {item.change}
             </span>
           </div>
 
-          {/* Value */}
           <div className="flex justify-between items-end mb-3">
-            <p className="text-4xl font-bold text-slate-900">
+            <p className="text-1xl font-bold text-slate-900">
               {item.value}
             </p>
 
@@ -687,7 +678,7 @@ export default function AdminAnalytics() {
             </span>
           </div>
 
-          {/* Progress */}
+     
           <div className="w-full h-3 bg-white rounded-full overflow-hidden mb-4">
             <div
               className={`h-full rounded-full ${item.bar}`}
@@ -697,7 +688,7 @@ export default function AdminAnalytics() {
 
          
           <div className="flex items-center gap-3 text-sm text-gray-600">
-            <Icon className="text-gray-500" size={18} />
+            <Icon className="text-gray-400" size={18} />
             <span>{item.description}</span>
           </div>
         </div>
