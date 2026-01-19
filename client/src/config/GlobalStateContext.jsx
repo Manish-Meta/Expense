@@ -24,6 +24,7 @@ const [authLoading, setAuthLoading] = useState(true);
     if(result.status == 200){
    const data = await result.json();
    setUserLoggedIn(true)
+   localStorage.setItem("login", true)
    setAuthLoading(false)
   setUserData(data.data[0])
   setSelectedRole(data?.data[0]?.roles_name)

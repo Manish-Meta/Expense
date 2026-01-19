@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
-import useGlobalContext from '../config/GlobalStateContext'
 import {
   Search,
   Bell,
@@ -16,7 +15,6 @@ import {
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
-  const {userData} = useGlobalContext();
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -50,8 +48,8 @@ const Navbar = () => {
           <div className="flex items-center space-x-2 cursor-pointer">
             <User2 size={16} />
             <div>
-              <p className="text-xs font-medium">{userData?.emp?.full_name}</p>
-              <p className="text-[10px] text-orange-600">{userData?.roles_name}</p>
+              <p className="text-xs font-medium">John Doe</p>
+              <p className="text-[10px] text-orange-600">Employee</p>
             </div>
           </div>
         </div>

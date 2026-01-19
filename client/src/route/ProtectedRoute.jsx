@@ -7,7 +7,7 @@ const ProtectedRoute = () => {
 
 const localStoredLogin = localStorage.getItem('login')
   // 2. Not logged in → redirect
-  if (!localStoredLogin) {
+  if (!localStoredLogin && !userLoggedIn) {
     return <Navigate to="/" replace />;
   }
 

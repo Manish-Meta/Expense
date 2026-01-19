@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import useGlobalContext from "../config/GlobalStateContext";
 import { useNavigate } from "react-router-dom";
-import { Check, Info } from "lucide-react";
+import { Info } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -29,18 +29,15 @@ const APIs = import.meta.env.VITE_BACKEND_URL
         emp_status: selectedrole,
       }),
     })
-      .then((e2) => {
-        if (e2.status == 200) {
+      .then((e) => {
+        if (e.status == 200) {
           fetch(`${APIs}user/profile`, {
           method:"GET",
           credentials:'include'})
           .then((e)=> e.json())
-          .then((data)=>{console.log(data.data[0]), setUserData(data.data[0])})
+          .then((e)=>console.log(e.data[0]))
           setUserLoggedIn(true)
-          
-          localStorage.setItem("login", true)
            setLoginLoading(false)
-          
           navigate('/dashboard')
            }
            else{

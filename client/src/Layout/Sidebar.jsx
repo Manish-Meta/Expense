@@ -1,17 +1,4 @@
-import { DollarSign, 
-  LayoutDashboardIcon, //nav icons
-  ReceiptIndianRupee,
-  ChartColumnBig,
-  History,
-  CircleCheckBig,
-  ShieldCheck,
-  Settings2, 
-  PowerIcon, 
-  User, 
-  User2, 
-  ShieldUser, 
-  UserCheck,
-  Icon,} from 'lucide-react'
+import { DollarSign, LayoutDashboardIcon, PowerIcon, User2 } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import useGlobalContext from '../config/GlobalStateContext';
@@ -19,7 +6,7 @@ import useGlobalContext from '../config/GlobalStateContext';
 const Sidebar = () => {
   const navigate = useNavigate();
       const getRole = localStorage.getItem("role");
-   const {selectedrole, localSelectedRole,userData, setLocalSelectedRole, setUserData} = useGlobalContext();
+   const {selectedrole, localSelectedRole,userData, setLocalSelectedRole, setLo} = useGlobalContext();
       const [isActive, setIsActive] = useState(selectedrole)
 
       // useEffect(()=>{
@@ -31,18 +18,15 @@ const Sidebar = () => {
   const employee = [
     {
     nav : "Dashboard",
-    link :"/dashboard",
-    Icon : LayoutDashboardIcon
+    link :"/dashboard"
   },
     {
     nav : "Expense Submit",
-    link :"/expense",
-    Icon : ReceiptIndianRupee
+    link :"/expense"
   },
     {
     nav : "Report",
-    link :"/report",
-    Icon : ChartColumnBig
+    link :"/report"
   },
   
 
@@ -52,13 +36,11 @@ const Sidebar = () => {
  const validator = [
     {
     nav : "Dashboard",
-    link :"/dashboard",
-    Icon : LayoutDashboardIcon
+    link :"/dashboard"
   },
     {
     nav : "validation history",
-    link :"/history",
-    Icon : History
+    link :"/history"
   }
 
 
@@ -66,31 +48,29 @@ const Sidebar = () => {
  
  const admin = [
   {
+    nav:"Analytics",
+    link:"/analytics"
+  },
+    {
     nav : "Dashboard",
-    link :"/dashboard",
-    Icon : LayoutDashboardIcon
-  },  
+    link :"/dashboard"
+  },
+    {
+    nav : "validation history",
+    link :"/history"
+  },
   {
     nav :"Approvals",
     link :"/approvals",
-    Icon : CircleCheckBig
   },
   {
     nav : "Audit & Compliance",
-    link : "/audit",
-    Icon : ShieldCheck
-  },
-
-  {
-    nav:"Analytics",
-    link:"/analytics",
-    Icon:ChartColumnBig
+    link : "/audit"
   },
   
   {
     nav:"Configuration",
-    link:"/configuration",
-    Icon : Settings2
+    link:"/configuration"
   }
 
 
@@ -129,7 +109,6 @@ function logout(){
   .then((e)=> console.log(e.json()))
   .then((e)=> console.log(e))
   localStorage.clear("login")
-  setUserData("")
   navigate('/')
 }
  
@@ -152,33 +131,33 @@ function logout(){
            <div className="flex">
             {
               selectedrole == "employee" ?
-              <div className={`${isActive == "employee" ?"active":""}  cursor-pointer flex-1 rounded-xl h-20 flex flex-col items-center justify-center`} onClick={()=> setterFunc("employee")} >
-              <User className="text-black size-5" />
-              <p className="cursor-pointer text-black text-[10px] font-medium">Employee</p>
+              <div className={`${isActive == "employee" ?"active":""}  flex-1 rounded-xl h-20 flex flex-col items-center justify-center`} onClick={()=> setterFunc("employee")} >
+              <User2 className="text-white size-5" />
+              <p className="cursor-pointer text-white text-[10px] font-medium">Employee</p>
             </div>
             : selectedrole == "validator" ? ( 
               <>
-              <div className={`${isActive == "employee" ?"active":""} cursor-pointer flex-1 rounded-xl h-20 flex flex-col items-center justify-center`} onClick={()=> setterFunc("employee")} >
-              <User className="text-black size-5" />
-              <p className="cursor-pointer text-black text-[10px] font-medium">Employee</p>
+              <div className={`${isActive == "employee" ?"active":""}  flex-1 rounded-xl h-20 flex flex-col items-center justify-center`} onClick={()=> setterFunc("employee")} >
+              <User2 className="text-white size-5" />
+              <p className="cursor-pointer text-white text-[10px] font-medium">Employee</p>
             </div>
-             <div className={`${ isActive == "validator" ?"active":""} cursor-pointer flex-1 rounded-xl  flex flex-col items-center justify-center`} onClick={()=> setterFunc("validator")} >
-              <UserCheck className="text-black size-4" />
+             <div className={`${ isActive == "validator" ?"active":""} flex-1 rounded-xl h-20 flex flex-col items-center justify-center`}  onClick={()=> setterFunc("validator")} >
+              <User2 className="text-black size-4" />
               <p className="cursor-pointer text-black text-[10px]" >Validator</p>
             </div>
               </>
             ): <>
-             <div className={`${isActive == "employee" ?"active":""} cursor-pointer flex-1 rounded-xl h-20 flex flex-col items-center justify-center`} onClick={()=> setterFunc("employee")} >
-              <User className="text-black size-5" />
+             <div className={`${isActive == "employee" ?"active":""}  flex-1 rounded-xl h-20 flex flex-col items-center justify-center`} onClick={()=> setterFunc("employee")} >
+              <User2 className="text-black size-5" />
               <p className="cursor-pointer text-black text-[10px] font-medium">Employee</p>
             </div>
-             <div className={`${ isActive == "validator" ?"active":""} cursor-pointer flex-1 rounded-xl  flex flex-col items-center justify-center`} onClick={()=> setterFunc("validator")} >
-              <UserCheck className="text-black size-4" />
+             <div className={`${ isActive == "validator" ?"active":""} flex-1 rounded-xl  flex flex-col items-center justify-center`} onClick={()=> setterFunc("validator")} >
+              <User2 className="text-black size-4" />
               <p className="cursor-pointer text-black text-[10px]" >Validator</p>
             </div>
-           <div className={`${isActive == "admin" ?"active":""} cursor-pointer flex-1 rounded-xl  flex flex-col items-center justify-center`}
+           <div className={`${isActive == "admin" ?"active":""} flex-1 rounded-xl  flex flex-col items-center justify-center`}
           onClick={()=> setterFunc("admin")} >
-              <ShieldUser className="text-black size-4" />
+              <User2 className="text-black size-4" />
               <p className="cursor-pointer text-black text-[10px]">Admin</p>
             </div></>
             }
@@ -190,50 +169,32 @@ function logout(){
         <nav className="p-6 flex-1">
           <ul className="space-y-2 text-xs font-medium">
             {
-            selectedRoleFields.map((e) => {
-              const Icon = e.Icon
-              return (
-                <li
-                  key={e.link}
-                  onClick={() => navigate(e.link)}
-                  className="text-xs font-medium flex items-center gap-2 hover:bg-yellow-200 p-2 rounded-lg cursor-pointer"
-                >
-                  {Icon && <Icon className="size-4" />}
-                  {e.nav}
-                </li>
-              )
-            })
-          }
-
+              selectedRoleFields.map((e)=> <li onClick={()=> navigate(`${e.link}`)} className="text-xs  font-medium flex items-center gap-2 hover:bg-yellow-200 p-2 rounded-lg">
+          <LayoutDashboardIcon className="size-4"/>
+        {e.nav}</li>)
+            }
 
         
           </ul>
         </nav>
 
         {/* BOTTOM */}
-         <div className="mt-auto w-fill p-2 flex flex-col gap-2">
-  {/* Profile Section - Centered Layout */}
-  <div className="bg-white p-4 flex flex-row items-center gap-1 rounded-xl border border-gray-100">
-    <div className="bg-orange-400 rounded-full p-3 shrink-0">
-      <User2 className="size-5 text-white" />
-    </div>
-    <div className="text-center w-full">
-      <p className="text-md font-semibold text-gray-800 truncate">
-        {userData?.emp?.full_name}
-      </p>
-      <p className="text-[11px] font-semibold text-gray-400 truncate uppercase tracking-wider">
-        {userData?.dept_name} • {userData?.roles_name}
-      </p>
-    </div>
-  </div>
-  <button 
-    onClick={logout}
-    className="group cursor-pointer flex items-center justify-center gap-2 w-full py-2.5 bg-white hover:bg-red-50 hover:text-red-600 rounded-xl transition-all duration-200"
-  >
-    <PowerIcon className="size-4" />
-    <span className="text-sm font-semibold">Sign out</span>
-  </button>
-</div>
+        <div className="p-6 border-t border-[#d9770633]">
+          <div className="bg-white p-3 flex items-center gap-2 rounded-xl">
+            <div className="bg-orange-300 rounded-full p-1">
+              <User2 className="size-5 text-white" />
+            </div>
+            <div>
+              <p className="text-xs">{userData?.emp?.full_name}</p>
+              <p className="text-[10px]">{userData?.dept_name} • {userData?.roles_name}</p>
+            </div>
+          </div>
+
+          <button className="mt-3 text-xs flex gap-2 items-center" onClick={logout}>
+            <PowerIcon className="size-3" />
+            Sign out
+          </button>
+        </div>
       </aside>
 
   )
