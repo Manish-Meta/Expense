@@ -42,7 +42,7 @@ const dashboardConfig = {
      { path: "approvals", label: "Dashboard", element: <Apporvals/> },
     { path: "analytics", label: "Analytics", element: <AdminAnalytics /> },
     { path: "audit", label: "Audit", element: <AdminAudit/> },
-    { path: "configuration", label: "Configuration", element: <AdminConfig/>}
+    { path: "configuration", label: "Configuration", element: <AdminConfig/>},
     { path: "audit", label: "Audit", element: <AdminAudit/> },
       { path: "*", label: "Report", element: <NotFound/> }
   ],
