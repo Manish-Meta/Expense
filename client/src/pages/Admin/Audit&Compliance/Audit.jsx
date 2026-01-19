@@ -192,18 +192,18 @@ export default function AdminAudit() {
             Monitor compliance, investigate fraud, and maintain audit readiness.
           </p>
         </div>
-
-        <div className="flex gap-2">
-          <button className="px-3 py-2 text-sm rounded-md bg-white shadow flex items-center gap-2">
-            <RefreshCw size={14} /> Refresh Data
-          </button>
-          <button className="px-3 py-2 text-sm rounded-md bg-white shadow flex items-center gap-2">
-            <Download size={14} /> Export Audit Report
-          </button>
-          <button className="px-4 py-2 text-sm rounded-md bg-orange-400 text-white flex items-center gap-2">
-            <PlayCircle size={14} /> Run Compliance Check
-          </button>
-        </div>
+        <div className="flex items-center gap-2">
+            <button className="px-3 py-2 text-[10px] font-medium border-[#d9770633]  border rounded-md  text-black flex items-center gap-2 bg-white">
+            <RefreshCw size={14}/> Refresh data
+            </button>
+           
+            <button className="px-3 py-2 text-[10px]  font-medium text-xs border-[#d9770633]  border rounded-md  text-black flex items-center gap-2 bg-white">
+              <Download size={14} /> Export Audit Report
+            </button>
+            <button className="px-3 py-2 text-[10px]  font-medium text-xs border-[#d9770633] bg-[#ffdbb3]  border rounded-md  text-black flex items-center gap-2 ">
+              <PlayCircle size={14} /> Run Compliance Check
+            </button>
+          </div>
       </div>
 
       {/* =======================
@@ -250,9 +250,9 @@ export default function AdminAudit() {
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex-1 py-2 rounded-xl text-sm font-medium transition
+            className={`flex-1 py-2 rounded-xl text-sm font-medium transition cursor-pointer
               ${activeTab === tab.key
-                ? "bg-gradient-to-r from-orange-600 to-yellow-500 text-white shadow"
+                ? "bg-orange-400 text-white shadow"
                 : "text-gray-600 hover:bg-slate-100"}`}
           >
             {tab.label}
