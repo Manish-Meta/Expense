@@ -1,6 +1,28 @@
 import { BoltIcon, ChartColumnIncreasing, ClockIcon, CreditCardIcon, CurrencyIcon, Download, EyeIcon, FileExclamationPoint, LucideRepeat, RefreshCcw, Repeat, Settings2Icon, ShieldCheckIcon } from 'lucide-react'
 import React from 'react'
 import DepartmentCard from '../../components/DepartmentCardAdmin';
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts"
+import { MoreHorizontal } from "lucide-react"
+
+const spendingData = [
+  { month: "Aug", actual: 210, budget: 220, forecast: 215 },
+  { month: "Sep", actual: 225, budget: 230, forecast: 228 },
+  { month: "Oct", actual: 198, budget: 225, forecast: 205 },
+  { month: "Nov", actual: 287, budget: 280, forecast: 285 },
+  { month: "Dec", actual: 235, budget: 230, forecast: 238 },
+  { month: "Jan", actual: 248, budget: 250, forecast: 245 },
+  { month: "Feb", actual: 260, budget: 255, forecast: 258 },
+  { month: "Mar", actual: 272, budget: 265, forecast: 270 },
+]
 
 
 
@@ -153,11 +175,100 @@ const insights = [
       <div className="lg:col-span-3 space-y-5">
 
         {/* report analtics */}
-        <div className="bg-orange-200 flex justify-center items-center rounded-xl border border-orange-200 h-52 w-full">
+        <div className="flex justify-center items-center rounded-xl w-full">
           
        
-       <p className='text-xs '>Report</p>
-       
+          <div className="w-full space-y-5">
+          {/* Organization Spending Trends */}
+          <div className="bg-white rounded-2xl p-5 shadow w-full">
+            {/* Header */}
+            <div className="flex items-center justify-between w-full mb-4">
+              <div>
+                <h3 className="text-sm font-semibold">
+                  Organization Spending Trends
+                </h3>
+                <p className="text-xs text-gray-500">This Month</p>
+              </div>
+
+              <button className="text-xs text-gray-500 hover:text-gray-700">
+                Details
+              </button>
+            </div>
+
+            {/* Legend */}
+            <div className="flex gap-4 text-xs mb-3">
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-orange-500" />
+                Actual Spending
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-blue-500" />
+                Budget
+              </span>
+              <span className="flex items-center gap-1">
+                <span className="w-2 h-2 rounded-full bg-green-500" />
+                AI Forecast
+              </span>
+            </div>
+
+            {/* Chart Container (KEY FIX) */}
+            <div className="w-full h-[280px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={spendingData}>
+                  <defs>
+                  <linearGradient id="actualGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#f97316" stopOpacity={0.35} />
+                    <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                  <XAxis
+                    dataKey="month"
+                    tick={{ fontSize: 11 }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    tick={{ fontSize: 11 }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <Tooltip
+                    contentStyle={{
+                      borderRadius: "12px",
+                      border: "none",
+                      boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+                      fontSize: "12px",
+                    }}
+                  />
+
+                  <Line
+                    type="monotone"
+                    dataKey="actual"
+                    stroke="#ef9a24"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="budget"
+                    stroke="#3b82f6"
+                    strokeWidth={2}
+                    dot={false}
+                    strokeDasharray="5 5"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="forecast"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
         </div>
 
         <div className="bg-white rounded-xl border border-orange-200 p-4">
