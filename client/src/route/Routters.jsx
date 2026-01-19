@@ -9,6 +9,7 @@ import AdminAnalytics from "../pages/Admin/Analytics/AdminAnalytics"
 import AdminAudit from '../pages/Admin/Audit&Compliance/Audit'
 import useGlobalContext from '../config/GlobalStateContext'
 import AdminDashboard from '../pages/Admin/AdminDashboard'
+import AdminConfig from '../pages/Admin/Configuration/AdminConfig'
 
 const Routters = () => {
 const {selectedrole, localSelectedRole} = useGlobalContext()
@@ -35,7 +36,8 @@ const dashboardConfig = {
   routes: [
      { path: "dashboard", label: "Dashboard", element: <AdminDashboard/> },
     { path: "analytics", label: "Analytics", element: <AdminAnalytics /> },
-    { path: "audit", label: "Audit", element: <AdminAudit/> }
+    { path: "audit", label: "Audit", element: <AdminAudit/> },
+    { path: "configuration", label: "Configuration", element: <AdminConfig/>}
   ],
 },
 }
