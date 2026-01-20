@@ -18,15 +18,15 @@ export default function BulkOperations() {
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   const [form, setForm] = useState({
-    fullName: "",
+    full_name: "",
     email: "",
-    employeeId: "",
-    department: "",
-    reportingManager: "",
-    monthlyLimit: "",
-    validationScope: "",
-    approvalLimit: "",
-    priorityLevel: "",
+    emp_id: "",
+    dept_id: "",
+    reporting_manager: "",
+    expense_limit: "",
+    validator_scope: "",
+    approve_limit: "",
+    priority_level: "",
   });
 
   const categories = [
@@ -54,11 +54,11 @@ export default function BulkOperations() {
     if (openDialog === "employee") {
       payload = {
         emp_status: "employee",
-        full_name: form.fullName,
+        full_name: form.full_name,
         email: form.email,
-        employeeId: form.employeeId,
-        dept_id: form.department,
-        reporting_manager: form.reportingManager,
+        emp_id: form.emp_id,
+        dept_id: form.dept_id,
+        reporting_manager: form.reporting_manager,
         expense_limit: Number(form.expense_limit),
         allowed_cat: selectedCategories,
         welcome_email: sendWelcome,
@@ -68,11 +68,11 @@ export default function BulkOperations() {
     if (openDialog === "validator") {
       payload = {
         emp_status: "validator",
-        full_name: form.fullName,
+        full_name: form.full_name,
         email: form.email,
-        emp_id: form.employeeId,
+        emp_id: form.emp_id,
         dept_id: form.department,
-        validator_scope: form.validationScope,
+        validator_scope: form.validator_scope,
         approve_limit: Number(form.approve_limit),
         priority_level: form.priority_level,
         welcome_email: sendWelcome,
