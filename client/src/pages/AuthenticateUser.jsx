@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import useGlobalContext from "../config/GlobalStateContext";
 import { useNavigate } from "react-router-dom";
 import { Check, Info } from "lucide-react";
+import im from '../assets/loginbg.jpg'
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -61,11 +62,12 @@ const APIs = import.meta.env.VITE_BACKEND_URL
   console.log(userData);
 
   return (
-  <div className="min-h-screen w-screen flex items-center justify-center bg-linear-to-br from-orange-50 via-white to-orange-100">
-    <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-orange-100 overflow-hidden">
+  <div className=" h-screen w-screen  p-2 rounded-xl flex items-center justify-center ">
+  <div className="border border-orange-100 w-[800px] p-3 rounded-xl gap-2 flex">
+      <div className="w-full lg:w-2/5 max-w-md bg-white rounded-2xl  overflow-hidden">
       
       {/* Header */}
-      <div className="px-8 pt-8 pb-6 flex flex-col self-center">
+      <div className="px-4 pt-8 pb-6 flex flex-col self-center">
         <div className="flex items-center gap-2">
          <p className=" w-12 h-12 flex items-center justify-center rounded-xl bg-orange-100 text-orange-600 text-xl font-bold"> EF</p>
 
@@ -83,10 +85,10 @@ const APIs = import.meta.env.VITE_BACKEND_URL
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="px-8 pb-8 space-y-5">
+      <form onSubmit={handleSubmit} className="px-2 pb-8 space-y-5">
         {/* Employee ID */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-xs font-medium text-gray-700 mb-1">
             Employee ID
           </label>
           <input
@@ -94,15 +96,15 @@ const APIs = import.meta.env.VITE_BACKEND_URL
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="EXP-7894-90"
-            className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm
-                       focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+            className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-xs
+                       focus:outline-none focus:ring-0.5 focus:ring-orange-400 focus:border-orange-400"
             required
           />
         </div>
 
         {/* Password */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-xs font-medium text-gray-700 mb-1">
             Password
           </label>
           <input
@@ -110,8 +112,8 @@ const APIs = import.meta.env.VITE_BACKEND_URL
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm
-                       focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+            className="w-full text-xs rounded-lg border border-gray-200 px-4 py-2.5 
+                       focus:outline-none focus:ring-0.5 focus:ring-orange-400 focus:border-orange-400"
             required
           />
         </div>
@@ -145,6 +147,10 @@ const APIs = import.meta.env.VITE_BACKEND_URL
         </div>
       </form>
     </div>
+    <div className="lg:w-2/3 hidden  lg:flex ">
+      <img src={"https://www.accountable.eu/wp-content/uploads/2024/08/e-invoicing_feature_expenses_mobile_en.webp"} alt="" className="w-full h-full object-cover rounded-xl "/>
+    </div>
+  </div>
   </div>
 );
 

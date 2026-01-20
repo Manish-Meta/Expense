@@ -1,6 +1,8 @@
 import { Bell, Building, Database, Download, RefreshCcw, Save, Settings2Icon, Shield, Upload, User, Workflow } from "lucide-react";
 import { useState } from "react";
 import Organization from "./sub/Organization";
+import WorkFlows from "./sub/WorkFlows";
+import Notification from "./sub/Notification";
 
 
 
@@ -55,6 +57,8 @@ export default function AdminConfig() {
         ))}
       </div>
       {activeTab == "organization" && <Organization/>}
+      {activeTab == "workflow" && <WorkFlows/>}
+      {activeTab == "notification" && <Notification/>}
 
         </div>
         );

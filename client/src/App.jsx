@@ -28,7 +28,8 @@ const App = () => {
           <Route path="/" element={<RoleSelection/>}/>
           <Route path="/login" element={<AuthenticateUser/>} />
           </Route>
-        
+        {/* missing protected route  */}
+        {/* <Route element={<ProtectedRoute/>} ></Route> */}
     <Route path="/*" element={<Layout />}>
       <Route path="*" element={<Routters />} />
   
