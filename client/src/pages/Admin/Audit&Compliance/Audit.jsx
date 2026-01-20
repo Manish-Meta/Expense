@@ -238,23 +238,14 @@ export default function AdminAudit() {
 
 function handleAddCategory(){
   console.log(categoryForm)
-  setCategoryForm({
-  name: "",
-  limit: "",
-  description: "",
-  receiptRequired: false,
-  active: false,
-})
+//   setCategoryForm({
+//   name: "",
+//   limit: "",
+//   description: "",
+//   receiptRequired: false,
+//   active: false,
+// })
 }
-
-function fliper_recipt(e){
-  setCategoryForm({...categoryForm,receiptRequired: !categoryForm.receiptRequired})
-}
-
-function fliper(e){
-  setCategoryForm({...categoryForm,active: !categoryForm.active})
-}
-
 
 const [loading, setLoading] = useState(false)
 
@@ -577,8 +568,9 @@ const [loading, setLoading] = useState(false)
           </div>
 
           <label className="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" className="sr-only peer" 
-            onChange={(e) => fliper_recipt(e)}
+            <input type="checkbox" className="sr-only peer"
+            checked={categoryForm.receiptRequired} 
+            onChange={(e) => setCategoryForm({ ...categoryForm, receiptRequired: e.target.checked })}
             />
             <div className="w-9 h-5 bg-yellow-400 rounded-full peer-checked:bg-orange-400 transition" />
             <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-4" />
@@ -592,7 +584,8 @@ const [loading, setLoading] = useState(false)
           </div>
           <label className="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" className="sr-only peer" 
-            onChange={(e) => fliper(e)}
+            checked={categoryForm.active}
+            onChange={(e) => setCategoryForm({ ...categoryForm, active: e.target.checked })}
             />
             <div className="w-9 h-5 bg-yellow-400 rounded-full peer-checked:bg-orange-400 transition" />
             <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-4" />
