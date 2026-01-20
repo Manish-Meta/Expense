@@ -1,4 +1,4 @@
-import { useState } from "react"
+import React, { useState } from "react"
 import {
   ShieldCheck,
   AlertTriangle,
@@ -8,6 +8,9 @@ import {
   Download,
   PlayCircle,
 } from "lucide-react"
+
+
+
 
 /* =======================
    KPI CONFIG
@@ -173,11 +176,88 @@ const auditTrail = [
   },
 ]
 
+const expenseCategories = [
+  {
+    name: "Travel & Transportation",
+    description: "Flights, taxis, rideshare, fuel, and local transport",
+    status: "active",
+  },
+  {
+    name: "Meals & Entertainment",
+    description: "Business meals, client meetings, team events",
+    status: "active",
+  },
+  {
+    name: "Accommodation",
+    description: "Hotels, guest houses, and short-term stays",
+    status: "active",
+  },
+  {
+    name: "Office Supplies",
+    description: "Stationery, consumables, and office essentials",
+    status: "active",
+  },
+  {
+    name: "Software & Subscriptions",
+    description: "SaaS tools, licenses, and digital services",
+    status: "active",
+  },
+  {
+    name: "Training & Development",
+    description: "Courses, certifications, and workshops",
+    status: "active",
+  },
+  {
+    name: "Marketing & Events",
+    description: "Campaigns, conferences, and promotional events",
+    status: "disabled",
+  },
+  {
+    name: "Miscellaneous",
+    description: "Expenses not covered by other categories",
+    status: "disabled",
+  },
+]
+
+
 
 
 export default function AdminAudit() {
   const [hoveredKpi, setHoveredKpi] = useState(null)
   const [activeTab, setActiveTab] = useState("violations")
+  const [openAddCategory, setOpenAddCategory] = useState(false)
+
+  const [categoryForm, setCategoryForm] = useState({
+  name: "",
+  limit: "",
+  description: "",
+  receiptRequired: false,
+  active: false,
+})
+
+
+function handleAddCategory(){
+  console.log(categoryForm)
+  setCategoryForm({
+  name: "",
+  limit: "",
+  description: "",
+  receiptRequired: false,
+  active: false,
+})
+}
+
+function fliper_recipt(e){
+  setCategoryForm({...categoryForm,receiptRequired: !categoryForm.receiptRequired})
+}
+
+function fliper(e){
+  setCategoryForm({...categoryForm,active: !categoryForm.active})
+}
+
+
+const [loading, setLoading] = useState(false)
+
 
   return (
     <div className="p-6 bg-[#fffaf4] space-y-8">
@@ -395,8 +475,152 @@ export default function AdminAudit() {
         </div>
     </div>
     )}
+    {activeTab === "management" && (
+  <div className="bg-white rounded-2xl p-6 shadow space-y-6">
+    {/* Header */}
+    <div className="flex items-center justify-between">
+      <h3 className="font-semibold text-lg">Policy Configuration</h3>
+    </div>
 
+    {/* Expense Categories */}
+    <div className="space-y-3">
+      <p className="text-sm font-medium text-gray-700">
+        Expense Categories
+      </p>
+
+      {/* Category List */}
+      <div className="max-h-[320px] overflow-y-auto space-y-3 pr-1">
+        {expenseCategories.map((cat, i) => (
+          <div
+            key={i}
+            className="flex items-center justify-between p-4 rounded-xl border border-orange-200 bg-orange-50 hover:bg-orange-100 transition"
+          >
+            <div>
+              <p className="text-sm font-medium">{cat.name}</p>
+              <p className="text-xs text-gray-500">{cat.description}</p>
+            </div>
+
+            <span
+              className={`text-[11px] px-2 py-1 rounded-full ${
+                cat.status === "active"
+                  ? "bg-green-100 text-green-700"
+                  : "bg-gray-200 text-gray-600"
+              }`}
+            >
+              {cat.status}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {/* Add Category Button */}
+      <button onClick={() => setOpenAddCategory(true)}
+      className=" cursor-pointer w-full mt-2 px-4 py-2 text-xs font-medium border border-orange-300 rounded-lg bg-white hover:bg-orange-50">
+        + Add New Category
+      </button>
+    </div>
+  </div>
+)}
+
+
+
+    {openAddCategory && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+    <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-6 space-y-5">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <h4 className="text-sm font-semibold">Add Expense Category</h4>
+        <button
+          onClick={() => setOpenAddCategory(false)}
+          className="text-gray-400 cursor-pointer hover:text-gray-600"
+        >
+          ✕
+        </button>
+      </div>
+
+      {/* Form */}
+      <div className="space-y-4">
+        <div className="space-y-1">
+          <label className="text-xs font-medium">Category Name</label>
+          <input
+            type="text"
+            placeholder="e.g. Travel & Transportation"
+            value={categoryForm.name}
+            onChange={(e) => setCategoryForm({ ...categoryForm, name: e.target.value })}
+            className="w-full rounded-lg border bg-orange-50 border-gray-200 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-300"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs font-medium">Limit</label>
+          <input
+            type="number"
+            placeholder="5000"
+            value={categoryForm.limit}
+            onChange={(e) => setCategoryForm({ ...categoryForm, limit: e.target.value })}
+            className="w-full rounded-lg border bg-orange-50 border-gray-200 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-300"
+          />
+        </div>
+        <div className="space-y-1">
+          <label className="text-xs font-medium">Description</label>
+          <input
+            type='text'
+            placeholder="Optional description"
+            className="w-full bg-orange-50 rounded-lg border border-gray-200 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-300"
+          />
+        </div>
+
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-medium">
+              Recipt Required
+            </p>
+          </div>
+
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" className="sr-only peer" 
+            onChange={(e) => fliper_recipt(e)}
+            />
+            <div className="w-9 h-5 bg-yellow-400 rounded-full peer-checked:bg-orange-400 transition" />
+            <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-4" />
+          </label>
+        </div>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-medium">
+              Active
+            </p>
+          </div>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" className="sr-only peer" 
+            onChange={(e) => fliper(e)}
+            />
+            <div className="w-9 h-5 bg-yellow-400 rounded-full peer-checked:bg-orange-400 transition" />
+            <div className="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full transition peer-checked:translate-x-4" />
+          </label>
+        </div>
+
+        
+      </div>
+
+      {/* Actions */}
+      <div className="flex justify-end gap-2 pt-3 border-t border-gray-100">
+        <button
+          onClick={() => setOpenAddCategory(false)}
+          className="px-4 py-2 text-xs rounded-lg shadow cursor-pointer border border-orange-100 hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+        <button 
+        onClick={()=> handleAddCategory()}
+        className="px-4 py-2 cursor-pointer shadow text-xs rounded-lg bg-orange-400 text-white hover:bg-orange-500">
+          Add Category
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
     </div>
   )
+  
 }

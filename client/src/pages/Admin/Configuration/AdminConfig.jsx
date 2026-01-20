@@ -1,6 +1,7 @@
 import { Bell, Building, Database, Download, RefreshCcw, Save, Settings2Icon, Shield, Upload, User, Workflow } from "lucide-react";
 import { useState } from "react";
 import Organization from "./sub/Organization";
+import System from "./sub/System";
 
 
 
@@ -55,6 +56,7 @@ export default function AdminConfig() {
         ))}
       </div>
       {activeTab == "organization" && <Organization/>}
+      {activeTab == "system" && <System/>}
 
         </div>
         );
