@@ -1,14 +1,12 @@
 import { Bell, Building, Database, Download, RefreshCcw, Save, Settings2Icon, Shield, Upload, User, Workflow } from "lucide-react";
 import { useState } from "react";
 import Organization from "./sub/Organization";
-import UserOverview from "./sub/UserOverview";
-import BulkOperations from "./sub/BulkOperations";
-import AutoProvisioning from "./sub/AutoProvisioning";
-import DirectoryIntegration from "./sub/DirectoryIntegration";
-import AuthAccess from "./sub/AuthAccess";
-import AccessControl from "./sub/AccessControl";
-import DataRetentionBackup from "./sub/DataRetentionBackup";
-import PrivacyCompliance from "./sub/PrivacyCompliance";
+import System from "./sub/System";
+import WorkFlows from "./sub/WorkFlows";
+import Notification from "./sub/Notification";
+
+
+
 
 export default function AdminConfig() {
     const [activeTab, setActiveTab] = useState("organization")
@@ -60,21 +58,10 @@ export default function AdminConfig() {
         ))}
       </div>
       {activeTab == "organization" && <Organization/>}
-     {activeTab=="users" && <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-  <UserOverview />
-  <BulkOperations />
-  <DirectoryIntegration />
-</div>}
-      {activeTab=="security" && <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-  <AuthAccess />
-  <AccessControl /> </div> } 
+      {activeTab == "system" && <System/>}
+      {activeTab == "workflow" && <WorkFlows/>}
+      {activeTab == "notification" && <Notification/>}
 
-       
-    {activeTab=="data" && <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-  <DataRetentionBackup />
-  <PrivacyCompliance />
-</div>}
-</div>
-        
+        </div>
         );
 }

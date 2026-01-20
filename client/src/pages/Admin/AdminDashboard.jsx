@@ -271,7 +271,7 @@ const insights = [
         </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-orange-200 p-4">
+        <div className="bg-white rounded-xl border  border-[#f3d7b6] p-4">
           <div className="flex justify-between items-center py-6 px-2 ">
             <h1 className='text-sm font-medium'>Department Performance</h1>
             <p className='text-xs text-orange-800/60'>View detailed analytics</p>
@@ -297,7 +297,7 @@ const insights = [
 
 {/* Live Feed */}
 
- <div className="bg-orange-50 border border-orange-100 rounded-xl p-6 space-y-4">
+ <div className="bg-orange-50 border  border-[#f3d7b6] rounded-xl p-6 space-y-4">
     
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -323,7 +323,7 @@ const insights = [
 
 
         {/* insight */}
-        <div className="bg-orange-50 border border-orange-100 rounded-xl p-6 space-y-4">
+        <div className="bg-orange-50 border  border-[#f3d7b6] rounded-xl p-6 space-y-4">
     
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -351,7 +351,7 @@ const insights = [
   {/* Quick Section */}
 
 
-<div className="border border-orange-300 rounded-xl p-5">
+<div className="border  border-[#f3d7b6] rounded-xl p-5">
 
 
   <p>Quick Actions</p>
@@ -392,7 +392,7 @@ const StatCard = ({
   trend,
 }) => {
   return (
-    <div className="bg-white rounded-xl p-2  border border-gray-200  transition">
+    <div className="bg-white rounded-xl p-2  border  border-[#f3d7b6] transition">
       <div className="flex items-center justify-between">
         <div className="p-3 rounded-lg  bg-gray-100">
           {icon}

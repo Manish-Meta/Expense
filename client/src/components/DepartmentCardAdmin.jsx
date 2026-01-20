@@ -13,7 +13,7 @@ const DepartmentCard = ({
 }) => {
   return (
     <div
-      className={`rounded-xl  p-6 bg-white border border-orange-200
+      className={`rounded-xl  p-6 bg-white border  border-[#f3d7b6]
       `}
     >
       <div className="flex justify-between items-start">
