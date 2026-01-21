@@ -100,8 +100,14 @@ const show_workflow=async(req,res)=>{
             })
         }
         const result=await db.select().from(approvel_history)
-        .innerJoin(applicability_rule,eq(applicability_rule.applicability_id,approvel_history))
-        .innerJoin()
+        .innerJoin(applicability_rule,eq(applicability_rule.applicability_id,approvel_history.applicability_rule))
+        .innerJoin(approval_stage,eq(approval_stage.workflow_id,approvel_history.work_flow_id))
+        .where(eq(approvel_history.profile_id,id))
+        if(!result){
+            return res.status(400).json({
+                msg:'The workflow is empty'
+            })
+        }
     }catch(err){
         console.log(err)
         res.status(500).json({

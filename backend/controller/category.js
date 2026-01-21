@@ -6,13 +6,12 @@ const cre_category=async(req,res)=>{
     try{
         // const {id}=req.user
         const {cat_name,limit,rec_req,is_active,description}=req.body
-        console.log(cat_name,limit,rec_req,is_active,description)
         if(!cat_name || !limit){
             return res.status(400).json({
                 msg:'Invalid data'
             })
         }
-        const result=await db.insert(category).values({category_id:'cat_125',cat_name:cat_name,limit:limit,description:description,rec_req:rec_req,is_active:is_active,profile_id:'emp_127'})
+        const result=await db.insert(category).values({cat_name:cat_name,limit:limit,description:description,rec_req:rec_req,is_active:is_active,profile_id:'emp_127'})
         if(!result){
             return res.status(400).json({
                 msg:'Something went wrong'
@@ -75,4 +74,38 @@ const delete_category=async(req,res)=>{
     }
 }
 
-module.exports={cre_category,show_category,delete_category}
+const update_category=async(req,res)=>{
+    try{
+        const {id}=req.params
+        const {cat_name,limit,rec_req,is_active,description}=req.body
+        if(!id){
+            return res.status(404).json({
+                msg:"category not found"
+            })
+        }
+        const result=await db.update(category).set({
+            cat_name:cat_name?cat_name:category.cat_name,
+            limit:limit?limit:category.limit,
+            rec_req:rec_req?rec_req:category.rec_req,
+            is_active:is_active?is_active:category.is_active,
+            description:description?description:category.description
+        })
+        console.log(result," : result")
+        if(!result){
+            return res.status(400).json({
+                msg:'Data not updated'
+            })
+        }
+        res.status(200).json({
+            msg:'The category updated'
+        })
+
+    }catch(err){
+        console.log("err : ",err)
+        res.status(500).json({
+            msg:'Internal server error'
+        })
+    }
+}
+
+module.exports={cre_category,show_category,delete_category,update_category}

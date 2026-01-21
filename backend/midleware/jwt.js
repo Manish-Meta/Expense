@@ -3,10 +3,10 @@ const jwt = require('jsonwebtoken')
 const token_generate=(id,res)=>{
     const token=jwt.sign({id:id},process.env.jwt_sceret_key,{expiresIn:'7d'})
     res.cookie('token',token,{
-        httpOnly:true,
         maxAge:7*24*60*60*1000,
-        sameSite:'none',
-        secure:process.env.NODE_ENV=='production'
+        httpOnly: true,        // REQUIRED for auth cookies
+        sameSite: "none",       // IMPORTANT
+        secure: process.env.NODE_ENV=='production' 
     })
     return token
 }

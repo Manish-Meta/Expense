@@ -68,7 +68,7 @@ const signup=async(req,res)=>{
                     msg:"Invalid data"
                 })
             }
-        }else{
+        }else if(emp_status=='validator'){
             const {validator_scope,approve_limit,priority_level,notify}=req.body;
             if(!validator_scope||!approve_limit||!priority_level){
                 return res.status(400).json({
@@ -128,8 +128,7 @@ const signup=async(req,res)=>{
         .innerJoin(employee_roles,eq(employee_roles.profile_id,emp_id))
         .innerJoin(roles,eq(roles.role_id,employee_roles.role_id))
         .where(eq(profile.profile_id,emp_id))
-
-        if(details[0].roles.role_name!=emp_status){
+        if(!details || details[0].roles.role_name!=emp_status){
             res.status(403).json({
                 msg:"Unauthorzied Access"
             })
@@ -150,7 +149,7 @@ const signup=async(req,res)=>{
             })
             return
         }
-        let val=await token_generate(user_detail[0].profile_id,res)
+        let val=token_generate(user_detail[0].profile_id,res)
         if(!val){
             return res.status(400).json({
                 msg:'Something Wrong'
@@ -219,6 +218,7 @@ const user_overview=async(req,res)=>{
             role_distribution:role_dist
         });
     }catch(err){
+        console.log(err)
         res.status(500).json({
             msg:"Internal Server Error"
         });
