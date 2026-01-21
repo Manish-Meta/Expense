@@ -14,7 +14,7 @@ const {valitador_config}=require('../model/user/validator_config')
 
 const signup=async(req,res)=>{
     try{
-        const {emp_id,email,dept_id,full_name,emp_status,welcome_email}=req.body
+        const {emp_id,email,dept_id,full_name,emp_status,welcome_email,password}=req.body
         if(!emp_id||!email||!dept_id||!full_name||!emp_status){
             return res.status(400).json({
                 msg:"Invalid data"
@@ -40,7 +40,7 @@ const signup=async(req,res)=>{
              full_name:full_name,
              username:full_name,
              dept_id:dept_id,
-            })
+        })
            
            
         const emp_role_detail=await table.insert(employee_roles).values({profile_id:emp_id,role_id:role_detail[0].role_id})
@@ -89,22 +89,23 @@ const signup=async(req,res)=>{
                 })
             }
         }
-        
         if(!pro){
             table.rollback()
             return res.status(400).json({
                 msg:'Invalid data'
             })
         }
-
+        
         return true
-       })
-
-       if(!finish){
+    })
+    
+    if(!finish){
         return res.status(400).json({
-                msg:'Invalid data'
-            })
-       }
+            msg:'Invalid data'
+        })
+    }
+    const hashpass=await encrypt(password)
+    const data=await db.insert(user).values({profile_id:emp_id,password_hash:hashpass,user_id:'user_004'})
        res.status(200).json({
         msg:'user signed.'
        })

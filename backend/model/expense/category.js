@@ -1,10 +1,9 @@
 const {pgTable,integer,text,varchar,numeric,boolean,timestamp}=require('drizzle-orm/pg-core')
 const { profile } = require('../user/profile')
-const {sql}=require('drizzle-orm')
 
 const category=pgTable('category',{
-    profile_id:varchar('emp_id',{length:20}).references(()=>profile.profile_id),
-    category_id:varchar('category_id',{lenght:20}).primaryKey().primaryKey().default(sql`'CAT-' || LPAD(nextval('cat_seq')::text, 4, '0')`),
+    profile_id:varchar('profile_id',{length:20}).references(()=>profile.profile_id),
+    category_id:varchar('category_id',{lenght:20}).primaryKey(),
     description:text('description'),
     cat_name:varchar('cat_name',{length:50}).notNull().unique(),
     limit:integer('limit'),

@@ -6,7 +6,7 @@ const token_generate=(id,res)=>{
         maxAge:7*24*60*60*1000,
         httpOnly: true,        // REQUIRED for auth cookies
         sameSite: "none",       // IMPORTANT
-        secure: process.env.NODE_ENV=='production' 
+        secure: false
     })
     return token
 }
@@ -14,6 +14,7 @@ const token_generate=(id,res)=>{
 const token_decode=async(req,res,next)=>{
     try{
         const {token}=req.cookies
+        console.log('token : ',token)
         if(!token){
             res.status(404).json({
                 msg:'User not found,Go to login'
@@ -21,12 +22,15 @@ const token_decode=async(req,res,next)=>{
             return
         }
         const data=jwt.decode(token,process.env.jwt_sceret_key)
+        
         if(!data){
             return res.status(404).json({
                 msg:"user not found,go to login"
             })
         }
+        console.log(data.id)
         req.user=data.id
+        console.log(req.user," : req.user")
         next()
     }catch(err){
         console.log(err)

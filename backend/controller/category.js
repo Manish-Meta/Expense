@@ -4,14 +4,19 @@ const {category}=require('../model/expense/category')
 
 const cre_category=async(req,res)=>{
     try{
-        // const {id}=req.user
+        const id=req.user
+        console.log(id," : id")
         const {cat_name,limit,rec_req,is_active,description}=req.body
         if(!cat_name || !limit){
             return res.status(400).json({
                 msg:'Invalid data'
             })
         }
-        const result=await db.insert(category).values({cat_name:cat_name,limit:limit,description:description,rec_req:rec_req,is_active:is_active,profile_id:'emp_127'})
+        const last_data=await db.select({category_id:category.category_id}).from(category)
+        let new_category_id=Number(last_data[0].category_id.split('_')[1])+1
+        console.log(new_category_id)
+        new_category_id=new_category_id>=100?`cat_${new_category_id}`+1:new_category_id>=10?`cat_0${new_category_id+1}`:`cat_00${new_category_id+1}`
+        const result=await db.insert(category).values({category_id:`cat_111`,cat_name:cat_name,limit:limit,description:description,rec_req:rec_req,is_active:is_active,profile_id:id})
         if(!result){
             return res.status(400).json({
                 msg:'Something went wrong'

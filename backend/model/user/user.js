@@ -4,7 +4,7 @@ const {
 const { numeric } = require("drizzle-orm/pg-core");
 
 const user = pgTable("user_detail", {
-  user_id:varchar('user_id',{length:20}).primaryKey(),
+  user_id:varchar('user_id',{length:20}),
   profile_id: varchar("profile_id", { length: 50 }).notNull().unique().references(()=>profile.profile_id),
   password_hash: text("password_hash").notNull(),
   is_locked: boolean("is_locked").default(false),

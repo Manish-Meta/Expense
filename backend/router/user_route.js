@@ -8,6 +8,6 @@ router.route('/signup').post(signup)
 router.route('/login').post(login)
 router.route('/profile').get(token_decode,my_profile)
 router.route('/logout').get(logout)
-router.route('/overview').get(token_decode,user_overview)
+router.route('/overview').get(user_overview)
 
 module.exports=router
