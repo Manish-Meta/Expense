@@ -1,7 +1,7 @@
 const {db}=require('../db/db')
 const {profile}=require('../model/user/profile')
 const {user}=require('../model/user/user')
-const {eq}=require('drizzle-orm')
+const {sql,eq}=require('drizzle-orm')
 const {DrizzleQueryError}=require('drizzle-orm')
 const {encrypt,decrypt} = require('../midleware/pass_enc')
 const {token_generate} = require('../midleware/jwt')
@@ -186,7 +186,7 @@ const forget_pass=async(req,res)=>{
             })
         }
         res.status(200).json({
-            msg:"user finded",
+            msg:"user found",
             data:result
         })
     }catch(err){
@@ -206,5 +206,23 @@ const forget_pass=async(req,res)=>{
         msg:'user logout'
     })
 }
+const user_overview=async(req,res)=>{
+    try{
+        const total=await db.select({count:sql`count(*)`}).from(profile)
+        const active=await db.select({count:sql`count(*)`}).from(profile).where(eq(profile.profile_status,true))
+        const pending=await db.select({count:sql`count(*)`}).from(profile).where(eq(profile.profile_status,false))
+        const role_dist=await db.select({role_name:roles.role_name,count:sql`count(${employee_roles.profile_id})`}).from(employee_roles).innerJoin(roles,eq(employee_roles.role_id,roles.role_id)).groupBy(roles.role_name)
+        res.status(200).json({
+            total_users:Number(total[0].count),
+            active_users:Number(active[0].count),
+            pending_users:Number(pending[0].count),
+            role_distribution:role_dist
+        });
+    }catch(err){
+        res.status(500).json({
+            msg:"Internal Server Error"
+        });
+    }
 
-module.exports={signup,login,logout,my_profile}
+};
+module.exports={signup,login,logout,my_profile,user_overview}
