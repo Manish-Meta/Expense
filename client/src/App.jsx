@@ -12,6 +12,7 @@ import Routters from "./route/Routters"
 import ProtectedRoute from "./route/ProtectedRoute"
 import useGlobalContext from "./config/GlobalStateContext"
 import PublicRoute from "./route/PublicRoute"
+import AdminDashboard from "./pages/Admin/AdminDashboard"
 // import useGlobalContext from './config/GlobalStateContext'
  
 
@@ -29,13 +30,14 @@ const App = () => {
           <Route path="/login" element={<AuthenticateUser/>} />
           </Route>
         {/* missing protected route  */}
-        <Route element={<ProtectedRoute/>} >
+        {/* <Route element={<ProtectedRoute/>} > */}
+        <Route path="/dashboard" element={<AdminDashboard />} />
     <Route path="/*" element={<Layout />}>
       <Route path="*" element={<Routters />} /> 
       </Route>
-      </Route>
+      </Routes>
 
-        </Routes>
+        
  
   ) 
 }
