@@ -5,7 +5,6 @@ export default function UserOverview() {
   useEffect(()=>{
     fetch(`${import.meta.env.VITE_BACKEND_URL}user/overview`,{
       method:"GET",
-      credentials:"include",
 
     })
     .then(res=>res.json())
@@ -40,7 +39,7 @@ export default function UserOverview() {
       <div className="pt-3 border-t space-y-3">
         <p className="text-xs font-semibold">Role Distribution</p>
 
-        {overview.role_distribution.map((r) => (
+        {overview?.role_distribution?.map((r) => (
           <div
             key={r.role_name}
             className="flex justify-between items-center text-xs"

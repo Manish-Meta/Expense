@@ -4,17 +4,16 @@ import {
   Download,
   Users,
   UserPlus,
-  UserCheck,
   X,
   Plus,
 } from "lucide-react";
 
 export default function BulkOperations() {
-  const [openDialog, setOpenDialog] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [userType, setUserType] = useState("employee");
 
   const [sendWelcome, setSendWelcome] = useState(true);
   const [enableNotif, setEnableNotif] = useState(true);
-
   const [selectedCategories, setSelectedCategories] = useState([]);
 
   const [form, setForm] = useState({
@@ -36,57 +35,82 @@ export default function BulkOperations() {
     "Office Supplies",
     "Training",
     "Medical",
+    "All categories",
   ];
 
   const toggleCategory = (cat) => {
-    setSelectedCategories((prev) =>
-      prev.includes(cat)
+    const realCats = categories.filter((c) => c !== "All categories");
+
+    if (cat === "All categories") {
+      setSelectedCategories((prev) =>
+        prev.length === realCats.length ? [] : realCats
+      );
+      return;
+    }
+
+    setSelectedCategories((prev) => {
+      const updated = prev.includes(cat)
         ? prev.filter((c) => c !== cat)
-        : [...prev, cat]
+        : [...prev, cat];
+
+      return updated.length === realCats.length ? realCats : updated;
+    });
+  };
+
+  const handleSubmit = async () => {
+  const payload =
+    userType === "employee"
+      ? {
+          emp_status: "employee",
+          full_name: form.full_name,
+          email: form.email,
+          emp_id: form.emp_id,
+          dept_id: form.dept_id,
+          reporting_manager: form.reporting_manager,
+          expense_limit: Number(form.expense_limit),
+          allow_cat: selectedCategories,
+          welcome_email: sendWelcome,
+        }
+      : {
+          emp_status: "validator",
+          emp_id: form.emp_id,
+          dept_id: form.dept_id,
+          validator_scope: form.validator_scope,
+          approve_limit: Number(form.approve_limit),
+          priority_level: form.priority_level,
+          notify: enableNotif,
+        };
+
+  try {
+    const res = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}user/signup`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      }
     );
-  };
 
- 
+    const data = await res.json();
 
-  const handleSubmit = () => {
-    let payload;
-
-    if (openDialog === "employee") {
-      payload = {
-        emp_status: "employee",
-        full_name: form.full_name,
-        email: form.email,
-        emp_id: form.emp_id,
-        dept_id: form.dept_id,
-        reporting_manager: form.reporting_manager,
-        expense_limit: Number(form.expense_limit),
-        allowed_cat: selectedCategories,
-        welcome_email: sendWelcome,
-      };
+    if (!res.ok) {
+      alert(data.msg || "Signup failed");
+      return;
     }
 
-    if (openDialog === "validator") {
-      payload = {
-        emp_status: "validator",
-        full_name: form.full_name,
-        email: form.email,
-        emp_id: form.emp_id,
-        dept_id: form.department,
-        validator_scope: form.validator_scope,
-        approve_limit: Number(form.approve_limit),
-        priority_level: form.priority_level,
-        welcome_email: sendWelcome,
-        notify: enableNotif,
-      };
-    }
-
-    console.log("SUBMIT PAYLOAD");
-    console.log(JSON.stringify(payload, null, 2));
-  };
+    alert("User created successfully");
+    setOpenDialog(false);
+  } catch (err) {
+    console.error(err);
+    alert("Server error");
+  }
+};
 
   return (
     <>
-      
       <div className="bg-white rounded-2xl p-6 shadow space-y-6">
         <h3 className="text-xs font-semibold">Bulk Operations</h3>
 
@@ -96,23 +120,13 @@ export default function BulkOperations() {
           <ActionBtn icon={<Users size={14} />} label="Bulk Role Assignment" />
         </div>
 
-        <div className="pt-4 border-t space-y-2">
-          <p className="text-xs font-semibold">User Onboarding</p>
-
+        <div className="pt-4 border-t">
           <button
-            onClick={() => setOpenDialog("employee")}
-            className="cursor-pointer w-full flex items-center gap-2 bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-xl text-xs"
+            onClick={() => setOpenDialog(true)}
+            className="w-full flex items-center gap-2 bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-xl text-xs"
           >
             <UserPlus size={14} />
-            Onboard New Employee
-          </button>
-
-          <button
-            onClick={() => setOpenDialog("validator")}
-            className="cursor-pointer w-full flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 px-3 py-2 rounded-xl text-xs"
-          >
-            <UserCheck size={14} />
-            Onboard New Validator
+            Onboard User
           </button>
         </div>
       </div>
@@ -121,41 +135,56 @@ export default function BulkOperations() {
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
           <div className="bg-white w-[760px] rounded-2xl p-6 relative">
             <button
-              onClick={() => setOpenDialog(null)}
+              onClick={() => setOpenDialog(false)}
               className="absolute top-4 right-4 text-gray-400"
             >
               <X size={18} />
             </button>
 
-          
-            <div className="flex items-center gap-2 mb-1">
-              {openDialog === "employee" ? (
-                <UserPlus className="text-blue-600" size={18} />
-              ) : (
-                <UserCheck className="text-green-600" size={18} />
-              )}
-              <h3 className="font-semibold">
-                {openDialog === "employee"
-                  ? "Onboard New Employee"
-                  : "Onboard New Validator"}
-              </h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold">Onboard User</h3>
+
+              <div className="flex items-center gap-2 text-xs">
+                <span>Employee</span>
+                <button
+                  onClick={() =>
+                    setUserType(
+                      userType === "employee" ? "validator" : "employee"
+                    )
+                  }
+                  className={`w-10 h-5 rounded-full p-[2px] transition ${
+                    userType === "validator"
+                      ? "bg-green-500"
+                      : "bg-orange-500"
+                  }`}
+                >
+                  <div
+                    className={`w-4 h-4 bg-white rounded-full transition ${
+                      userType === "validator" ? "translate-x-5" : ""
+                    }`}
+                  />
+                </button>
+                <span>Validator</span>
+              </div>
             </div>
 
             <p className="text-xs text-orange-600 mb-6">
-              {openDialog === "employee"
-                ? "Create a new employee account with expense submission access and permissions."
-                : "Create a new validator account with expense approval and validation permissions."}
+              {userType === "employee"
+                ? "Create a new employee account with expense submission access."
+                : "Create a new validator account with approval permissions."}
             </p>
 
             <div className="grid grid-cols-2 gap-4 text-xs">
-              <Field
-                label="Full Name *"
-                onChange={(e) =>
-                  setForm({ ...form, full_name: e.target.value })
-                }
-              />
+              {userType === "employee" && (
+                <Field
+                  label="Full Name *"
+                  onChange={(e) =>
+                    setForm({ ...form, full_name: e.target.value })
+                  }
+                />
+              )}
 
-              {openDialog === "employee" ? (
+              {userType === "employee" ? (
                 <Select
                   label="Reporting Manager"
                   onChange={(e) =>
@@ -163,43 +192,45 @@ export default function BulkOperations() {
                   }
                 />
               ) : (
-                <Select
-                  label="Validation Scope"
+                <Field
+                  label="Employee ID *"
                   onChange={(e) =>
-                    setForm({ ...form, validator_scope: e.target.value })
+                    setForm({ ...form, emp_id: e.target.value })
+                  }
+                />
+              )}
+
+              {userType === "employee" && (
+                <Field
+                  label="Email Address *"
+                  onChange={(e) =>
+                    setForm({ ...form, email: e.target.value })
                   }
                 />
               )}
 
               <Field
-                label="Email Address *"
-                onChange={(e) =>
-                  setForm({ ...form, email: e.target.value })
-                }
-              />
-
-              <Field
                 label={
-                  openDialog === "employee"
+                  userType === "employee"
                     ? "Monthly Expense Limit"
                     : "Approval Limit"
                 }
                 prefix="$"
                 onChange={(e) =>
-                  openDialog === "employee"
+                  userType === "employee"
                     ? setForm({ ...form, expense_limit: e.target.value })
                     : setForm({ ...form, approve_limit: e.target.value })
                 }
               />
 
-              <Field
-                label="Employee ID *"
+              {userType==="validator" && (<Select
+                label="Validation Scope"
                 onChange={(e) =>
-                  setForm({ ...form, emp_id: e.target.value })
+                  setForm({ ...form, validator_scope: e.target.value })
                 }
-              />
+              />)}
 
-              {openDialog === "validator" && (
+              {userType === "validator" && (
                 <Select
                   label="Priority Level"
                   onChange={(e) =>
@@ -208,47 +239,58 @@ export default function BulkOperations() {
                 />
               )}
 
-              <Select
-                label="Department *"
-                onChange={(e) =>
-                  setForm({ ...form, dept_id: e.target.value })
-                }
-              />
+              {userType === "employee" && (
+                <Select
+                  label="Department *"
+                  onChange={(e) =>
+                    setForm({ ...form, dept_id: e.target.value })
+                  }
+                />
+              )}
 
-              {openDialog === "employee" && (
+              {userType === "employee" && (
                 <div>
                   <label className="font-medium block mb-1">
                     Allowed Categories
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {categories.map((cat) => (
-                      <button
-                        key={cat}
-                        type="button"
-                        onClick={() => toggleCategory(cat)}
-                        className={`px-3 py-1 rounded-full text-[11px] border
-                          ${
-                            selectedCategories.includes(cat)
+                    {categories.map((cat) => {
+                      const isActive =
+                        cat === "All categories"
+                          ? selectedCategories.length ===
+                            categories.length - 1
+                          : selectedCategories.includes(cat);
+
+                      return (
+                        <button
+                          key={cat}
+                          type="button"
+                          onClick={() => toggleCategory(cat)}
+                          className={`px-3 py-1 rounded-full text-[11px] border ${
+                            isActive
                               ? "bg-orange-500 text-white border-orange-500"
                               : "bg-white border-orange-200"
                           }`}
-                      >
-                        {cat}
-                      </button>
-                    ))}
+                        >
+                          {cat}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
             </div>
 
-  
             <div className="mt-5 space-y-2 text-xs">
-              <Toggle
-                label="Send welcome email"
-                value={sendWelcome}
-                setValue={setSendWelcome}
-              />
-              {openDialog === "validator" && (
+              {userType === "employee" && (
+                <Toggle
+                  label="Send welcome email"
+                  value={sendWelcome}
+                  setValue={setSendWelcome}
+                />
+              )}
+
+              {userType === "validator" && (
                 <Toggle
                   label="Enable notifications"
                   value={enableNotif}
@@ -257,10 +299,9 @@ export default function BulkOperations() {
               )}
             </div>
 
-         
             <div className="flex justify-end gap-3 mt-6">
               <button
-                onClick={() => setOpenDialog(null)}
+                onClick={() => setOpenDialog(false)}
                 className="px-4 py-2 rounded-xl border text-xs"
               >
                 Cancel
@@ -268,15 +309,14 @@ export default function BulkOperations() {
 
               <button
                 onClick={handleSubmit}
-                className={`cursor-pointer px-5 py-2 rounded-xl text-xs text-white flex items-center gap-1
-                  ${
-                    openDialog === "employee"
-                      ? "bg-blue-600"
-                      : "bg-green-600"
-                  }`}
+                className={`px-5 py-2 rounded-xl text-xs text-white flex items-center gap-1 ${
+                  userType === "employee"
+                    ? "bg-blue-600"
+                    : "bg-green-600"
+                }`}
               >
                 <Plus size={14} />
-                {openDialog === "employee"
+                {userType === "employee"
                   ? "Create Employee Account"
                   : "Create Validator Account"}
               </button>
@@ -335,7 +375,7 @@ const Toggle = ({ label, value, setValue }) => (
   <div className="flex items-center gap-3">
     <button
       onClick={() => setValue(!value)}
-      className={`w-10 h-5 rounded-full p-[2px] transition ${
+      className={`w-10 h-5 rounded-full p-[2px] transition cursor-pointer ${
         value ? "bg-orange-500" : "bg-orange-200"
       }`}
     >
