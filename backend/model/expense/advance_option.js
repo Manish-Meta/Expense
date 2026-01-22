@@ -5,7 +5,7 @@ const {loc}=require('../location')
 const advance_option=pgTable('advance_option',{
     advance_opt_id:varchar('advance_opt_id',{length:20}).primaryKey(),
     project_name:varchar('project_name',{length:30}),
-    location:varchar("location_id",{length:20}).references(()=>loc.location_id),
+    location:varchar("location_id",{length:20}).references(()=>loc.location_id,{ onDelete: "cascade" }),
     payment_method:pay_met('payment_method'),
     attendees:varchar('attendees',{length:20}),
     billable_client:boolean('billable_client'),

@@ -14,14 +14,13 @@ const {valitador_config}=require('../model/user/validator_config')
 
 const signup=async(req,res)=>{
     try{
-        const {emp_id,email,dept_id,full_name,emp_status,welcome_email,password}=req.body
+        const {emp_id,email,dept_id,full_name,emp_status,welcome_email}=req.body
         if(!emp_id||!email||!dept_id||!full_name||!emp_status){
             return res.status(400).json({
                 msg:"Invalid data"
             })
         }
        let finish=await db.transaction(async(table)=>{
-        console.log(dept_id)
         const user_detail=await table.select().from(profile).where(eq(profile.profile_id,emp_id))
         if(user_detail.length!=0){
             return res.status(400).json({
@@ -88,6 +87,22 @@ const signup=async(req,res)=>{
                     msg:"Invalid data"
                 })
             }
+        }else{
+            const {password}=req.body
+            const hashpass=await encrypt(password)
+            let value=await table.select({user_id:user.user_id}).from(user)
+            let value_id='U_111111'
+            if(value[value.length-1]){
+                let gen_id=value[value.length-1].user_id.split('_')[1]
+                value_id=`U_${Number(gen_id)+1}`
+            }
+            const data=await table.insert(user).values({profile_id:emp_id,password_hash:hashpass,user_id:value_id})
+            if(!data){
+                table.rollback()
+                return res.status(400).json({
+                    msg:'something went wrong'
+                })
+            }
         }
         if(!pro){
             table.rollback()
@@ -104,11 +119,9 @@ const signup=async(req,res)=>{
             msg:'Invalid data'
         })
     }
-    const hashpass=await encrypt(password)
-    const data=await db.insert(user).values({profile_id:emp_id,password_hash:hashpass,user_id:'user_004'})
-       res.status(200).json({
-        msg:'user signed.'
-       })
+    res.status(200).json({
+        msg:"user inserted"
+    })
     }catch(err){
         console.log(err)
         res.status(500).json({

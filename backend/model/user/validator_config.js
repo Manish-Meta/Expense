@@ -3,7 +3,7 @@ const {dept,priority_level}=require('../enum');
 const {profile}=require('./profile')
 
 const valitador_config = pgTable("validator_config", {
-  profile_id: varchar("profile_id", { length: 20 }).references(()=>profile.profile_id),
+  profile_id: varchar("profile_id", { length: 20 }).references(()=>profile.profile_id,{ onDelete: "cascade" }),
   validation_scope: dept('val_scope').notNull(),
   approval_limit: numeric("approval_limit", {  
     precision: 12,

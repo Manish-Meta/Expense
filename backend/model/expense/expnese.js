@@ -6,13 +6,13 @@ const {advance_option}=require('./advance_option')
 
 const expense=pgTable('expense',{
     exp_id:varchar('exp_id',{length:20}).primaryKey(),
-    profile_id:varchar('profile_id',{length:20}).references(()=>profile.profile_id),
+    profile_id:varchar('profile_id',{length:20}).references(()=>profile.profile_id,{ onDelete: "cascade" }),
     amount:numeric('amount').notNull(),
-    date:timestamp('date'),
+    date:timestamp('date',{mode:'date'}),
     merchant:varchar('vendor',{length:25}),
     business_purpose:text('business_purpose'),
-    cat_id:varchar('category_id',{lenght:20}).references(()=>category.category_id),
-    advance_option:varchar('advance_option',{lenght:20}).references(()=>advance_option.advance_opt_id),
+    cat_id:varchar('category_id',{lenght:20}).references(()=>category.category_id,{ onDelete: "cascade" }),
+    advance_option:varchar('advance_option',{lenght:20}).references(()=>advance_option.advance_opt_id,{ onDelete: "cascade" }),
     reciept:text('reciept'),
     status:exp_status('exp_status').notNull(),
     priority:priority('priority'),

@@ -10,7 +10,7 @@ const dept=pgEnum('val_scopr',['ALL_DEPT','OWN_DEPT', 'ASSIGNED_TEAMS'])
 
 const priority_level=pgEnum('priority_level',['standard validator','senior validator','lead validator'])
 
-const exp_status=pgEnum('status',['Approved','Draft','Escalated','Needs-info','Paid','Pending','Rejected','Processing','Withdrawn'])
+const exp_status=pgEnum('status',['Submited','Approved','Draft','Escalated','Needs-info','Paid','Pending','Rejected','Processing','Withdrawn'])
 
 const compliance=pgEnum('compliance',['Compliant','Warning','Violation'])
 

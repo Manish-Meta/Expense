@@ -6,7 +6,7 @@ const { profile } = require('../user/profile');
 const approvel_history=pgTable('approvel_history',{
     profile_id:varchar('profile_id',{lenght:20}).references(()=>profile.profile_id),
     work_flow_id:varchar('work_flow_id',{lenght:20}).primaryKey(),
-    name:varchar('workflow_name',{length:20}).notNull(),
+    workflow_name:varchar('workflow_name',{length:20}).notNull(),
     workflow_type:varchar('workflow_type',{lenght:30}),
     description:text('description'),
     applicability_rule:varchar('applicability_rule').references(()=>applicability_rule.applicability_id),

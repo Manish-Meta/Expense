@@ -1,6 +1,6 @@
 {
-  "id": "67f35138-3589-49e7-a2b0-decb5bbcba41",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "c9abad1e-2ac8-41cd-a4e2-a48983a1a170",
+  "prevId": "f864d8ce-c916-479e-aff4-a7fcfb5a58db",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -141,86 +141,7 @@
           "columnsTo": [
             "location_id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.Approval_history": {
-      "name": "Approval_history",
-      "schema": "",
-      "columns": {
-        "exp_id": {
-          "name": "exp_id",
-          "type": "varchar(20)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "emp_id": {
-          "name": "emp_id",
-          "type": "varchar(30)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "status": {
-          "name": "status",
-          "type": "status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "remark": {
-          "name": "remark",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "Approval_history_exp_id_expense_exp_id_fk": {
-          "name": "Approval_history_exp_id_expense_exp_id_fk",
-          "tableFrom": "Approval_history",
-          "tableTo": "expense",
-          "columnsFrom": [
-            "exp_id"
-          ],
-          "columnsTo": [
-            "exp_id"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        },
-        "Approval_history_emp_id_profile_profile_id_fk": {
-          "name": "Approval_history_emp_id_profile_profile_id_fk",
-          "tableFrom": "Approval_history",
-          "tableTo": "profile",
-          "columnsFrom": [
-            "emp_id"
-          ],
-          "columnsTo": [
-            "profile_id"
-          ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -304,7 +225,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -318,6 +239,85 @@
           ]
         }
       },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.expense_approve_history": {
+      "name": "expense_approve_history",
+      "schema": "",
+      "columns": {
+        "exp_id": {
+          "name": "exp_id",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "profile_id": {
+          "name": "profile_id",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "remark": {
+          "name": "remark",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "expense_approve_history_exp_id_expense_exp_id_fk": {
+          "name": "expense_approve_history_exp_id_expense_exp_id_fk",
+          "tableFrom": "expense_approve_history",
+          "tableTo": "expense",
+          "columnsFrom": [
+            "exp_id"
+          ],
+          "columnsTo": [
+            "exp_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "expense_approve_history_profile_id_profile_profile_id_fk": {
+          "name": "expense_approve_history_profile_id_profile_profile_id_fk",
+          "tableFrom": "expense_approve_history",
+          "tableTo": "profile",
+          "columnsFrom": [
+            "profile_id"
+          ],
+          "columnsTo": [
+            "profile_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -435,7 +435,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "expense_category_id_category_category_id_fk": {
@@ -448,7 +448,7 @@
           "columnsTo": [
             "category_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "expense_advance_option_advance_option_advance_opt_id_fk": {
@@ -461,7 +461,7 @@
           "columnsTo": [
             "advance_opt_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -526,7 +526,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -546,15 +546,15 @@
           "primaryKey": true,
           "notNull": true
         },
-        "state_name": {
-          "name": "state_name",
-          "type": "varchar(20)",
+        "area": {
+          "name": "area",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "state_code": {
-          "name": "state_code",
-          "type": "numeric",
+        "state_name": {
+          "name": "state_name",
+          "type": "varchar(20)",
           "primaryKey": false,
           "notNull": false
         },
@@ -615,8 +615,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "owner_id": {
-          "name": "owner_id",
+        "profile_id": {
+          "name": "profile_id",
           "type": "varchar(20)",
           "primaryKey": false,
           "notNull": false
@@ -732,17 +732,17 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "organization_owner_id_profile_profile_id_fk": {
-          "name": "organization_owner_id_profile_profile_id_fk",
+        "organization_profile_id_profile_profile_id_fk": {
+          "name": "organization_profile_id_profile_profile_id_fk",
           "tableFrom": "organization",
           "tableTo": "profile",
           "columnsFrom": [
-            "owner_id"
+            "profile_id"
           ],
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "organization_address_location_location_id_fk": {
@@ -755,7 +755,7 @@
           "columnsTo": [
             "location_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "organization_default_currency_currency_currency_id_fk": {
@@ -768,7 +768,7 @@
           "columnsTo": [
             "currency_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -829,7 +829,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -935,7 +935,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "employee_config_reporting_manager_profile_profile_id_fk": {
@@ -948,7 +948,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -1008,7 +1008,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "employee_roles_role_id_roles_role_id_fk": {
@@ -1021,7 +1021,7 @@
           "columnsTo": [
             "role_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -1256,7 +1256,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -1338,7 +1338,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },

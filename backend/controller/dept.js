@@ -4,13 +4,15 @@ const {dept}=require('../model/user/dept')
 
 const add_dept=async(req,res)=>{
     try{
-        const {dept_id,dept_name}=req.body
-        if(!dept_id||!dept_name){
+        const {dept_name}=req.body
+        if(!dept_name){
             return res.status(400).json({
                 msg:'Invalid'
             })
         }
-        const value=await db.insert(dept).values({deptartment_id:dept_id,name:dept_name})
+        const last_data=await db.select({dept_id:dept.deptartment_id}).from(dept)
+        let inc=last_data[last_data.length-1].dept_id.split('_')[1]
+        const value=await db.insert(dept).values({deptartment_id:`D_${Number(inc)+1}`,name:dept_name})
         if(!value){
             res.status(400).json({
                 msg:"Something Went Wrong"

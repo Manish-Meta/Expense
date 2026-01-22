@@ -1,6 +1,6 @@
 {
-  "id": "67f35138-3589-49e7-a2b0-decb5bbcba41",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "1e9a9113-0c83-481a-8d7a-4b8ea2c5ce1a",
+  "prevId": "67f35138-3589-49e7-a2b0-decb5bbcba41",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -615,8 +615,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "owner_id": {
-          "name": "owner_id",
+        "profile_id": {
+          "name": "profile_id",
           "type": "varchar(20)",
           "primaryKey": false,
           "notNull": false
@@ -732,12 +732,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "organization_owner_id_profile_profile_id_fk": {
-          "name": "organization_owner_id_profile_profile_id_fk",
+        "organization_profile_id_profile_profile_id_fk": {
+          "name": "organization_profile_id_profile_profile_id_fk",
           "tableFrom": "organization",
           "tableTo": "profile",
           "columnsFrom": [
-            "owner_id"
+            "profile_id"
           ],
           "columnsTo": [
             "profile_id"

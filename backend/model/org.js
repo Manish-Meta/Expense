@@ -6,14 +6,14 @@ const {currency}=require('./currency/currency')
 
 const org=pgTable('organization',{
     organization_id:varchar('organization_id').primaryKey(),
-    owner_id:varchar('owner_id',{length:20}).references(()=>profile.profile_id),
+    profile_id:varchar('profile_id',{length:20}).references(()=>profile.profile_id,{ onDelete: "cascade" }),
     organization_name:varchar('org_name',{length:30}).unique(),
     industry_type:text('industry_type'),
     emp_counut:numeric('emp_count').notNull(),
-    address:varchar('address',{length:20}).references(()=>loc.location_id),
+    address:varchar('address',{length:20}).references(()=>loc.location_id,{ onDelete: "cascade" }),
     ph_num:numeric('ph_num').notNull(),
     web_url:varchar('web_url',{length:100}).notNull(),
-    default_currency:varchar('default_currency',{length:20}).references(()=>currency.currency_id),
+    default_currency:varchar('default_currency',{length:20}).references(()=>currency.currency_id,{ onDelete: "cascade" }),
     multi_cur:boolean('mul_cur').default(false),
     auto_update_rate:boolean('auto_update_rates').default(false),
     ex_rate_pro:varchar('ex_rate_pro',{length:30}),

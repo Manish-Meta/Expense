@@ -1,6 +1,6 @@
 {
-  "id": "67f35138-3589-49e7-a2b0-decb5bbcba41",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "e6feee6f-c8e3-47d8-b1ee-e41e87ecf86f",
+  "prevId": "1e9a9113-0c83-481a-8d7a-4b8ea2c5ce1a",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -141,7 +141,7 @@
           "columnsTo": [
             "location_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -207,7 +207,7 @@
           "columnsTo": [
             "exp_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "Approval_history_emp_id_profile_profile_id_fk": {
@@ -220,7 +220,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -304,7 +304,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -435,7 +435,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "expense_category_id_category_category_id_fk": {
@@ -448,7 +448,7 @@
           "columnsTo": [
             "category_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "expense_advance_option_advance_option_advance_opt_id_fk": {
@@ -461,7 +461,7 @@
           "columnsTo": [
             "advance_opt_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -526,7 +526,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -615,8 +615,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "owner_id": {
-          "name": "owner_id",
+        "profile_id": {
+          "name": "profile_id",
           "type": "varchar(20)",
           "primaryKey": false,
           "notNull": false
@@ -732,17 +732,17 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "organization_owner_id_profile_profile_id_fk": {
-          "name": "organization_owner_id_profile_profile_id_fk",
+        "organization_profile_id_profile_profile_id_fk": {
+          "name": "organization_profile_id_profile_profile_id_fk",
           "tableFrom": "organization",
           "tableTo": "profile",
           "columnsFrom": [
-            "owner_id"
+            "profile_id"
           ],
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "organization_address_location_location_id_fk": {
@@ -755,7 +755,7 @@
           "columnsTo": [
             "location_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "organization_default_currency_currency_currency_id_fk": {
@@ -768,7 +768,7 @@
           "columnsTo": [
             "currency_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -829,7 +829,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -935,7 +935,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "employee_config_reporting_manager_profile_profile_id_fk": {
@@ -948,7 +948,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -1008,7 +1008,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         },
         "employee_roles_role_id_roles_role_id_fk": {
@@ -1021,7 +1021,7 @@
           "columnsTo": [
             "role_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -1256,7 +1256,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -1338,7 +1338,7 @@
           "columnsTo": [
             "profile_id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },

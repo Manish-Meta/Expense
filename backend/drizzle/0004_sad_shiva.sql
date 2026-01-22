@@ -1,0 +1,1 @@
+ALTER TABLE "location" DROP COLUMN "state_code";

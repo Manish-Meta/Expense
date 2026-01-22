@@ -4,8 +4,8 @@ const token_generate=(id,res)=>{
     const token=jwt.sign({id:id},process.env.jwt_sceret_key,{expiresIn:'7d'})
     res.cookie('token',token,{
         maxAge:7*24*60*60*1000,
-        httpOnly: true,        // REQUIRED for auth cookies
-        sameSite: "none",       // IMPORTANT
+        httpOnly: true,       
+        sameSite: "none",       
         secure: false
     })
     return token
@@ -14,7 +14,7 @@ const token_generate=(id,res)=>{
 const token_decode=async(req,res,next)=>{
     try{
         const {token}=req.cookies
-        console.log('token : ',token)
+        console.log("token : ",token)
         if(!token){
             res.status(404).json({
                 msg:'User not found,Go to login'
@@ -22,15 +22,14 @@ const token_decode=async(req,res,next)=>{
             return
         }
         const data=jwt.decode(token,process.env.jwt_sceret_key)
-        
+    
         if(!data){
-            return res.status(404).json({
-                msg:"user not found,go to login"
+            return res.status(400).json({
+                msg:"login expired"
             })
         }
-        console.log(data.id)
+        console.log('id : ',data)
         req.user=data.id
-        console.log(req.user," : req.user")
         next()
     }catch(err){
         console.log(err)

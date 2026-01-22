@@ -11,6 +11,8 @@ const limit=require('express-rate-limit')
 const category_router=require('./router/category.js')
 const port=process.env.port
 const work_flow_router=require('./router/workflow.js')
+const feedback_router=require('./router/feedback.js')
+
 
 const set_limit=limit({
     windowMs:10*60*1000,
@@ -22,18 +24,20 @@ app.use(express.json())
 app.use(cookie_parser())
 // app.use(set_limit)
 const url=['http://localhost:5174','http://localhost:5173']
+let method=['GET','POST','DELETE','PATCH','PUT']
 app.use(cors({
     origin:url,
-    methods:"*",
+    methods:method,
     credentials:true
 }))
 
 app.use('/user',user_route)
-// app.use('/expenses',expense_route)
+app.use('/expenses',expense_route)
 app.use('/roles',roles)
 app.use('/dept',dept)
 app.use('/category',category_router)
 app.use('/workflow',work_flow_router)
+app.use('/feedback',feedback_router)
 
 app.listen(port,()=>{
     console.log("the server is running on ...",process.env.port)

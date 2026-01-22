@@ -1,0 +1,1 @@
+ALTER TABLE "approval_stage" ADD COLUMN "stage_id" varchar(20);
