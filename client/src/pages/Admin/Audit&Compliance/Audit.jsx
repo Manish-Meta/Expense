@@ -201,16 +201,21 @@ const [selectedCategory, setSelectedCategory] = useState(null)
 })
 
 
-function handleAddCategory(){
+const handleAddCategory = async () => {
   console.log(categoryForm)
-  fetch(import.meta.env.VITE_BACKEND_URL+"category/new_category" , {
+  const res = await fetch(import.meta.env.VITE_BACKEND_URL+"category/new_category" , {
     method:"POST",
     credentials:'include',
     headers:{
        "Content-Type": "application/json"
     },
     body:JSON.stringify(categoryForm)
-  }).then(()=> alert("Posted"))
+    
+  })
+   if (!res.ok) {
+      throw new Error("Failed to add category");
+    }
+  setOpenAddCategory(false);
   setCategoryForm({
   cat_name: "",
   limit: 0,

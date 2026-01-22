@@ -6,12 +6,12 @@ import CreateVoucher from "./CreateVoucher"
 import useGlobalContext from "../../../config/GlobalStateContext"
 
 
-export default function ExpenseTabs({ category, onNext, onBack }) {
+export default function ExpenseTabs({ category,onNext, onBack }) {
   const [tab, setTab] = useState("capture")
   const [data, setData] = useState({})
   const {valid, setValid} = useGlobalContext()
 
-  console.log(category)
+  console.log(category.category_id)
   const handleDone = (payload,isValid) => {
     setData(payload)
     setValid(isValid)
