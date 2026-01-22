@@ -155,14 +155,14 @@ Expense Management</h5>
 
       <div className="grid grid-cols-3 place-items-center rounded-t-xl  gap-4 bg-gray-100">
   
-<div className={`${selectedrole == "employee" ? "bg-white border-b-2 rounded-tl-xl border-orange-400" :"bg-none"} flex items-center flex-col  w-full p-4`}
+<div className={`${selectedrole == "employee" ? "bg-white shadow border-b-2 rounded-tl-xl border-orange-400" :"bg-none"} flex items-center flex-col  w-full p-4`}
 onClick={()=> setSelectedRole("employee")}>
           {/* icon */}
           <span className=""><User2Icon className="size-4"/></span>
           <p className="text-[10px] font-medium">Employee</p>
         </div>
 
-<div className={`${selectedrole == "validator" ? "bg-white border-b-2 border-orange-400" :"bg-none"} flex items-center flex-col  w-full p-4`}
+<div className={`${selectedrole == "validator" ? "bg-white shadow border-b-2 border-orange-400" :"bg-none"} flex items-center flex-col  w-full p-4`}
 onClick={()=> setSelectedRole("validator")}>
           {/* icon */}
           <span className=""><UserCheck2Icon className="size-4"/></span>
@@ -171,7 +171,7 @@ onClick={()=> setSelectedRole("validator")}>
 
 
      
-<div className={`${selectedrole == "admin" ? "bg-white border-b-2  rounded-tr-xl border-orange-400" :"bg-none"} flex items-center flex-col  w-full p-4`}
+<div className={`${selectedrole == "admin" ? "bg-white border-b-2 shadow rounded-tr-xl border-orange-400" :"bg-none"} flex items-center flex-col  w-full p-4`}
 onClick={()=> setSelectedRole("admin")}>
           {/* icon */}
           <span className=""><ShieldCheck className="size-4"/></span>

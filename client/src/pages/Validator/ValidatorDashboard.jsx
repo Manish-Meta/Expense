@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { FileText, DollarSign, Clock, ShieldCheck, Download } from "lucide-react"
+import { FileText, DollarSign, Clock, ShieldCheck, Download, Eye, IndianRupee } from "lucide-react"
 import { StatCard } from "../../components/StatCard"
 import Row from "../../components/Row"
 
@@ -17,7 +17,7 @@ export default function ValidatorDashboard() {
       employee: "Sarah Johnson",
       dept: "Marketing",
       details: "Q1 Client Meeting Trip - New York",
-      amount: "$1,247.25",
+      amount: " 1,247.25",
       date: "2024-01-15",
       priority: "Medium",
       compliance: "1 flag",
@@ -28,7 +28,7 @@ export default function ValidatorDashboard() {
       employee: "Michael Chen",
       dept: "Engineering",
       details: "Tech Conference 2024 - Las Vegas",
-      amount: "$2,150.75",
+      amount: " 2,150.75",
       date: "2024-01-14",
       priority: "High",
       compliance: "Clean",
@@ -39,7 +39,7 @@ export default function ValidatorDashboard() {
       employee: "David Rodriguez",
       dept: "Sales",
       details: "Enterprise Client Visit - Singapore",
-      amount: "$3,420.60",
+      amount: " 3,420.60",
       date: "2024-01-13",
       priority: "High",
       compliance: "Issues",
@@ -50,7 +50,7 @@ export default function ValidatorDashboard() {
       employee: "Emma Wilson",
       dept: "HR",
       details: "Recruitment Drive Expenses",
-      amount: "$860.40",
+      amount: " 860.40",
       date: "2024-01-12",
       priority: "Medium",
       compliance: "Clean",
@@ -61,7 +61,128 @@ export default function ValidatorDashboard() {
       employee: "Raj Patel",
       dept: "Sales",
       details: "Client Visit - Mumbai",
-      amount: "$15,420.00",
+      amount: " 15,420.00",
+      date: "2024-01-11",
+      priority: "High",
+      compliance: "Clean",
+    },
+    {
+      id: "EXP-2024-005",
+      type: "Expense",
+      employee: "Raj Patel",
+      dept: "Sales",
+      details: "Client Visit - Mumbai",
+      amount: " 15,420.00",
+      date: "2024-01-11",
+      priority: "High",
+      compliance: "Clean",
+    },
+    {
+      id: "EXP-2024-005",
+      type: "Expense",
+      employee: "Raj Patel",
+      dept: "Sales",
+      details: "Client Visit - Mumbai",
+      amount: " 15,420.00",
+      date: "2024-01-11",
+      priority: "High",
+      compliance: "Clean",
+    },
+    {
+      id: "EXP-2024-005",
+      type: "Expense",
+      employee: "Raj Patel",
+      dept: "Sales",
+      details: "Client Visit - Mumbai",
+      amount: " 15,420.00",
+      date: "2024-01-11",
+      priority: "High",
+      compliance: "Clean",
+    },
+    {
+      id: "EXP-2024-005",
+      type: "Expense",
+      employee: "Raj Patel",
+      dept: "Sales",
+      details: "Client Visit - Mumbai",
+      amount: " 15,420.00",
+      date: "2024-01-11",
+      priority: "High",
+      compliance: "Clean",
+    },
+    {
+      id: "EXP-2024-005",
+      type: "Expense",
+      employee: "Raj Patel",
+      dept: "Sales",
+      details: "Client Visit - Mumbai",
+      amount: " 15,420.00",
+      date: "2024-01-11",
+      priority: "High",
+      compliance: "Clean",
+    },
+    {
+      id: "EXP-2024-005",
+      type: "Expense",
+      employee: "Raj Patel",
+      dept: "Sales",
+      details: "Client Visit - Mumbai",
+      amount: " 15,420.00",
+      date: "2024-01-11",
+      priority: "High",
+      compliance: "Clean",
+    },
+    {
+      id: "EXP-2024-005",
+      type: "Expense",
+      employee: "Raj Patel",
+      dept: "Sales",
+      details: "Client Visit - Mumbai",
+      amount: " 15,420.00",
+      date: "2024-01-11",
+      priority: "High",
+      compliance: "Clean",
+    },
+    {
+      id: "EXP-2024-005",
+      type: "Expense",
+      employee: "Raj Patel",
+      dept: "Sales",
+      details: "Client Visit - Mumbai",
+      amount: " 15,420.00",
+      date: "2024-01-11",
+      priority: "High",
+      compliance: "Clean",
+    },
+    {
+      id: "EXP-2024-005",
+      type: "Expense",
+      employee: "Raj Patel",
+      dept: "Sales",
+      details: "Client Visit - Mumbai",
+      amount: " 15,420.00",
+      date: "2024-01-11",
+      priority: "High",
+      compliance: "Clean",
+    },
+    {
+      id: "EXP-2024-005",
+      type: "Expense",
+      employee: "Raj Patel",
+      dept: "Sales",
+      details: "Client Visit - Mumbai",
+      amount: " 15,420.00",
+      date: "2024-01-11",
+      priority: "High",
+      compliance: "Clean",
+    },
+    {
+      id: "EXP-2024-005",
+      type: "Expense",
+      employee: "Raj Patel",
+      dept: "Sales",
+      details: "Client Visit - Mumbai",
+      amount: " 15,420.00",
       date: "2024-01-11",
       priority: "High",
       compliance: "Clean",
@@ -213,38 +334,48 @@ export default function ValidatorDashboard() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl border border-[#f3d7b6] overflow-hidden">
+        <div className="overflow-scroll h-[400px] border border-[#d9770633] rounded-xl">
           <table className="w-full text-sm">
             <thead className="bg-[#fff7ed]">
               <tr>
-                <th className="px-6 py-4 text-left">ID</th>
-                <th className="px-6 py-4 text-left">Type</th>
-                <th className="px-6 py-4 text-left">Employee</th>
-                <th className="px-6 py-4 text-left">Details</th>
-                <th className="px-6 py-4 text-left">Amount</th>
-                <th className="px-6 py-4 text-left">Date</th>
-                <th className="px-6 py-4 text-left">Priority</th>
-                <th className="px-6 py-4 text-left">Compliance</th>
-                <th className="px-6 py-4 text-left">Action</th>
+                <th className="px-4 py-2 text-xs font-semibold text-gray-600 ">ID</th>
+                <th className="px-4 py-2 text-xs font-semibold text-gray-600 ">Type</th>
+                <th className="px-4 py-2 text-xs font-semibold text-gray-600 ">Employee</th>
+                <th className="px-4 py-2 text-xs font-semibold text-gray-600 ">Details</th>
+                <th className="px-4 py-2 text-xs font-semibold text-gray-600 ">Amount</th>
+                <th className="px-4 py-2 text-xs font-semibold text-gray-600 ">Date</th>
+                <th className="px-4 py-2 text-xs font-semibold text-gray-600 ">Priority</th>
+                <th className="px-4 py-2 text-xs font-semibold text-gray-600 ">Compliance</th>
+                <th className="px-4 py-2 text-xs font-semibold text-gray-600 ">Action</th>
               </tr>
             </thead>
 
-            <tbody className="divide-y">
-              {filteredRequests.length > 0 ? (
-                filteredRequests.map((req) => (
-                  <Row key={req.id} {...req} />
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan="9"
-                    className="text-center py-8 text-gray-500"
-                  >
-                    No matching records found
-                  </td>
-                </tr>
-              )}
-            </tbody>
+            <tbody>
+    {filteredRequests.map((e, idx) => (
+      <tr
+        key={idx}
+        className={` hover:bg-gray-50 transition  {
+          idx % 2 === 0 ? "bg-white" : "bg-gray-50"
+        }`}
+      >
+        <td className="px-4 py-2 text-[10px] font-medium text-gray-600">{e.id}</td>
+        <td className="px-4 py-2 text-xs text-[10px] font-medium ">{e.type}</td>
+        <td className="px-4 py-2 text-xs text-[10px]">{e.employee}</td>
+        <td className="px-4 py-2 text-xs text-[10px]">{e.details}</td>
+        <td className="px-4 py-2 text-xs font-medium text-black">
+          <p className="flex gap-1 items-center"><IndianRupee className="size-3"/> <span>{e.amount}</span></p>
+        </td>
+        <td className="px-4 py-2 text-xs text-[10px]">{e.date}</td>
+        <td className="px-4 py-2 text-xs text-[10px]">{e.priority}</td>
+        <td className="px-4 py-2 text-xs text-[10px]">{e.compliance}</td>
+
+        <td className="px-4 py-2 text-xs cursor-pointer hover:underline flex  gap-2">
+          <Eye className='size-4 text-black'/>
+          Details
+        </td>
+      </tr>
+    ))}
+  </tbody>
           </table>
         </div>
       </main>

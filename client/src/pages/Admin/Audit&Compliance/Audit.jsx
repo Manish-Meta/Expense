@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
   ShieldCheck,
   AlertTriangle,
@@ -7,6 +7,11 @@ import {
   RefreshCw,
   Download,
   PlayCircle,
+  Badge,
+  CircleCheck,
+  CircleX,
+  Pencil,
+  Trash2,
 } from "lucide-react"
 
 
@@ -176,49 +181,6 @@ const auditTrail = [
   },
 ]
 
-const expenseCategories = [
-  {
-    name: "Travel & Transportation",
-    description: "Flights, taxis, rideshare, fuel, and local transport",
-    status: "active",
-  },
-  {
-    name: "Meals & Entertainment",
-    description: "Business meals, client meetings, team events",
-    status: "active",
-  },
-  {
-    name: "Accommodation",
-    description: "Hotels, guest houses, and short-term stays",
-    status: "active",
-  },
-  {
-    name: "Office Supplies",
-    description: "Stationery, consumables, and office essentials",
-    status: "active",
-  },
-  {
-    name: "Software & Subscriptions",
-    description: "SaaS tools, licenses, and digital services",
-    status: "active",
-  },
-  {
-    name: "Training & Development",
-    description: "Courses, certifications, and workshops",
-    status: "active",
-  },
-  {
-    name: "Marketing & Events",
-    description: "Campaigns, conferences, and promotional events",
-    status: "disabled",
-  },
-  {
-    name: "Miscellaneous",
-    description: "Expenses not covered by other categories",
-    status: "disabled",
-  },
-]
-
 
 
 
@@ -226,8 +188,11 @@ export default function AdminAudit() {
   const [hoveredKpi, setHoveredKpi] = useState(null)
   const [activeTab, setActiveTab] = useState("violations")
   const [openAddCategory, setOpenAddCategory] = useState(false)
+  const [isEditMode, setIsEditMode] = useState(false)
+const [selectedCategory, setSelectedCategory] = useState(null)
 
   const [categoryForm, setCategoryForm] = useState({
+  id:"",
   cat_name: "",
   limit: 0,
   description: "",
@@ -236,25 +201,66 @@ export default function AdminAudit() {
 })
 
 
-function handleAddCategory(){
+const handleAddCategory = async () => {
   console.log(categoryForm)
-  fetch(import.meta.env.VITE_BACKEND_URL+"category/new_category" , {
+  const res = await fetch(import.meta.env.VITE_BACKEND_URL+"category/new_category" , {
     method:"POST",
+    credentials:'include',
     headers:{
        "Content-Type": "application/json"
     },
     body:JSON.stringify(categoryForm)
-  }).then(()=> alert("Posted"))
+    
+  })
+   if (!res.ok) {
+      throw new Error("Failed to add category");
+    }
+  setOpenAddCategory(false);
   setCategoryForm({
   cat_name: "",
   limit: 0,
   description: "",
   rec_req: false,
-  is: false,
+  is_active: false,
 })
 }
 
+function handleUpdateCategory(){
+  console.log(categoryForm)
+  
+}
+
+function handleDeleteCategory(ID){
+  console.log(ID)
+  setOpenAddCategory(false)
+  fetch(import.meta.env.VITE_BACKEND_URL+`category/delete_category/${ID}` , {
+    method:'delete',
+    credentials:'include'
+
+  })
+}
+
+function openAdd(){
+  setOpenAddCategory(true)
+  setIsEditMode(false)
+  setCategoryForm("")
+}
+
+
 const [loading, setLoading] = useState(false)
+
+const [CategoryData, setCategoryData] = useState([]);
+useEffect(()=>{
+ 
+  fetch(import.meta.env.VITE_BACKEND_URL+"category/all_category",{
+    method:"GET",
+    credentials:'include',
+  })
+  .then((res)=> res.json())
+  .then((res)=> setCategoryData(res.data))
+ 
+},[])
+  // console.log(CategoryData);
 
 
   return (
@@ -481,41 +487,79 @@ const [loading, setLoading] = useState(false)
     </div>
 
     {/* Expense Categories */}
-    <div className="space-y-3">
+    <div className="space-y-3 w-100">
+      <div className="flex justify-between items-center">
       <p className="text-sm font-medium text-gray-700">
         Expense Categories
       </p>
-
-      {/* Category List */}
-      <div className="max-h-[320px] overflow-y-auto space-y-3 pr-1">
-        {expenseCategories.map((cat, i) => (
-          <div
-            key={i}
-            className="flex items-center justify-between p-4 rounded-xl border border-orange-200 bg-orange-50 hover:bg-orange-100 transition"
-          >
-            <div>
-              <p className="text-sm font-medium">{cat.name}</p>
-              <p className="text-xs text-gray-500">{cat.description}</p>
-            </div>
-
-            <span
-              className={`text-[11px] px-2 py-1 rounded-full ${
-                cat.status === "active"
-                  ? "bg-green-100 text-green-700"
-                  : "bg-gray-200 text-gray-600"
-              }`}
-            >
-              {cat.status}
-            </span>
-          </div>
-        ))}
-      </div>
-
       {/* Add Category Button */}
-      <button onClick={() => setOpenAddCategory(true)}
-      className=" cursor-pointer w-full mt-2 px-4 py-2 text-xs font-medium border border-orange-300 rounded-lg bg-white hover:bg-orange-50">
+      <button onClick={() => openAdd()}
+      className=" cursor-pointer mt-2 px-4 py-2 text-xs font-medium border border-orange-300 rounded-lg bg-white hover:bg-orange-50">
         + Add New Category
       </button>
+      </div>
+
+      {/* Category List */}
+      <div className="max-h-[320px] w-100 overflow-y-auto space-y-3 pr-1">
+            {CategoryData?.map((cat) => (
+          <div
+          key={cat.id}
+          className="flex flex-col gap-2 p-4 rounded-xl border border-orange-200 bg-orange-50 hover:bg-orange-100 transition"
+          >
+          {/* Top row */}
+          <div className="flex items-center justify-between">
+          {/* Left: status + name */}
+          <div className="flex items-center gap-2">
+            <span
+              className={`p-1 rounded-full ${
+                cat.is_active ? "bg-green-400" : "bg-red-300"
+              }`}
+            >
+              {cat.is_active ? (
+                <CircleCheck size={11} className="text-white" />
+              ) : (
+                <CircleX size={11} className="text-white" />
+              )}
+            </span>
+
+            <p className="text-sm font-medium capitalize">
+              {cat.name}
+            </p>
+          </div>
+
+          {/* Right: actions */}
+          <div className="flex items-center gap-2">
+            <button 
+                onClick={() => {
+              setIsEditMode(true)
+              setSelectedCategory(cat)
+              setCategoryForm({
+              id:cat.id,
+              name: cat.name,
+              limit: cat.limit,
+              description: cat.description,
+              receiptRequired: cat.receipt_req,
+              active: cat.is_active,
+              })
+              setOpenAddCategory(true)
+              }}
+            className="p-1.5 rounded-md hover:bg-orange-200">
+              <Pencil size={14} />
+            </button>
+          </div>
+          </div>
+
+          {/* Description */}
+          <p className="ml-2 text-xs text-gray-500 pl-6">
+          {cat.description}
+          </p>
+          </div>
+          ))}
+
+        
+      </div>
+
+      
     </div>
   </div>
 )}
@@ -527,7 +571,7 @@ const [loading, setLoading] = useState(false)
     <div className="bg-white w-full max-w-md rounded-2xl shadow-xl p-6 space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-semibold">Add Expense Category</h4>
+        <h4 className="text-sm font-semibold">{isEditMode ? "Edit Expense Category" : "Add Expense Category"}</h4>
         <button
           onClick={() => setOpenAddCategory(false)}
           className="text-gray-400 cursor-pointer hover:text-gray-600"
@@ -562,9 +606,11 @@ const [loading, setLoading] = useState(false)
           <label className="text-xs font-medium">Description</label>
           <input
             type='text'
+            value={categoryForm.description}
+            onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })}
             placeholder="Optional description"
             className="w-full bg-orange-50 rounded-lg border border-gray-200 px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-orange-300"
-         onChange={(e) => setCategoryForm({ ...categoryForm, description: e.target.value })} />
+          />
         </div>
 
         <div className="flex items-start justify-between gap-4">
@@ -611,10 +657,13 @@ const [loading, setLoading] = useState(false)
           Cancel
         </button>
         <button 
-        onClick={()=> handleAddCategory()}
+        onClick={isEditMode ? handleUpdateCategory : handleAddCategory}
         className="px-4 py-2 cursor-pointer shadow text-xs rounded-lg bg-orange-400 text-white hover:bg-orange-500">
-          Add Category
+           {isEditMode ? "Update Category" : "Add Category"}
         </button>
+        {isEditMode? <button onClick={()=> handleDeleteCategory(categoryForm.id)} className="p-1.5 bg-red-500 cursor-pointer border-2 border-red-800 text-xs flex items-center gap-1 rounded-md hover:bg-red-800 text-white">
+              Delete Category<Trash2 size={14} />
+            </button>:<></>}
       </div>
     </div>
   </div>

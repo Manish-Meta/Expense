@@ -1,8 +1,8 @@
-export default function ExpenseCategoryCard({Icon, description ,limit,category, onSelect }) {
+export default function ExpenseCategoryCard({Icon, description ,limit,category,category_id,onSelect }) {
  
   return (
     <div
-      onClick={() => onSelect({Icon, description ,limit,category, onSelect})}
+      onClick={() => onSelect({Icon, description ,limit,category,category_id, onSelect})}
       className="6
         group cursor-pointer rounded-2xl bg-white
         border border-orange-100

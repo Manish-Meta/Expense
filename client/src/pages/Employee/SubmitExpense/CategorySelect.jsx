@@ -97,11 +97,9 @@ export default function CategorySelect({ onSelect }) {
   const [CategoryData, setCategoryData] = useState([]);
 useEffect(()=>{
   
-  fetch(import.meta.env.VITE_BACKEND_URL+"category/all_category",
-    {
-      credentials:"include"
-    }
-  )
+  fetch(import.meta.env.VITE_BACKEND_URL+"category/user_category",{
+    credentials:'include'
+  })
   .then((res)=> res.json())
   .then((res)=> setCategoryData(res.data))
 
@@ -136,14 +134,15 @@ useEffect(()=>{
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {CategoryData.length != 0 ? CategoryData?.map((cat) => (
+        {CategoryData?.map((cat) => (
           <ExpenseCategoryCard
             key={cat.category_id}
-Icon={Ic(cat?.name)}
+Icon={Ic(cat?.category)}
 description={cat.description}
-limit={cat.limit}
-category={cat.name}
+limit={cat.category_limit}
+category={cat.category}
 onSelect={onSelect}
+category_id = {cat.category_id}
           />
         ))
       
