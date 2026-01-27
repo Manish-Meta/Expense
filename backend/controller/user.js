@@ -1,4 +1,6 @@
 const {db}=require('../db/db')
+const csv = require('csv-parser');
+const fs = require('fs');
 const {profile}=require('../model/user/profile')
 const {user}=require('../model/user/user')
 const {sql,eq}=require('drizzle-orm')
@@ -258,3 +260,59 @@ const user_overview=async(req,res)=>{
 
 };
 module.exports={signup,login,logout,my_profile,user_overview,generate_emp_id}
+const import_csv = async (req, res) => {
+  try {
+    const users = [];
+
+    fs.createReadStream(req.file.path)
+      .pipe(csv())
+      .on('data', (row) => users.push(row))
+      .on('end', async () => {
+        for (const u of users) {
+          await db.insert(profile).values({
+            profile_id: u.emp_id,
+            full_name: u.full_name,
+            email: u.email,
+            dept_id: u.dept_id,
+          });
+        }
+
+        res.status(200).json({ msg: "Users imported successfully" });
+      });
+  } catch (err) {
+    res.status(500).json({ msg: "CSV import failed" });
+  }
+};
+
+const export_csv = async (req, res) => {
+  const users = await db.select().from(profile);
+
+  let csvData = "emp_id,full_name,email,dept_id\n";
+  users.forEach(u => {
+    csvData += `${u.profile_id},${u.full_name},${u.email},${u.dept_id}\n`;
+  });
+
+  res.header("Content-Type", "text/csv");
+  res.attachment("users.csv");
+  res.send(csvData);
+};
+
+const bulk_role = async (req, res) => {
+  const { emp_ids, role_name } = req.body;
+  console.log(req.body);
+
+  const role = await db
+    .select()
+    .from(roles)
+    .where(eq(roles.role_name, role_name));
+
+  for (const id of emp_ids) {
+    await db.insert(employee_roles).values({
+      profile_id: id,
+      role_id: role[0].role_id,
+    });
+  }
+
+  res.status(200).json({ msg: "Roles assigned successfully" });
+};
+module.exports={signup,login,logout,my_profile,user_overview,import_csv,export_csv,bulk_role}

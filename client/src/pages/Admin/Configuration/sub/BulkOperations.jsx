@@ -6,6 +6,7 @@ import {
   UserPlus,
   X,
   Plus,
+  Mail
 } from "lucide-react";
 
 export default function BulkOperations() {
@@ -57,67 +58,138 @@ export default function BulkOperations() {
     });
   };
 
-  const handleSubmit = async () => {
-  const payload =
-    userType === "employee"
-      ? {
-          emp_status: "employee",
-          full_name: form.full_name,
-          email: form.email,
-          emp_id: form.emp_id,
-          dept_id: form.dept_id,
-          reporting_manager: form.reporting_manager,
-          expense_limit: Number(form.expense_limit),
-          allow_cat: selectedCategories,
-          welcome_email: sendWelcome,
-        }
-      : {
-          emp_status: "validator",
-          emp_id: form.emp_id,
-          dept_id: form.dept_id,
-          validator_scope: form.validator_scope,
-          approve_limit: Number(form.approve_limit),
-          priority_level: form.priority_level,
-          notify: enableNotif,
-        };
+  const handleImportCSV = async (file) => {
+    const formData = new FormData();
+    formData.append("file", file);
 
-  try {
+    await fetch(`${import.meta.env.VITE_BACKEND_URL}user/import-csv`, {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
+
+    alert("Users imported successfully");
+  };
+
+  const handleExportCSV = async () => {
+    const res = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}user/export-csv`,
+      { credentials: "include" }
+    );
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "users.csv";
+    a.click();
+  };
+
+  const handleBulkRoleAssign = async () => {
+    await fetch(`${import.meta.env.VITE_BACKEND_URL}user/bulk-role`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify({
+        emp_ids: ["EMP001", "EMP002"],
+        role_name: "manager",
+      }),
+    });
+
+    alert("Bulk role assigned");
+  };
+
+  const handleSendBulkInvites = async () => {
+    await fetch(`${import.meta.env.VITE_BACKEND_URL}user/send-invites`, {
+      method: "POST",
+      credentials: "include",
+    });
+
+    alert("Invites sent");
+  };
+
+  const handleSubmit = async () => {
+    const payload =
+      userType === "employee"
+        ? {
+            emp_status: "employee",
+            full_name: form.full_name,
+            email: form.email,
+            emp_id: form.emp_id,
+            dept_id: form.dept_id,
+            reporting_manager: form.reporting_manager,
+            expense_limit: Number(form.expense_limit),
+            allow_cat: selectedCategories,
+            welcome_email: sendWelcome,
+          }
+        : {
+            emp_status: "validator",
+            emp_id: form.emp_id,
+            dept_id: form.dept_id,
+            validator_scope: form.validator_scope,
+            approve_limit: Number(form.approve_limit),
+            priority_level: form.priority_level,
+            notify: enableNotif,
+          };
+
     const res = await fetch(
       `${import.meta.env.VITE_BACKEND_URL}user/signup`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify(payload),
       }
     );
 
-    const data = await res.json();
-
     if (!res.ok) {
-      alert(data.msg || "Signup failed");
+      alert("Signup failed");
       return;
     }
 
     alert("User created successfully");
     setOpenDialog(false);
-  } catch (err) {
-    console.error(err);
-    alert("Server error");
-  }
-};
+  };
 
   return (
     <>
+   
       <div className="bg-white rounded-2xl p-6 shadow space-y-6">
         <h3 className="text-xs font-semibold">Bulk Operations</h3>
 
+        <input
+          type="file"
+          hidden
+          accept=".csv"
+          id="csvUpload"
+          onChange={(e) => handleImportCSV(e.target.files[0])}
+        />
+
         <div className="space-y-2">
-          <ActionBtn icon={<Upload size={14} />} label="Import Users (CSV)" />
-          <ActionBtn icon={<Download size={14} />} label="Export User List" />
-          <ActionBtn icon={<Users size={14} />} label="Bulk Role Assignment" />
+          <ActionBtn
+            icon={<Upload size={14} />}
+            label="Import Users (CSV)"
+            onClick={() => document.getElementById("csvUpload").click()}
+          />
+
+          <ActionBtn
+            icon={<Download size={14} />}
+            label="Export User List"
+            onClick={handleExportCSV}
+          />
+
+          <ActionBtn
+            icon={<Users size={14} />}
+            label="Bulk Role Assignment"
+            onClick={handleBulkRoleAssign}
+          />
+
+          <ActionBtn
+            icon={<Mail size={14} />}
+            label="Send Bulk Invites"
+            onClick={handleSendBulkInvites}
+          />
         </div>
 
         <div className="pt-4 border-t">
@@ -131,6 +203,7 @@ export default function BulkOperations() {
         </div>
       </div>
 
+
       {openDialog && (
         <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
           <div className="bg-white w-[760px] rounded-2xl p-6 relative">
@@ -141,6 +214,7 @@ export default function BulkOperations() {
               <X size={18} />
             </button>
 
+       
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold">Onboard User</h3>
 
@@ -168,12 +242,7 @@ export default function BulkOperations() {
               </div>
             </div>
 
-            <p className="text-xs text-orange-600 mb-6">
-              {userType === "employee"
-                ? "Create a new employee account with expense submission access."
-                : "Create a new validator account with approval permissions."}
-            </p>
-
+            {/* FORM */}
             <div className="grid grid-cols-2 gap-4 text-xs">
               {userType === "employee" && (
                 <Field
@@ -223,12 +292,14 @@ export default function BulkOperations() {
                 }
               />
 
-              {userType==="validator" && (<Select
-                label="Validation Scope"
-                onChange={(e) =>
-                  setForm({ ...form, validator_scope: e.target.value })
-                }
-              />)}
+              {userType === "validator" && (
+                <Select
+                  label="Validation Scope"
+                  onChange={(e) =>
+                    setForm({ ...form, validator_scope: e.target.value })
+                  }
+                />
+              )}
 
               {userType === "validator" && (
                 <Select
@@ -329,8 +400,12 @@ export default function BulkOperations() {
 }
 
 
-const ActionBtn = ({ icon, label }) => (
-  <button className="w-full flex items-center gap-2 border rounded-xl px-3 py-2 text-xs hover:bg-blue-50">
+
+const ActionBtn = ({ icon, label, onClick }) => (
+  <button
+    onClick={onClick}
+    className="w-full flex items-center gap-2 border rounded-xl px-3 py-2 text-xs hover:bg-blue-50"
+  >
     {icon}
     {label}
   </button>

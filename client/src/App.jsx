@@ -23,19 +23,31 @@ const App = () => {
 
 
   return (
-     <Routes>
+    //  <Routes>
+    //   <Route element={<PublicRoute/>}>
+    //       <Route path="/" element={<AuthenticateUser/>} />
+    //       </Route>
+     
+    //     <Route element={<ProtectedRoute/>} >
+    // <Route path="/*" element={<Layout />}>
+    //   <Route path="*" element={<Routters />} /> 
+    //   </Route>
+    //   </Route>
+
+    //     </Routes>
+
+   <Routes>
       <Route element={<PublicRoute/>}>
           <Route path="/" element={<AuthenticateUser/>} />
           </Route>
      
-        <Route element={<ProtectedRoute/>} >
+        {/* <Route element={<ProtectedRoute/>} > */}
     <Route path="/*" element={<Layout />}>
       <Route path="*" element={<Routters />} /> 
       </Route>
-      </Route>
+    
 
         </Routes>
- 
   ) 
 }
  
