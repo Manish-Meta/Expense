@@ -1,7 +1,7 @@
 const {
   import_csv,
   export_csv,
-  bulk_role
+  bulk_role,search_employee_ids
 } = require('../controller/user');
 
 const express=require('express')
@@ -21,5 +21,9 @@ router.route('/import-csv').post(upload.single('file'), import_csv);
 router.route('/export-csv').get(export_csv)
 router.route('/bulk-role').post(bulk_role)
 router.route('/generate_id').get(token_decode,check_user('admin'),generate_emp_id)
-
+router.route('/search-emp-id').get(
+  token_decode,
+  check_user("admin"),
+  search_employee_ids
+);
 module.exports=router

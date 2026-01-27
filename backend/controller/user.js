@@ -296,6 +296,25 @@ const export_csv = async (req, res) => {
   res.attachment("users.csv");
   res.send(csvData);
 };
+const search_employee_ids = async (req, res) => {
+  const { q } = req.query;
+  if (!q) return res.json([]);
+
+  const data = await db
+    .select({ emp_id: profile.profile_id })
+    .from(profile)
+    .innerJoin(employee_roles, eq(employee_roles.profile_id, profile.profile_id))
+    .innerJoin(roles, eq(roles.role_id, employee_roles.role_id))
+    .where(
+      sql`${profile.profile_id} ILIKE ${`%${q}%`}
+       AND ${roles.role_name} = 'employee'`
+    )
+    .orderBy(profile.profile_id)
+    .limit(10);
+
+  res.json(data);
+};
+
 
 const bulk_role = async (req, res) => {
   const { emp_ids, role_name } = req.body;
@@ -316,4 +335,4 @@ const bulk_role = async (req, res) => {
   res.status(200).json({ msg: "Roles assigned successfully" });
 };
 
-module.exports={signup,login,logout,my_profile,user_overview,import_csv,export_csv,bulk_role,generate_emp_id}
+module.exports={signup,login,logout,my_profile,user_overview,import_csv,export_csv,bulk_role,generate_emp_id,search_employee_ids}

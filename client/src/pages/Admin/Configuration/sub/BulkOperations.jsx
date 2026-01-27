@@ -10,6 +10,10 @@ import {
 } from "lucide-react";
 
 export default function BulkOperations() {
+  const [generatedEmpId, setGeneratedEmpId] = useState("");
+  const [empSearch, setEmpSearch] = useState("");
+const [empOptions, setEmpOptions] = useState([]);
+
   const [openDialog, setOpenDialog] = useState(false);
   const [userType, setUserType] = useState("employee");
 
@@ -38,7 +42,24 @@ export default function BulkOperations() {
     "Medical",
     "All categories",
   ];
+ const searchEmpIds = async (val) => {
+  setEmpSearch(val);
 
+ if (val.length < 2) {
+ setEmpOptions([]);
+ return;
+ }
+
+  const res = await fetch(
+    `${import.meta.env.VITE_BACKEND_URL}user/search-emp-id?q=${val}`,
+    { credentials: "include" }
+  );
+
+if (!res.ok) return;
+
+  const data = await res.json();
+  setEmpOptions(data);
+};
   const toggleCategory = (cat) => {
     const realCats = categories.filter((c) => c !== "All categories");
 
@@ -57,6 +78,28 @@ export default function BulkOperations() {
       return updated.length === realCats.length ? realCats : updated;
     });
   };
+  const fetchEmpId = async () => {
+  try {
+    const res = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}user/generate_id`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+    );
+
+    const data = await res.json();
+
+    if (res.ok) {
+      setGeneratedEmpId(data.emp_id);
+      setForm((prev) => ({ ...prev, emp_id: data.emp_id }));
+    }
+  } catch (err) {
+    console.error("Failed to generate emp id", err);
+  }
+};
+
+
 
   const handleImportCSV = async (file) => {
     const formData = new FormData();
@@ -194,7 +237,11 @@ export default function BulkOperations() {
 
         <div className="pt-4 border-t">
           <button
-            onClick={() => setOpenDialog(true)}
+            onClick={() => {
+          setOpenDialog(true);
+            if (userType === "employee") fetchEmpId();
+              }}
+
             className="w-full flex items-center gap-2 bg-blue-50 hover:bg-blue-100 text-blue-700 px-3 py-2 rounded-xl text-xs"
           >
             <UserPlus size={14} />
@@ -221,17 +268,20 @@ export default function BulkOperations() {
               <div className="flex items-center gap-2 text-xs">
                 <span>Employee</span>
                 <button
-                  onClick={() =>
-                    setUserType(
-                      userType === "employee" ? "validator" : "employee"
-                    )
-                  }
-                  className={`w-10 h-5 rounded-full p-[2px] transition ${
-                    userType === "validator"
-                      ? "bg-green-500"
-                      : "bg-orange-500"
-                  }`}
-                >
+ onClick={() => {
+  setUserType(userType === "employee" ? "validator" : "employee");
+  setEmpSearch("");          
+  setEmpOptions([]);         
+  setGeneratedEmpId("");    
+  setForm((p) => ({ ...p, emp_id: "" }));
+}}
+  className={`w-10 h-5 rounded-full p-[2px] transition ${
+    userType === "validator"
+      ? "bg-green-500"
+      : "bg-orange-500"
+  }`}
+>
+
                   <div
                     className={`w-4 h-4 bg-white rounded-full transition ${
                       userType === "validator" ? "translate-x-5" : ""
@@ -253,21 +303,43 @@ export default function BulkOperations() {
                 />
               )}
 
-              {userType === "employee" ? (
-                <Select
-                  label="Reporting Manager"
-                  onChange={(e) =>
-                    setForm({ ...form, reporting_manager: e.target.value })
-                  }
-                />
-              ) : (
-                <Field
-                  label="Employee ID *"
-                  onChange={(e) =>
-                    setForm({ ...form, emp_id: e.target.value })
-                  }
-                />
-              )}
+  {userType === "employee" ? (
+  <Field
+    label="Employee ID (Auto-generated)"
+    value={generatedEmpId}
+    disabled
+  />
+) : (
+  <div className="relative">
+    <Field
+      label="Employee ID *"
+      value={empSearch}
+      onChange={(e) => searchEmpIds(e.target.value)}
+      readOnly={!!form.emp_id}
+    />
+
+    {empOptions.length > 0 && (
+      <div className="absolute z-50 w-full bg-white border rounded-xl mt-1 max-h-40 overflow-auto">
+        {empOptions.map((e) => (
+          <div
+            key={e.emp_id}
+            onClick={() => {
+              setEmpSearch(e.emp_id);
+              setForm((p) => ({ ...p, emp_id: e.emp_id }));
+              setEmpOptions([]);
+            }}
+            className="px-3 py-2 text-xs cursor-pointer hover:bg-orange-100"
+          >
+            {e.emp_id}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+)}
+
+  
+
 
               {userType === "employee" && (
                 <Field
@@ -411,7 +483,7 @@ const ActionBtn = ({ icon, label, onClick }) => (
   </button>
 );
 
-const Field = ({ label, prefix, onChange }) => (
+const Field = ({ label, prefix, onChange, value, disabled,readOnly }) => (
   <div>
     <label className="font-medium block mb-1">{label}</label>
     <div className="relative">
@@ -421,14 +493,18 @@ const Field = ({ label, prefix, onChange }) => (
         </span>
       )}
       <input
+        value={value}
+        disabled={disabled}
+        readOnly={readOnly}
         onChange={onChange}
         className={`w-full rounded-xl bg-orange-50 px-3 py-2 border border-orange-100 ${
           prefix ? "pl-7" : ""
-        }`}
+        } ${disabled ? "cursor-not-allowed opacity-70" : ""}`}
       />
     </div>
   </div>
 );
+
 
 const Select = ({ label, onChange }) => (
   <div>

@@ -196,15 +196,7 @@ onClick={()=> setSelectedRole("admin")}>
           </div>
           
         </div></div>
-    
-
   
-
-
-
-
-   
-
       {/* Form */}
       <form onSubmit={handleSubmit} className="px-4 pb-8 space-y-5">
         {/* Employee ID */}
