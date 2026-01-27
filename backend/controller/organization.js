@@ -21,7 +21,7 @@ const create_org=async(req,res,next)=>{
       tax_jurisdiction,
       tax_cal
     }=req.body
-    const file=req.files
+    const file=req.file
     console.log('files : ',file)
     const id=req.user
     const organization=await db.insert(org).values({
