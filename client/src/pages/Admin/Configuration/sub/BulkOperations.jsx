@@ -483,7 +483,7 @@ const ActionBtn = ({ icon, label, onClick }) => (
   </button>
 );
 
-const Field = ({ label, prefix, onChange, value, disabled }) => (
+const Field = ({ label, prefix, onChange, value, disabled,readOnly }) => (
   <div>
     <label className="font-medium block mb-1">{label}</label>
     <div className="relative">
@@ -495,6 +495,7 @@ const Field = ({ label, prefix, onChange, value, disabled }) => (
       <input
         value={value}
         disabled={disabled}
+        readOnly={readOnly}
         onChange={onChange}
         className={`w-full rounded-xl bg-orange-50 px-3 py-2 border border-orange-100 ${
           prefix ? "pl-7" : ""
