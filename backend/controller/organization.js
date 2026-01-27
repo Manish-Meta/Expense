@@ -3,7 +3,7 @@ const {org}=require('../model/org')
 const {loc}=require('../model/location')
 const { eq } = require("drizzle-orm");
  
-const create_org=async(req,res)=>{
+const create_org=async(req,res,next)=>{
   try{
     const {
       org_name,
@@ -21,11 +21,19 @@ const create_org=async(req,res)=>{
       tax_jurisdiction,
       tax_cal
     }=req.body
-
+    const file=req.files
+    console.log('files : ',file)
     const id=req.user
-    
+    const organization=await db.insert(org).values({
+      profile_id:id,
+      organization_id:'',
+      org_logo:'',
+
+    })
 
   }catch(err){
-    
+    next(err)
   }
 }
+
+module.exports={create_org}

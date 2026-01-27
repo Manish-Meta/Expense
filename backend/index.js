@@ -12,6 +12,9 @@ const category_router=require('./router/category.js')
 const port=process.env.port
 const work_flow_router=require('./router/workflow.js')
 const feedback_router=require('./router/feedback.js')
+const handle_error=require('./utils/handle_error.js');
+const file_not_found = require('./utils/file_not_fount.js');
+const email_route=require('./router/emailRoute.js')
 
 
 const set_limit=limit({
@@ -35,10 +38,14 @@ app.use('/user',user_route)
 app.use('/expenses',expense_route)
 app.use('/roles',roles)
 app.use('/dept',dept)
+app.use('/send_email',email_route)
 app.use('/category',category_router)
 app.use('/workflow',work_flow_router)
 app.use('/feedback',feedback_router)
+app.use('/',file_not_found)
+
+app.use(handle_error)
 
 app.listen(port,()=>{
-    console.log("the server is running on ...",process.env.port)
+    console.log("the server is ⚙️  running on ...",process.env.port)
 })

@@ -14,7 +14,24 @@ const {allow_category}=require('../model/user/allowed_category')
 const {employee_config}=require('../model/user/emp_config')
 const {valitador_config}=require('../model/user/validator_config')
 
-const signup=async(req,res)=>{
+const generate_emp_id=async(req,res,next)=>{
+    try{
+        let emp_id='E_121111'
+        let user_detail=await db.select({id:profile.profile_id}).from(profile)
+        if(user_detail[user_detail.length-1]){
+            user_detail=user_detail[user_detail.length-1].id.split('_')[1]
+            emp_id=`E_${Number(user_detail)+1}`
+        }
+        return res.status(200).json({
+                msg:'THIS IS THE EMP Id',
+                emp_id:emp_id
+        })
+    }catch(err){
+        next(err)
+    }
+}
+
+const signup=async(req,res,next)=>{
     try{
         const {emp_id,email,dept_id,full_name,emp_status,welcome_email}=req.body
         if(!emp_id||!email||!dept_id||!full_name||!emp_status){
@@ -115,7 +132,16 @@ const signup=async(req,res)=>{
         
         return true
     })
-    
+    const {password}=req.body
+    const hashpass=await encrypt(password)
+    let value=await db.select({user_id:user.user_id}).from(user)
+    let value_id='U_111111'
+    if(value[value.length-1]){
+        let gen_id=value[value.length-1].user_id.split('_')[1]
+        value_id=`U_${Number(gen_id)+1}`
+    }
+    const data=await db.insert(user).values({profile_id:emp_id,password_hash:hashpass,user_id:value_id})
+            
     if(!finish){
         return res.status(400).json({
             msg:'Invalid data'
@@ -125,21 +151,18 @@ const signup=async(req,res)=>{
         msg:"user inserted"
     })
     }catch(err){
-        console.log(err)
-        res.status(500).json({
-            msg:"internal err"
-        })
+        next(err)
     }
 }
 
- const login=async(req,res)=>{
+ const login=async(req,res,next)=>{
     try{
         const {emp_id,password,emp_status}=req.body;
-        if(!emp_id||!password||!emp_status){
-            return res.status(400).json({
-                msg:"Some data missing"
-            })
-        }
+        // if(!emp_id||!password||!emp_status){
+        //     return res.status(400).json({
+        //         msg:"Some data missing"
+        //     })
+        // }
         const details=await db.select({roles:roles}).from(profile)
         .innerJoin(employee_roles,eq(employee_roles.profile_id,emp_id))
         .innerJoin(roles,eq(roles.role_id,employee_roles.role_id))
@@ -176,18 +199,15 @@ const signup=async(req,res)=>{
             token:val
         })
     }catch(err){
-        console.log(err)
-        res.status(500).json({
-            msg:"internal server err"
-        })
+        next(err)
     }
 }
 
-const forget_pass=async(req,res)=>{
+const forget_pass=async(req,res,next)=>{
 
 }
 
- const my_profile=async(req,res)=>{
+ const my_profile=async(req,res,next)=>{
     try{
         const id = req.user
         const result=await db.select({profile:profile,dept_name:dept.name,roles_name:roles.role_name}).from(profile)
@@ -205,10 +225,7 @@ const forget_pass=async(req,res)=>{
             data:result
         })
     }catch(err){
-        console.log("err : ",err)
-        res.status(500).json({
-            msg:"internal server err"
-        })
+        next(err)
     }
 }
 
@@ -242,6 +259,7 @@ const user_overview=async(req,res)=>{
     }
 
 };
+module.exports={signup,login,logout,my_profile,user_overview,generate_emp_id}
 const import_csv = async (req, res) => {
   try {
     const users = [];

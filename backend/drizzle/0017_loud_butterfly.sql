@@ -1,0 +1,1 @@
+ALTER TABLE "info" ADD COLUMN "is_view" boolean DEFAULT false;

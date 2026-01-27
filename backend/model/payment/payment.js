@@ -11,8 +11,9 @@ const payment_info=pgTable('payment_info',{
     payment_date:timestamp('payment_date'),
     ref_num:varchar('ref_num',{length:50}).unique(),
     receipt:text('receipt'),
+    notes:text('notes'),
     created_at: timestamp("created_at", { mode: "date" }).defaultNow(),
     updated_at: timestamp("updated_at", { mode: "date" }).defaultNow()
 })
 
-module.export={payment_info}
+module.exports={payment_info}

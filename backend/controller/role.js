@@ -2,7 +2,7 @@ const { eq } = require('drizzle-orm')
 const {db}=require('../db/db')
 const {roles}=require('../model/user/role')
 
-const add_roles=async(req,res)=>{
+const add_roles=async(req,res,next)=>{
     try{
         const {role_id,role_name,des}=req.body
         const value=await db.insert(roles).values({role_id:role_id,role_name:role_name,description:des})
@@ -16,14 +16,11 @@ const add_roles=async(req,res)=>{
             msg:"the role added"
         })
     }catch(err){
-        console.log(err)
-        res.status(500).json({
-                msg:"Internal server err"
-        })
+        next(err)
     }
 }
 
-const delete_role=async(req,res)=>{
+const delete_role=async(req,res,next)=>{
     try{
         const {id}=req.params
         if(!id){
@@ -37,10 +34,7 @@ const delete_role=async(req,res)=>{
             msg:"The data deleted"
         })
     }catch(err){
-        console.log(err)
-        res.status(500).json({
-            msg:"Internal server error"
-        })
+        next(err)
     }
 }
 

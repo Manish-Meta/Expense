@@ -1,7 +1,7 @@
 const {pgTable,integer,text,varchar,uuid,timestamp,numeric,jsonb,boolean}=require('drizzle-orm/pg-core')
 const {profile}=require('../user/profile')
 const {category}=require('./category')
-const {exp_status,compliance,priority,user_role_enum}=require('../enum')
+const {exp_status,compliance,priority,user_role_enum,expense_next_level}=require('../enum')
 const {advance_option}=require('./advance_option')
 
 const expense=pgTable('expense',{
@@ -17,7 +17,7 @@ const expense=pgTable('expense',{
     status:exp_status('exp_status').notNull(),
     priority:priority('priority'),
     compliance:compliance('compliance'),
-    next_level:user_role_enum('next').notNull(),
+    next_level:expense_next_level('next').notNull(),
     created_at: timestamp("created_at", { mode: "date" }).defaultNow(),
     updated_at: timestamp("updated_at", { mode: "date" }).defaultNow()
 })

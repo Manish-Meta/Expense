@@ -1,12 +1,22 @@
 const jwt = require('jsonwebtoken')
 
 const token_generate=(id,res)=>{
+    if(!id){
+        return res.status(400).json({
+            msg:'Invalid'
+        })
+    }
     const token=jwt.sign({id:id},process.env.jwt_sceret_key,{expiresIn:'7d'})
+     if(!token){
+        return res.status(400).json({
+            msg:'Invalid data'
+        })
+    }
     res.cookie('token',token,{
         maxAge:7*24*60*60*1000,
         httpOnly: true,       
         sameSite: "none",       
-        secure: false
+        secure: true
     })
     return token
 }
@@ -14,7 +24,6 @@ const token_generate=(id,res)=>{
 const token_decode=async(req,res,next)=>{
     try{
         const {token}=req.cookies
-        console.log("token : ",token)
         if(!token){
             res.status(404).json({
                 msg:'User not found,Go to login'
@@ -32,10 +41,7 @@ const token_decode=async(req,res,next)=>{
         req.user=data.id
         next()
     }catch(err){
-        console.log(err)
-        res.status(500).json({
-            msg:"internal server err"
-        })
+        next(err)
     }
 }
 module.exports={token_decode,token_generate}
