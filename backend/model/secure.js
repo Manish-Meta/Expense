@@ -1,7 +1,8 @@
 const {pgTable,integer,numeric,boolean,text,varchar}=require('drizzle-orm/pg-core')
 const {org}=require('../model/org')
 
-const secure_passwprd=pgTable('security',{
+const secure_password=pgTable('security',{
+    founder:varchar('founder',{length:20}),
     org_id:varchar('org_id',{length:20}).references(()=>org.organization_id),
     min_length:numeric('min_length'),
     uppercase:boolean('uppercase'),
@@ -23,4 +24,4 @@ const secure_passwprd=pgTable('security',{
     log_retention:numeric('log_retention')
 })
 
-module.exports={secure_passwprd}
+module.exports={secure_password}

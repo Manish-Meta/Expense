@@ -31,12 +31,38 @@ const generate_emp_id=async(req,res,next)=>{
     }
 }
 
+const manager=async(req,res,next)=>{
+    try{
+
+    }catch(err){
+        next(err)
+    }
+}
+
+const generate_dept=async(req,res,next)=>{
+    try{
+        const all_dept=await db.select().from(dept)
+        if(all_dept.length==0){
+            return res.status(200).json({
+                msg:"The dept data is empty go to add the dept"
+            })
+        }
+        res.status(200).json({
+            msg:'dept',
+            data:all_dept
+        })
+    }catch(err){
+        next(err)
+    }
+}
+
 const signup=async(req,res,next)=>{
     try{
-        const {emp_id,email,dept_id,full_name,emp_status,welcome_email}=req.body
+        const {emp_id,email,dept_id,full_name,allow_cat,emp_status,welcome_email}=req.body
+        console.log(allow_cat)
         if(!emp_id||!email||!dept_id||!full_name||!emp_status){
             return res.status(400).json({
-                msg:"Invalid data"
+                msg:"Invalid data's"
             })
         }
        let finish=await db.transaction(async(table)=>{
@@ -63,6 +89,7 @@ const signup=async(req,res,next)=>{
            
         const emp_role_detail=await table.insert(employee_roles).values({profile_id:emp_id,role_id:role_detail[0].role_id})
         if(emp_status=='employee'){
+            console.log(req.body)
             const {reporting_manager,expense_limit,allow_cat}=req.body;
             if(!reporting_manager||!expense_limit||!allow_cat){
                 return res.status(400).json({
@@ -335,4 +362,4 @@ const bulk_role = async (req, res) => {
   res.status(200).json({ msg: "Roles assigned successfully" });
 };
 
-module.exports={signup,login,logout,my_profile,user_overview,import_csv,export_csv,bulk_role,generate_emp_id,search_employee_ids}
+module.exports={signup,login,logout,my_profile,user_overview,import_csv,export_csv,bulk_role,generate_emp_id,search_employee_ids,generate_dept}

@@ -1,10 +1,12 @@
-const {secure_passwprd}=require('../model/secure')
+const {secure_password}=require('../model/secure')
 const {db}=require('../db/db')
+const { org } = require('../model/org')
 
-const add_secure_details=async(next,id)=>{
+const add_secure_details=async(next,org_id,id,table)=>{
     try{
-        const secure=await db.insert(secure_passwprd).values({
-        org_id:id,
+        const secure=await table.insert(secure_password).values({
+        founder:id,
+        org_id:org_id,
         min_length:8,
         uppercase:true,
         req_length:true,
@@ -29,7 +31,7 @@ const add_secure_details=async(next,id)=>{
         }
         return true
     }catch(err){
-        notExists(err)
+        next(err)
     }
 }
 module.exports=add_secure_details

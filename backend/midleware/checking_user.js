@@ -15,7 +15,7 @@ const check_user=(...user_type)=>{
             .where(eq(employee_roles.profile_id, id));
             if(!user[0]?.role_name){
                 return res.status(400).json({
-                    msg:'invalid data'
+                    msg:'invalid data s'
                 })
             }
             if(user[0]?.role_name!=user_type){

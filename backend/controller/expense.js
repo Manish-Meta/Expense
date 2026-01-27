@@ -13,6 +13,7 @@ const {employee_roles}=require('../model/user/emp_role')
 const {info}=require('../model/info')
 const {payment_info}=require('../model/payment/payment')
 const send_need_info=require('../utils/send_need_info')
+const { dept } = require('../model/user/dept')
 
 const new_expense=async(req,res,next)=>{
     try{
@@ -217,8 +218,10 @@ const show_pending_expense=async(req,res,next)=>{
             })
         }
         if(value[0].scope=='ALL_DEPT'){
-            const all_dept=await table.select({expense:expense,cat_name:category.cat_name}).from(expense)
+            const all_dept=await table.select({expense:expense,cat_name:category.cat_name,emp_name:profile.username,dept_name:dept.name}).from(expense)
             .innerJoin(category,eq(expense.cat_id,category.category_id))
+            .innerJoin(profile,eq(expense.profile_id,profile.profile_id))
+            .innerJoin(dept,eq(profile.dept_id,dept.deptartment_id))
             .where(and(ne(expense.profile_id,id),eq(expense.next_level,'Validator'),ne(expense.status,'Rejected')))
            
             if(all_dept.length==0){
@@ -231,9 +234,10 @@ const show_pending_expense=async(req,res,next)=>{
                 data:all_dept
             })
         }else if(value[0].scope=='ASSIGNED_TEAMS'){
-            let pending_expense=await table.select({expense:expense,cat_name:category.cat_name}).from(expense)
+            let pending_expense=await table.select({expense:expense,cat_name:category.cat_name,emp_name:profile.username,dept_name:dept.name}).from(expense)
             .innerJoin(employee_config,and(eq(employee_config.reporting_manager,id),eq(employee_config.profile_id,expense.profile_id)))
             .innerJoin(category,eq(category.category_id,expense.cat_id))
+            .innerJoin(dept,eq(profile.dept_id,dept.deptartment_id))
             .where(and(ne(expense.profile_id,id),eq(expense.next_level,'Validator'),ne(expense.status,'Rejected')))
             if(!pending_expense){
                 return res.status(200).json({
@@ -252,9 +256,10 @@ const show_pending_expense=async(req,res,next)=>{
                     msg:"Sorry,You not join any dept so i can't retreive which dept of you"
                 })
             }
-            const own_dept_exp=await table.select({expense:expense,cat_name:category.cat_name}).from(expense)
+            const own_dept_exp=await table.select({expense:expense,cat_name:category.cat_name,emp_name:profile.username,dept_name:dept.name}).from(expense)
             .innerJoin(profile,and(eq(profile.dept_id,val_dept_id[0]?.dept_id),eq(profile.profile_id,expense.profile_id)))
             .innerJoin(category,eq(category.category_id,expense.cat_id))
+            .innerJoin(dept,eq(profile.dept_id,dept.deptartment_id))
             .where(and(ne(expense.profile_id,id),eq(expense.next_level,'Validator'),ne(expense.status,'Rejected')))
     
             if(own_dept_exp.length === 0){
