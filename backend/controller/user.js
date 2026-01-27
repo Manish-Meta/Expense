@@ -334,4 +334,4 @@ const bulk_role = async (req, res) => {
 
   res.status(200).json({ msg: "Roles assigned successfully" });
 };
-module.exports={signup,login,logout,my_profile,user_overview,import_csv,export_csv,bulk_role,search_employee_ids}
+module.exports={signup,login,generate_emp_id,logout,my_profile,user_overview,import_csv,export_csv,bulk_role,search_employee_ids}
