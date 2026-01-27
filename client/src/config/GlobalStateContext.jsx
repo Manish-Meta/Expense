@@ -9,6 +9,26 @@ export const UserProvider = ({ children }) => {
   const [userData, setUserData] = useState("");
  const [userLoggedIn, setUserLoggedIn] = useState(false);
 const [authLoading, setAuthLoading] = useState(true);
+const [SingleExpenseData, setSingleExpenseData] = useState(
+          {
+            exp_id: "",
+            profile_id: "",
+            amount: "",
+            date: "",
+            merchant: "",
+            business_purpose: "",
+            cat_name: "",
+            advance_option: "",
+            reciept: null,
+            status: "",
+            priority: "",
+            compliance: "",
+            next_level: "",
+            created_at: "",
+            updated_at: ""
+          }
+
+      )
  
 
 
@@ -51,7 +71,7 @@ useEffect(() => {
   }
 }, [userData]);
   return (
-    <UserContext.Provider value={{userData,authLoading, setUserData, valid, setValid,userLoggedIn, setUserLoggedIn, localSelectedRole, setLocalSelectedRole,selectedrole, setSelectedRole }}>
+    <UserContext.Provider value={{userData,authLoading, setUserData, valid, setValid,userLoggedIn, setUserLoggedIn, localSelectedRole, setLocalSelectedRole,selectedrole, setSelectedRole, SingleExpenseData, setSingleExpenseData }}>
       {children}
     </UserContext.Provider>
   );

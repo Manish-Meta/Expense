@@ -146,7 +146,7 @@ category_id = {cat.category_id}
           />
         ))
       
-      :(<p>No Data found</p>)}
+      }
       </div>
 
      

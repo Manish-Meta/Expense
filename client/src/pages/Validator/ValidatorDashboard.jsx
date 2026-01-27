@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { use, useEffect, useState } from "react"
 import { FileText, DollarSign, Clock, ShieldCheck, Download, Eye, IndianRupee } from "lucide-react"
 import { StatCard } from "../../components/StatCard"
 import Row from "../../components/Row"
@@ -9,6 +9,30 @@ export default function ValidatorDashboard() {
   const [sortBy, setSortBy] = useState("Date Submitted")
   const [minAmount, setMinAmount] = useState(0)
   const [maxAmount, setMaxAmount] = useState(100000)
+  const [req,setReq] = useState("")
+  const [Refresh, setRefresh] = useState(false)
+
+  const pendingReq = ()=>{
+    fetch(import.meta.env.VITE_BACKEND_URL+"expenses/show_pending",{
+      method:'GET',
+      credentials:'include'
+    })
+    .then((res) => res.json())
+    .then((res)=> {
+      setRefresh(true)
+      setReq(res.data)
+      setRefresh(false)
+  })
+    .catch(()=>{
+      setRefresh(false)
+      
+    // setRefresh(false)
+  })
+  }
+  useEffect (()=>{
+    pendingReq();
+
+  },[Refresh])
 
   const requests = [
     {
@@ -188,6 +212,7 @@ export default function ValidatorDashboard() {
       compliance: "Clean",
     },
   ]
+  console.log(req)
 
   const filteredRequests = requests
     .filter((req) => {
