@@ -1,71 +1,76 @@
-const { pgTable } = require("drizzle-orm/pg-core");
-const express = require("express");
 const {profile} = require("../model/user/profile")
-const { emailTemplate } = require("../model/EmailTemplate/emailTemplate");
-
-
-const ShowAllEmailTemplates = async(req, res)=>{
-
+const { emailtemplate } = require("../model/emailTemplate");
+const {eq}=require('drizzle-orm')
+const {db}=require('../db/db')
+const ShowAllEmailTemplates = async(req, res,next)=>{
+ 
     try {
-        const emails =  await db.select({emailTemplate, profile:profile.profile_id.name }).from(emailTemplate).innerJoin(profile).where(eq(emailTemplate.profile_id, profile.profile_id))
+        const id=req.user
+        const emails =  await db.select({emailtemplate, profile:profile.username }).from(emailtemplate)
+        .innerJoin(profile,eq(profile.profile_id,emailtemplate.profile_id))
+        .where(eq(profile.profile_id,id))
 
+ 
         if(!emails) {
             return res.status(201).json({data:"No EmailTemplates"})
         }
         res.status(200).json({data:emails});
-
+ 
     }
     catch(err){
-            res.status(500).json({msg:"Server Error"});
+            next(err)
     }
 }
-
+ 
 // single Template
-
-const ShowSingleEmailTemplates = async(req, res)=>{
+ 
+const ShowSingleEmailTemplates = async(req, res,next)=>{
     const {ids} = req.body
-
+ 
     try {
-        const email =  await db.select().from(emailTemplate).where(eq(emailTemplate.id,ids));
-
+        const email =  await db.select().from(emailtemplate).where(eq(emailtemplate.id,ids));
+ 
         if(!email) {
             return res.status(201).json({data:"Email Not found"})
         }
         req.status(200).json({data:email});
-
+ 
     }
     catch(err){
-            res.status(500).json({msg:"Server Error"});
+            next(err)
     }
 }
-
-const CreateEmailTemplates =async(req, res)=>{
+ 
+const CreateEmailTemplates =async(req,res,next)=>{
 
     try{
-        const {profile_id, actionType, subject, body, isActive } = req.body;
-
-        const create = await db.insert(emailTemplate).values({
-            "profile_id":profile_id,
-            "actionType":actionType,
-            "subject":subject,
-            "body":body,
-            "isActive":isActive
+        const {actionType, subject, body, isActive } = req.body;
+        const id=req.user
+        let email_id='EM_34524'
+        let email=await db.select({id:emailtemplate.id}).from(emailtemplate)
+        if(email[email.length-1]){
+            email=email[email.length-1].id.split('_')[1]
+            email_id=`EM_${Number(email)+1}`
+        }
+        const create = await db.insert(emailtemplate).values({
+            id:email_id,
+            profile_id:id,
+            actionType:actionType,
+            subject:subject,
+            body:body,
+            isActive:isActive
         });
-
+ 
+        
         if(!create){
             return res.status(400).json({msg:"Email Template NotCreated"});
         }
-        return res.status(200).json({msg:"Email Template Created"});
-
+        res.status(200).json({msg:"Email Template Created"});
     }
-
     catch(err){
-        return res.status(500).json({msg:"internal Error"});
+        next(err)
     }
 }
-
-
-// patch email controller
-const PatchEmailTemplate=(req, res)=>{}
-
+ 
+ 
 module.exports = {ShowAllEmailTemplates, ShowSingleEmailTemplates, CreateEmailTemplates}
