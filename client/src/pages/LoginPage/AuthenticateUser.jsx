@@ -18,6 +18,7 @@ const APIs = import.meta.env.VITE_BACKEND_URL
 
 
   const handleSubmit = (e) => {
+   localStorage.setItem("rolee", selectedrole)
     setLoginLoading(true)
     e.preventDefault();
     fetch(`${APIs}user/login`, {
@@ -94,7 +95,7 @@ const APIs = import.meta.env.VITE_BACKEND_URL
     }
   ]
   
-  console.log(selectedrole)
+  // console.log(selectedrole)
 
   const matchedEmpData = empData.filter(e => (e?.title.toLocaleLowerCase()).includes(selectedrole?.toLowerCase()) )
 const Icon = matchedEmpData[0]?.icon;
@@ -171,7 +172,8 @@ onClick={()=> setSelectedRole("employee")}>
         </div>
 
 <div className={`${selectedrole == "validator" ? "bg-white shadow border-b-2 border-orange-400" :"bg-none"} flex items-center flex-col  w-full p-4`}
-onClick={()=> setSelectedRole("validator")}>
+onClick={()=> {
+  setSelectedRole("validator")}}>
           {/* icon */}
           <span className=""><UserCheck2Icon className="size-4"/></span>
           <p className="text-[10px] font-medium">Validator</p>
