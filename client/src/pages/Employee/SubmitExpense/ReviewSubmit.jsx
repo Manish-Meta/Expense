@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 
 export default function ReviewSubmit({ data, onBack }) {
   const [form, setForm] = useState({
@@ -11,6 +12,7 @@ export default function ReviewSubmit({ data, onBack }) {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const navigate = useNavigate()
 
   const handleSubmit = async () => {
     setError("")
@@ -33,6 +35,7 @@ export default function ReviewSubmit({ data, onBack }) {
       if (!res.ok) throw new Error("Failed to submit expense")
 
       alert("Expense submitted successfully")
+      navigate("/dashboard")
     } catch (err) {
       setError("Something went wrong. Please try again.")
       console.log(err)
