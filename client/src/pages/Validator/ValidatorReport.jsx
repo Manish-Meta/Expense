@@ -179,12 +179,12 @@ const StCard = ({Icon, title, values})=>{
 
 
   return (
-    <div className="bg-[#fffaf4] p-3 space-y-6">
+    <div className="bg-[#fefdfc] px-6 py-5 space-y-8">
 
         {/* HEADER */}
-        <section className="flex lg:items-center lg:flex-row flex-col justify-between gap-4">
+        <section className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 bg-gradient-to-r from-orange-50 to-white border border-orange-100 rounded-2xl px-6 py-5 shadow-sm">
           <div>
-            <h1 className="text-2xl font-semibold">Validation History</h1>
+            <h1 className="text-xl font-semibold">Validation History</h1>
             <p className="text-sm text-[#c2410c]">
             Review your past validation decisions and performance metrics </p>
           </div>

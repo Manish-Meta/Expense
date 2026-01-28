@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
-import { Check, X, AlertTriangle } from "lucide-react"
+import { Check, X, AlertTriangle, CircleX, TicketCheck, CircleCheck } from "lucide-react"
 
 /* ---------- Helpers ---------- */
 
 const formatDateTime = (date) => {
   if (!date) return "-"
   const d = new Date(date)
-  return d.toLocaleString("en-IN", {
+  return new Date(date).toLocaleString("en-IN", {
+    timeZone: "UTC",
     day: "2-digit",
     month: "short",
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    hour12: true,
   })
 }
 
@@ -36,6 +38,10 @@ export default function ExpenseReview() {
   const { id } = useParams()
   const navigate = useNavigate()
   const [data, setData] = useState(null)
+  const [actionType, setActionType] = useState(null) // Approved | Rejected | Escalated | Needs-info
+  const [remark, setRemark] = useState("")
+  const [loading, setLoading] = useState(false)
+
 
   useEffect(() => {
     fetch(
@@ -45,6 +51,39 @@ export default function ExpenseReview() {
       .then((res) => res.json())
       .then((res) => setData(res.data))
   }, [id])
+
+  const submitAction = async (status) => {
+  try {
+    setLoading(true)
+
+    const payload =
+      status === "Approved"
+        ? { receive_status: status }
+        : { receive_status: status, remark }
+
+    await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}expenses/change_status/${expense.exp_id}`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      }
+    )
+    console.log(expense.exp_id,payload)
+
+    // navigate(-1) // or refetch data
+  } catch (err) {
+    console.error(err)
+  } finally {
+    setLoading(false)
+    setRemark("")
+    setActionType(null)
+  }
+}
+
 
   if (!data) {
     return <p className="p-6 text-sm">Loading expense...</p>
@@ -72,7 +111,7 @@ export default function ExpenseReview() {
   }
 
   return (
-    <div className="p-6 space-y-6 text-sm bg-[#fefdfc] min-h-screen">
+    <div className="relative px-6 pt-6 space-y-6 text-sm max-w-full bg-[#fefdfc] min-h-screen">
 
       {/* Back */}
       <button
@@ -215,25 +254,86 @@ export default function ExpenseReview() {
       </div>
 
       {/* Actions */}
-      <div className="flex justify-between gap-3 pt-4">
-        <button className="px-4 py-2 text-xs rounded-lg border border-orange-200 hover:bg-orange-50">
+        <div className="
+        sticky bottom-0 rounded-  xl
+        bg-white
+        border-t border-orange-100
+        px-4 py-3
+        flex justify-between gap-3
+        rounded-b-xl
+        shadow-[0_-6px_12px_rgba(0,0,0,0.04)]
+        ">
+        <button 
+        onClick={() => setActionType("Needs-info")}
+        className="px-4 py-2 text-xs rounded-lg border border-orange-200 hover:bg-orange-50">
           Request Information
         </button>
 
         <div className="flex gap-3">
-          <button className="px-4 py-2 text-xs rounded-lg bg-gray-100 hover:bg-gray-200">
-            Escalate
+          <button 
+          onClick={() => setActionType("Escalated")}
+          className="px-4 py-2 text-xs cursor-pointer rounded-lg text-yellow-600 justify-items-center bg-gray-100 hover:bg-gray-200">
+            <AlertTriangle/>Escalate
           </button>
 
-          <button className="px-4 py-2 text-xs rounded-lg bg-red-100 text-red-700 hover:bg-red-200">
+          <button 
+          onClick={() => setActionType("Rejected")}
+          className="px-4 py-2 flex-col cursor-pointer justify-items-center text-xs rounded-lg bg-red-100 text-red-700 hover:bg-red-200">
+            <CircleX size={15}/>
             Reject
           </button>
 
-          <button className="px-4 py-2 text-xs rounded-lg bg-green-500 text-white hover:bg-green-600">
-            Approve
+          <button 
+          onClick={() => submitAction("Approved")}
+          className="px-4 py-2 text-xs cursor-pointer rounded-lg bg-green-500 justify-items-center text-white hover:bg-green-600">
+            <CircleCheck/>Approve
           </button>
         </div>
       </div>
+      {actionType && actionType !== "Approved" && (
+      <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
+      <div className="bg-white w-full max-w-md rounded-2xl p-5 shadow-lg animate-scaleIn">
+      <h3 className="text-sm font-semibold text-gray-800">
+        {actionType === "Needs-info"
+          ? "Request Information"
+          : actionType === "Escalated"
+          ? "Escalate Expense"
+          : "Reject Expense"}
+      </h3>
+
+      <textarea
+        value={remark}
+        onChange={(e) => setRemark(e.target.value)}
+        placeholder="Enter remark..."
+        className="
+          mt-3 w-full rounded-xl border border-orange-200
+          px-3 py-2 text-xs text-gray-700
+          focus:outline-none focus:ring-2 focus:ring-orange-200
+        "
+        rows={4}
+      />
+
+      <div className="flex justify-end gap-3 mt-4">
+        <button
+          onClick={() => setActionType(null)}
+          className="px-4 py-2 text-xs rounded-lg border border-gray-200"
+        >
+          Cancel
+        </button>
+
+        <button
+          disabled={!remark || loading}
+          onClick={() => submitAction(actionType)}
+          className="px-4 py-2 text-xs rounded-lg bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-50"
+        >
+          Submit
+        </button>
+      </div>
+      </div>
+      </div>
+      )}
+
+      
     </div>
   )
 }

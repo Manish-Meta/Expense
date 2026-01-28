@@ -12,6 +12,7 @@ export default function ExpenseTabs({ category,onNext, onBack }) {
   const {valid, setValid} = useGlobalContext()
 
   console.log(category.category_id)
+  console.log(category)
   const handleDone = (payload,isValid) => {
     setData(payload)
     setValid(isValid)

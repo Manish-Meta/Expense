@@ -9,12 +9,13 @@ export default function ManualEntry({ category, onDone }) {
 
   useEffect(() => {
     const numericAmount = Number(amount)
+    const validLimit = validateExpense(numericAmount, category).valid
 
     const valid =
       merchant &&
       date &&
       amount &&
-      validateExpense(numericAmount, category).valid
+      validLimit
 
     onDone(
       {
@@ -29,11 +30,16 @@ export default function ManualEntry({ category, onDone }) {
   }, [merchant, amount, date, purpose, category])
 
   return (
-    <div className="bg-white border rounded-2xl p-8 space-y-6">
+    <div className="bg-white border border-yellow-300  shadow rounded-2xl p-8 space-y-6">
       <h3 className="text-xl font-semibold">Manual Entry</h3>
+      { amount>category.limit &&(
+            <span className="text-xs text-red-700 p-3 bg-red-300 px-2 py-1 rounded-full">
+            Limit Exceeds : ₹ {category.limit}
+          </span>
+        )}
 
       {/* Amount + Date */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 gap-6 mt-3">
         <div className="relative">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
             ₹
@@ -46,6 +52,7 @@ export default function ManualEntry({ category, onDone }) {
               setAmount(e.target.value.replace(/[^0-9.]/g, ""))
             }
           />
+          
         </div>
 
         <input
@@ -67,9 +74,9 @@ export default function ManualEntry({ category, onDone }) {
       {/* Category Info */}
       <div className="bg-orange-50 p-3 rounded-lg flex items-center gap-2">
         <span className="font-medium">{category.category}</span>
-        {category.category_limit && (
-          <span className="text-xs bg-white px-2 py-1 rounded-full">
-            Limit: ₹ {category.category_limit}
+        {category.limit && (
+          <span className="ml-5 font-bold text-xs bg-yellow-100 border border-yellow-600 text-yellow-600 px-2 py-1 rounded-full">
+            Limit: ₹ {category.limit}
           </span>
         )}
       </div>
@@ -83,5 +90,6 @@ export default function ManualEntry({ category, onDone }) {
         onChange={(e) => setPurpose(e.target.value)}
       />
     </div>
+    
   )
 }

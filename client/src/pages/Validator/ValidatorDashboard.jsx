@@ -251,31 +251,56 @@ export default function ValidatorDashboard() {
 
   console.log(Req)
   console.log(req_msg)
+const categories = [
+  "All",
+  ...Array.from(
+    new Set(Req?.map((r) => r.cat_name).filter(Boolean))
+  ),
+]
+console.log(categories)
   
-  const filteredRequests =Req&&Req
-    .filter((req) => {
-      if (category !== "All" && req.cat_name !== category) return false
+  const filteredRequests =
+  Req &&
+  Req.filter((req) => {
+    /* ---------- Category ---------- */
+    if (
+      category !== "All" &&
+      req.cat_name !== category
+    ) {
+      return false
+    }
 
-      if (
-        employee &&
-        !req.employee.toLowerCase().includes(employee.toLowerCase())
+    /* ---------- Employee ---------- */
+    if (
+      employee &&
+      !req.emp_name
+        ?.toLowerCase()
+        .includes(employee.toLowerCase())
+    ) {
+      return false
+    }
+
+    /* ---------- Amount ---------- */
+    const amountNumber = Number(req.expense?.amount || 0)
+
+    if (amountNumber < minAmount || amountNumber > maxAmount) {
+      return false
+    }
+
+    return true
+  }).sort((a, b) => {
+    if (sortBy === "Amount") {
+      return (
+        Number(b.expense.amount) -
+        Number(a.expense.amount)
       )
-        return false
+    }
 
-      const amountNumber = Number(req.amount?.replace(/[^0-9.]/, ""))
-      if (amountNumber < minAmount || amountNumber > maxAmount) return false
-
-      return true
-    })
-    .sort((a, b) => {
-      if (sortBy === "Amount") {
-        return (
-          Number(b.amount.replace(/[^0-9.]/g, "")) -
-          Number(a.amount.replace(/[^0-9.]/g, ""))
-        )
-      }
-      return new Date(b.date) - new Date(a.date)
-    })
+    return (
+      new Date(b.expense.date) -
+      new Date(a.expense.date)
+    )
+  })
 
   return (
   <div className="flex-1 bg-[#fefdfc] min-h-screen">
@@ -287,7 +312,7 @@ export default function ValidatorDashboard() {
           <h1 className="text-xl font-semibold text-gray-900">
             Validator Dashboard
           </h1>
-          <p className="text-xs text-orange-700 mt-1">
+          <p className="text-sm text-orange-700 mt-1">
             Pre-validate employee expense requests before finance review
           </p>
         </div>
@@ -299,7 +324,7 @@ export default function ValidatorDashboard() {
       </section>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 shadow lg:grid-cols-4 gap-6">
         <StatCard
           icon={<FileText />}
           title="Total Pending Items"
@@ -334,66 +359,124 @@ export default function ValidatorDashboard() {
         />
       </div>
 
+      
       {/* Filters */}
-      <div className="bg-white border border-orange-100 rounded-2xl p-5 shadow-sm space-y-4">
+      <div className="bg-white border border-orange-100 rounded-2xl p-5 shadow-sm space-y-5">
+        {/* Header */}
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-gray-900">
             Pending Requests
           </h2>
-          <span className="text-xs bg-orange-100 text-orange-700 px-3 py-1 rounded-full">
+          <span className="text-[11px] bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-medium">
             {filteredRequests?.length} requests
           </span>
         </div>
 
+        {/* Filters Grid */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-          <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-            className="input text-xs"
-          >
-            <option>All</option>
-            <option>Voucher</option>
-            <option>Expense</option>
-          </select>
+          {/* Category */}
+          <div className="relative">
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="
+                w-full appearance-none rounded-xl
+                border border-orange-200 bg-white
+                px-4 py-2.5 text-xs text-gray-700
+                shadow-sm transition-all duration-200
+                hover:border-orange-300
+                focus:outline-none focus:ring-2 focus:ring-orange-200
+              "
+            >
+              {categories.map((cat) => (
+                <option className="rounded-xl bg-white text-orange-400 hover:bg-orange-300"key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
 
+            <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-orange-400 text-[10px]">
+              ▼
+            </span>
+          </div>
+
+          {/* Employee search */}
           <input
             type="text"
-            placeholder="Search employee..."
+            placeholder="Search employee…"
             value={employee}
             onChange={(e) => setEmployee(e.target.value)}
-            className="input text-xs"
+            className="
+              w-full rounded-xl border border-orange-200
+              px-4 py-2.5 text-xs text-gray-700
+              shadow-sm transition-all duration-200
+              placeholder:text-gray-400
+              hover:border-orange-300
+              focus:outline-none focus:ring-2 focus:ring-orange-200
+            "
           />
 
+          {/* Date */}
           <input
             type="date"
-            className="input text-xs"
+            className="
+              w-full rounded-xl border border-orange-200
+              px-4 py-2.5 text-xs text-gray-700
+              shadow-sm transition-all duration-200
+              hover:border-orange-300
+              focus:outline-none focus:ring-2 focus:ring-orange-200
+            "
           />
 
+          {/* Amount range */}
           <div className="flex gap-2">
             <input
               type="number"
               value={minAmount}
               onChange={(e) => setMinAmount(e.target.value)}
-              className="input text-xs"
+              placeholder="Min"
+              className="
+                w-full rounded-xl border border-orange-200
+                px-3 py-2.5 text-xs text-gray-700
+                shadow-sm transition-all duration-200
+                hover:border-orange-300
+                focus:outline-none focus:ring-2 focus:ring-orange-200
+              "
             />
             <input
               type="number"
               value={maxAmount}
               onChange={(e) => setMaxAmount(e.target.value)}
-              className="input text-xs"
+              placeholder="Max"
+              className="
+                w-full rounded-xl border border-orange-200
+                px-3 py-2.5 text-xs text-gray-700
+                shadow-sm transition-all duration-200
+                hover:border-orange-300
+                focus:outline-none focus:ring-2 focus:ring-orange-200
+              "
             />
           </div>
 
+          {/* Sort */}
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="input text-xs"
+            className="
+              w-full appearance-none rounded-xl
+              border border-orange-200 bg-white
+              px-4 py-2.5 text-xs text-gray-700
+              shadow-sm transition-all duration-200
+              hover:border-orange-300
+              focus:outline-none focus:ring-2 focus:ring-orange-200
+            "
           >
             <option>Date Submitted</option>
             <option>Amount</option>
           </select>
         </div>
       </div>
+
 
       {/* Table */}
       {filteredRequests == undefined ? (
@@ -419,7 +502,7 @@ export default function ValidatorDashboard() {
                   ].map((h) => (
                     <th
                       key={h}
-                      className="px-4 py-3 font-semibold text-left"
+                      className={`px-4 py-3 font-semibold text-left ${h == 'Details'?"w-5":"w-5"}`}
                     >
                       {h}
                     </th>

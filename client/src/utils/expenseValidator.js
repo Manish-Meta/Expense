@@ -6,7 +6,7 @@ export function validateExpense(amount, category) {
   if (amount > category.limit) {
     return {
       valid: false,
-      message: `Amount exceeds ${category.currency}${category.limit} ${category.limitType.replace("_", " ")} limit`,
+      message: `Amount exceeds ${category.currency}${category.limit}} limit`,
     }
   }
 
