@@ -1,13 +1,12 @@
-const { eq } = require('drizzle-orm')
+const { eq, and } = require('drizzle-orm')
 const {db}=require('../db/db')
 const {category}=require('../model/expense/category')
 const {allow_category}=require('../model/user/allowed_category')
 const { date } = require('drizzle-orm/mysql-core')
 
-const cre_category=async(req,res)=>{
+const cre_category=async(req,res,next)=>{
     try{
         const id=req.user
-        console.log(id," : id")
         const {cat_name,limit,rec_req,is_active,description}=req.body
         if(!cat_name || !limit){
             return res.status(400).json({
@@ -27,23 +26,20 @@ const cre_category=async(req,res)=>{
             result
         })
     }catch(err){
-        console.log(err)
-        res.status(500).json({
-            msg:"internal server error"
-        })
+        next(err)
     }
 }
 
-const show_category=async(req,res)=>{
+const show_category=async(req,res,next)=>{
     try{
         const id=req.user
-        console.log(" id : ",id)
         if(!id){
             return res.status(400).json({
                 msg:'invalid data'
             })
         }
-        const result=await db.select({name:category.cat_name,id:category.category_id,description:category.description,limit:category.limit,is_active:category.is_active,receipt_req:category.rec_req}).from(category).where(eq(category.profile_id,id))
+
+        const result=await db.select({cat_name:category.cat_name,id:category.category_id,description:category.description,limit:category.limit,is_active:category.is_active,rec_req:category.rec_req}).from(category).where(eq(category.profile_id,id))
         if(!result){
             return res.status(400).json({
                 msg:"the empty, go to add category"
@@ -54,14 +50,11 @@ const show_category=async(req,res)=>{
             data:result
         })
     }catch(err){
-        console.log(err);
-        res.status(500).json({
-            msg:"internal server error"
-        })
+        next(err)
     }
 }
 
-const delete_category=async(req,res)=>{
+const delete_category=async(req,res,next)=>{
     try{
         const {id}=req.params
         if(!id){
@@ -79,14 +72,11 @@ const delete_category=async(req,res)=>{
             msg:"category deleted"
         })
     }catch(err){
-        console.log(err);
-        res.status(500).json({
-            msg:"internal server error"
-        })
+        next(err)
     }
 }
 
-const update_category=async(req,res)=>{
+const update_category=async(req,res,next)=>{
     try{
         const {id}=req.params
         const {cat_name,limit,rec_req,is_active,description}=req.body
@@ -98,11 +88,11 @@ const update_category=async(req,res)=>{
         const result=await db.update(category).set({
             cat_name:cat_name?cat_name:category.cat_name,
             limit:limit?limit:category.limit,
-            rec_req:rec_req?rec_req:category.rec_req,
-            is_active:is_active?is_active:category.is_active,
-            description:description?description:category.description
-        })
-        console.log(result," : result")
+            rec_req:rec_req!=undefined?rec_req:category.rec_req,
+            is_active:is_active!=undefined?is_active:category.is_active,
+            description:description?description:category.description,
+            updated_at:new Date()
+        }).where(eq(category.category_id,id))
         if(!result){
             return res.status(400).json({
                 msg:'Data not updated'
@@ -113,14 +103,11 @@ const update_category=async(req,res)=>{
         })
 
     }catch(err){
-        console.log("err : ",err)
-        res.status(500).json({
-            msg:'Internal server error'
-        })
+        next(err)
     }
 }
 
-const permission_cat=async(req,res)=>{
+const permission_cat=async(req,res,next)=>{
     try{
         const id=req.user
         let send_category=[]
@@ -146,11 +133,25 @@ const permission_cat=async(req,res)=>{
             date:send_category
         })
     }catch(err){
-        console.log(err)
-        res.status(500).json({
-            msg:'internal server error'
-        })
+        next(err)
     }
 }
 
-module.exports={cre_category,show_category,delete_category,update_category,permission_cat}
+const all_category=async(req,res,next)=>{
+    try{
+        const id=req.user
+        const list_of_category=await db.select({id:category.category_id,name:category.cat_name}).from(category).where(and(eq(category.profile_id,id),eq(category.is_active,true)))
+        if(list_of_category.length==0){
+            return res.status(200).json({
+                msg:'The category is empty go to add the category'
+            })
+        }
+        res.status(200).json({
+            msg:'category',
+            list_of_category
+        })
+    }catch(err){
+        next(err)
+    }
+}
+module.exports={cre_category,show_category,delete_category,update_category,permission_cat,all_category}

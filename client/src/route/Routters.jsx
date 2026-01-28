@@ -12,6 +12,7 @@ import AdminDashboard from '../pages/Admin/AdminDashboard'
 import AdminConfig from '../pages/Admin/Configuration/AdminConfig'
 import NotFound from '../pages/NotFoundPage'
 import Apporvals from '../pages/Admin/Apporvals/Apporvals'
+import ExpenseReview from '../pages/Validator/ExpenseReview'
 
 const Routters = () => {
 const {selectedrole, localSelectedRole} = useGlobalContext()
@@ -31,6 +32,7 @@ const dashboardConfig = {
     routes: [
       { path: "dashboard", label: "Dashboard", element: <ValidatorDashboard /> },
       { path: "history", label: "history", element: <ValidatorReport /> },
+      {path: "review/:id",label:"review expense",element:<ExpenseReview/>},
         { path: "*", label: "Report", element: <NotFound/> }
     ]
   },

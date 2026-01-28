@@ -85,6 +85,76 @@
       "when": 1769087209177,
       "tag": "0011_blushing_marvel_apes",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1769157386948,
+      "tag": "0012_nervous_kylun",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1769163681377,
+      "tag": "0013_mute_scalphunter",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1769165020846,
+      "tag": "0014_typical_jasper_sitwell",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1769165076673,
+      "tag": "0015_curvy_runaways",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1769165522830,
+      "tag": "0016_previous_eternals",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1769166309315,
+      "tag": "0017_loud_butterfly",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1769169239460,
+      "tag": "0018_odd_iron_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1769327683854,
+      "tag": "0019_damp_meteorite",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1769505767782,
+      "tag": "0020_known_sheva_callister",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1769509821266,
+      "tag": "0021_late_puma",
+      "breakpoints": true
     }
   ]
 }

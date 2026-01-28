@@ -1,0 +1,1 @@
+ALTER TABLE "security" ADD COLUMN "founder" varchar(20);

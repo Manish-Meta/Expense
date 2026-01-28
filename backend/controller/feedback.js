@@ -1,7 +1,7 @@
 const {db}=require('../db/db')
 const {feedback}=require('../model/feedback')
 
-const add_feedback=async(req,res)=>{
+const add_feedback=async(req,res,next)=>{
     try{
         const{msg,rating}=req.body
         const id=req.user
@@ -26,14 +26,11 @@ const add_feedback=async(req,res)=>{
             msg:'Thanks for your valid feedback'
         })
     }catch(err){
-        console.log(err)
-        res.status(500).json({
-            msg:'internal server error'
-        })
+        next(err)
     }
 }
 
-const show_feedback=async(req,res)=>{
+const show_feedback=async(req,res,next)=>{
     try{
         const feedback_detail=await db.select().from(feedback)
         if(!feedback_detail){
@@ -45,10 +42,7 @@ const show_feedback=async(req,res)=>{
             feedback_detail
         })
     }catch(err){
-        console.log(err)
-        res.status(500).json({
-            msg:'internal server err'
-        })
+        next(err)
     }
 }
 

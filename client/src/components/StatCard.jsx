@@ -7,16 +7,16 @@ export function StatCard({ icon, title, value, sub, footer, color }) {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-[#f3d7b6] p-6">
-      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${colorMap[color]}`}>
+    <div className="bg-white rounded-2xl border h-45 border-[#f3d7b6] p-3">
+      <div className={`w-5 h-5 rounded-xl flex items-center justify-center ${colorMap[color]}`}>
         {icon}
       </div>
 
-      <p className="text-orange-700 font-medium mt-5">{title}</p>
-      <h2 className="text-3xl font-bold text-gray-900 mt-2">{value}</h2>
-      <p className="text-sm text-gray-600 mt-1">{sub}</p>
+      <p className="text-orange-700 text-sm font-medium mt-5">{title}</p>
+      <h2 className="text-xl font-bold text-gray-900 mt-2">{value}</h2>
+      <p className="text-xs text-gray-600 mt-1">{sub}</p>
 
-      <p className="text-sm text-green-600 mt-3">{footer}</p>
+      <p className="text-xs text-green-600 mt-3">{footer}</p>
     </div>
   )
 }

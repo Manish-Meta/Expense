@@ -1,1 +1,1 @@
-ALTER TYPE "public"."status" ADD VALUE 'Submited' BEFORE 'Approved';
+-- ALTER TYPE "public"."status" ADD VALUE 'Submited' BEFORE 'Approved';

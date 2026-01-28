@@ -4,7 +4,7 @@ const {applicability_rule}=require('../model/workflow/applicability_rule')
 const {approvel_history}=require('../model/workflow/workflow')
 const { eq } = require('drizzle-orm')
 
-const create_workflow=async(req,res)=>{
+const create_workflow=async(req,res,next)=>{
     try{
         const {
             work_name,
@@ -68,12 +68,22 @@ const create_workflow=async(req,res)=>{
                     sms_remainder:sms_remainder,
                     applicability_rule:rules[0]?.rule_id
                 }).returning()
+                let stage_id=1111
+                let add_id=false
+                let stage_data=await table.select({id:approval_stage.stage_id}).from(approval_stage)
+                if(stage_data[stage_data.length-1]?.id){
+                    stage_data=stage_data[stage_data.length-1].id.split('_')[2]
+                    stage_id=Number(stage_data)
+                    add_id=true
+                }
                 for(let stage of approval){
+                    stage_id+=1;
                     let value=await table.insert(approval_stage).values({
                         workflow_id:work_id,
                         approver_type:stage?.approver_type,
                         stage_name:stage?.stage_name,
-                        processing_time:stage?.process_time
+                        processing_time:stage?.process_time,
+                        stage_id:add_id?`AS_${stage_id}`:`AS_${stage_id}`
                     })
                     if(!value){
                         table.rollback()
@@ -95,14 +105,11 @@ const create_workflow=async(req,res)=>{
             })
 
     }catch(err){
-        console.log("err : ",err)
-        res.status(500).json({
-            msg:'internal server error'
-        })
+        next(err)
     }
 }
 
-const show_workflow=async(req,res)=>{
+const show_workflow=async(req,res,next)=>{
     try{
         const id=req.user
         if(!id){
@@ -114,7 +121,6 @@ const show_workflow=async(req,res)=>{
         .innerJoin(applicability_rule,eq(applicability_rule.applicability_id,approvel_history.applicability_rule))
         .innerJoin(approval_stage,eq(approval_stage.workflow_id,approvel_history.work_flow_id))
         .where(eq(approvel_history.profile_id,id))
-        console.log("result : ",result)
         if(!result){
             return res.status(400).json({
                 msg:'The workflow is empty'
@@ -125,14 +131,11 @@ const show_workflow=async(req,res)=>{
             result
         })
     }catch(err){
-        console.log(err)
-        res.status(500).json({
-            msg:'internal server error'
-        })
+        next(err)
     }
 }
 
-const update_workflow=async(req,res)=>{
+const update_workflow=async(req,res,next)=>{
     try{
         const {id}=req.params
         const {
@@ -152,10 +155,7 @@ const update_workflow=async(req,res)=>{
             approve_stage
         }=req.body
     }catch(err){
-        console.log(err)
-        res.status(500).json({
-            msg:'internal server error'
-        })
+        next(err)
     }
 }
 module.exports={create_workflow,show_workflow}
