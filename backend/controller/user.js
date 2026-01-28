@@ -3,7 +3,7 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const {profile}=require('../model/user/profile')
 const {user}=require('../model/user/user')
-const {sql,eq}=require('drizzle-orm')
+const {sql,eq,and}=require('drizzle-orm')
 const {DrizzleQueryError}=require('drizzle-orm')
 const {encrypt,decrypt} = require('../midleware/pass_enc')
 const {token_generate} = require('../midleware/jwt')
@@ -13,7 +13,7 @@ const { dept } = require('../model/user/dept')
 const {allow_category}=require('../model/user/allowed_category')
 const {employee_config}=require('../model/user/emp_config')
 const {valitador_config}=require('../model/user/validator_config')
-const {signup_emp,signup_user,user_id,user_login,add_validator}=require('../zod_schema/user_schema')
+const {signup_emp,signup_user,user_id,user_login,new_validator}=require('../zod_schema/user_schema')
 
 
 const generate_emp_id=async(req,res,next)=>{
@@ -61,9 +61,12 @@ const generate_dept=async(req,res,next)=>{
 const signup=async(req,res,next)=>{
     try{
         const sighnup_cre=signup_user.safeParse(req.body)
+        console.log(sighnup_cre.data)
         if(!sighnup_cre.success){
             return res.status(400).json({
-                msg:'invalid data formate'
+                msg:'invalid data formate',
+                err:sighnup_cre.error
+
             })
         }
         const {emp_id,email,dept_id,full_name,emp_status,welcome_email}=sighnup_cre.data
@@ -79,45 +82,40 @@ const signup=async(req,res,next)=>{
 
         // craete new user or new admin account
         if(emp_status!='validator'){
-        const user_detail=await table.select().from(profile).where(eq(profile.profile_id,emp_id))
-        if(user_detail.length!=0){
-            return res.status(400).json({
-                msg:"The user already existing"
-            })
-        }
-        const role_detail=await table.select({role_id:roles.role_id}).from(roles).where(eq(roles.role_name,emp_status))
-         if(!role_detail){
-            return res.status(404).json({
-                     msg:'Invalid role or something went wrong'
-                    })
-         }
-         
-         const pro=await table.insert(profile).values({
-             profile_id:emp_id,
-             email:email,
-             full_name:full_name,
-             username:full_name,
-             dept_id:dept_id,
-            })
 
-        // adding emp credential like password
-            const password=emp_id
-            const hashpass=await encrypt(password)
-            let value=await db.select({user_id:user.user_id}).from(user)
-            let value_id='U_111111'
-            if(value[value.length-1]){
-                let gen_id=value[value.length-1].user_id.split('_')[1]
-                value_id=`U_${Number(gen_id)+1}`
+            // check the user already exsit or not
+            const user_detail=await table.select().from(profile).where(eq(profile.profile_id,emp_id))
+            if(user_detail.length!=0){
+                return res.status(400).json({
+                    msg:"The user already existing"
+                })
             }
-            const data=await db.insert(user).values({profile_id:emp_id,password_hash:hashpass,user_id:value_id})
+
+            // find the role detail
+            const role_detail=await table.select({role_id:roles.role_id}).from(roles).where(eq(roles.role_name,emp_status))
+            console.log(role_detail[0].role_id)
+            if(role_detail.length==0){
+                return res.status(404).json({
+                    msg:'Invalid role or something went wrong'
+                })
+            }
             
+             const pro=await table.insert(profile).values({
+                profile_id:emp_id,
+                email:email,
+                full_name:full_name,
+                username:full_name,
+                dept_id:dept_id,
+                })
+
+                const emp_role_detail=await table.insert(employee_roles).values({profile_id:emp_id,role_id:role_detail[0].role_id})
         }
 
-        const emp_role_detail=await table.insert(employee_roles).values({profile_id:emp_id,role_id:role_detail[0].role_id})
 
         // adding the emp/validator detaile based on the emp status
         if(emp_status=='employee'){
             const employee=signup_emp.safeParse(req.body)
+            console.log(employee.data)
             if(!employee.success){
                 return res.status(400).json({
                     msg:"Invalid data formate",
@@ -130,8 +128,6 @@ const signup=async(req,res,next)=>{
                     msg:"Invalid data"
                 })
             }
-            let password=emp_id
-            console.log("pass word : ",password)
             const emp=await table.insert(employee_config).values({
                 profile_id:emp_id,
                 reporting_manager:reporting_manager,
@@ -149,51 +145,9 @@ const signup=async(req,res,next)=>{
                     })
                 }
             }
-            const hashpass=await encrypt(password)
-            let value=await table.select({user_id:user.user_id}).from(user)
-            let value_id='U_111111'
-            if(value[value.length-1]){
-                let gen_id=value[value.length-1].user_id.split('_')[1]
-                value_id=`U_${Number(gen_id)+1}`
-            }
-            const data=await table.insert(user).values({profile_id:emp_id,password_hash:hashpass,user_id:value_id})
-            if(!data){
-                table.rollback()
-                return res.status(400).json({
-                    msg:'something went wrong'
-                })
-            }
 
-            if(!emp||!cat){
+            if(emp.rowCount==0){
                 table.rollback()
-                return res.status(400).json({
-                    msg:"Invalid data"
-                })
-            }
-        }
-        else if(emp_status=='validator'){
-            let validator=add_validator.safeParse(req.body)
-            if(!validator.success){
-                return res.status(400).json({
-                    msg:'invalid data formate',
-                    err:validator.error.flatten()
-                })
-            }
-            const {validator_scope,approve_limit,priority_level,notify}=validator.data;
-            if(!validator_scope||!approve_limit||!priority_level){
-                return res.status(400).json({
-                    msg:"Invalid data"
-                })
-            }
-            const val=await table.insert(valitador_config).values({
-                profile_id:emp_id,
-                validation_scope:validator_scope,
-                approval_limit:approve_limit,
-                priority_level:priority_level,
-                notify:notify
-            })
-            if(!val){
-                table.rollback();
                 return res.status(400).json({
                     msg:"Invalid data"
                 })
@@ -209,8 +163,20 @@ const signup=async(req,res,next)=>{
         
         return true
         })
-    
-        if(!finish){
+
+        // adding emp credential like password
+                const password=emp_id
+                const hashpass=await encrypt(password)
+                let value=await db.select({user_id:user.user_id}).from(user)
+                let value_id='U_111111'
+                if(value[value.length-1]){
+                    let gen_id=value[value.length-1].user_id.split('_')[1]
+                    value_id=`U_${Number(gen_id)+1}`
+                }
+                const data=await db.insert(user).values({profile_id:emp_id,password_hash:hashpass,user_id:value_id})
+            
+        
+        if(!finish||data.rowCount==0){
             return res.status(400).json({
                 msg:'Invalid data'
             })
@@ -223,6 +189,63 @@ const signup=async(req,res,next)=>{
     }
 }
 
+const add_validator=async(req,res,next)=>{
+    try{
+         let validator=new_validator.safeParse(req.body)
+            if(!validator.success){
+                return res.status(400).json({
+                    msg:'invalid data formate',
+                    err:validator.error
+                })
+            }
+            const {emp_id,validator_scope,approve_limit,priority_level,emp_status,notify}=validator.data;
+            console.log(validator.data)
+            if(!validator_scope||!approve_limit||!priority_level||!emp_status){
+                return res.status(400).json({
+                    msg:"Invalid data"
+                })
+            }
+            const result=await db.transaction(async(table)=>{
+                const val=await table.insert(valitador_config).values({
+                    profile_id:emp_id,
+                    validation_scope:validator_scope,
+                    approval_limit:approve_limit,
+                    priority_level:priority_level,
+                    notify:notify
+                })
+
+                const role_detail=await table.select({role_id:roles.role_id}).from(roles).where(eq(roles.role_name,emp_status))
+                console.log(role_detail[0].role_id)
+                if(role_detail.length==0){
+                    table.rollback()
+                    return res.status(404).json({
+                        msg:'Invalid role or something went wrong'
+                    })
+                }
+
+                const emp_role_detail=await table.insert(employee_roles).values({profile_id:emp_id,role_id:role_detail[0].role_id})
+                if(!val){
+                    table.rollback();
+                    return res.status(400).json({
+                        msg:"Invalid data"
+                    })
+                }
+                return true
+            })
+            if(!result){
+                return res.status(400).json({
+                    msg:"Bad request"
+                })
+            }
+            res.status(200).json({
+                msg:'validator added'
+            })
+    }catch(err){
+        next(err)
+    }        
+}
+
+
  const login=async(req,res,next)=>{
     try{
         const {emp_id,password,emp_status}=req.body;
@@ -231,11 +254,24 @@ const signup=async(req,res,next)=>{
         //         msg:"Some data missing"
         //     })
         // }
-        const details=await db.select({roles:roles}).from(profile)
+        const details=await db.select({roles:roles.role_name}).from(profile)
         .innerJoin(employee_roles,eq(employee_roles.profile_id,emp_id))
         .innerJoin(roles,eq(roles.role_id,employee_roles.role_id))
         .where(eq(profile.profile_id,emp_id))
-        if(!details || details[0].roles.role_name!=emp_status){
+        if(!details){
+            res.status(403).json({
+                msg:"Unauthorzied Access"
+            })
+            return
+        }
+        let check=false
+        for(let val of details){
+            if(val.roles==emp_status){
+                check=true
+                break
+            }
+        }
+        if(!check){
             res.status(403).json({
                 msg:"Unauthorzied Access"
             })
@@ -243,6 +279,7 @@ const signup=async(req,res,next)=>{
         }
 
         const user_detail=await db.select().from(user).where(eq(user.profile_id,emp_id))
+       
         if(user_detail.length==0){
             res.status(404).json({
                 msg:"User not found"
@@ -263,8 +300,7 @@ const signup=async(req,res,next)=>{
             })
         }
         res.status(200).json({
-            msg:"user logined successfully",
-            token:val
+            msg:"user logined successfully"  
         })
     }catch(err){
         next(err)
@@ -278,12 +314,13 @@ const forget_pass=async(req,res,next)=>{
  const my_profile=async(req,res,next)=>{
     try{
         const id = req.user
+        const {emp_status}=req.query
         const result=await db.select({profile:profile,dept_name:dept.name,roles_name:roles.role_name}).from(profile)
         .innerJoin(dept,eq(dept.deptartment_id,profile.dept_id))
-        .innerJoin(employee_roles,eq(employee_roles.profile_id,id))
-        .innerJoin(roles,eq(employee_roles.role_id,roles.role_id))
+        .innerJoin(roles,eq(roles.role_name,emp_status))
+        .innerJoin(employee_roles,and(eq(employee_roles.profile_id,id),eq(employee_roles.role_id,roles.role_id)))
         .where(eq(profile.profile_id,id))
-        if(!result){
+        if(result.length==0){
             return res.status(404).json({
                 msg:"user not found"
             })
@@ -383,7 +420,6 @@ const search_employee_ids = async (req, res) => {
   res.json(data);
 };
 
-
 const bulk_role = async (req, res) => {
   const { emp_ids, role_name } = req.body;
   console.log(req.body);
@@ -403,5 +439,5 @@ const bulk_role = async (req, res) => {
   res.status(200).json({ msg: "Roles assigned successfully" });
 };
 
-module.exports={signup,login,logout,my_profile,user_overview,import_csv,export_csv,bulk_role,generate_emp_id,search_employee_ids,generate_dept}
+module.exports={signup,login,logout,my_profile,user_overview,import_csv,export_csv,bulk_role,generate_emp_id,search_employee_ids,generate_dept,add_validator}
 

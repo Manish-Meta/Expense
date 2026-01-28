@@ -17,18 +17,20 @@ const signup_emp=z.object({
     password:z.string().optional()
 })
 
-const add_validator=z.object({
+const new_validator=z.object({
+    emp_id:z.string(),
     validator_scope:z.string(),
     approve_limit:z.number(),
     priority_level:z.string(),
-    notify:z.boolean()
+    notify:z.boolean(),
+    emp_status:z.string()
 })
 
 const user_enum=z.enum(['employee','validator','admin','vendor'])
 
 const user_login=z.object({
     emp_id:z.string(),
-    password:z.number().min(5),
+    password:z.string(),
     emp_status:user_enum
 })
 
@@ -37,4 +39,4 @@ const user_id=z.object({
 })
 
 
-module.exports={signup_user,signup_emp,add_validator,user_login,user_id}
+module.exports={signup_user,signup_emp,user_login,user_id,new_validator}
