@@ -6,6 +6,8 @@ const {advance_option}=require('../model/expense/advance_option')
 const {loc}=require('../model/location')
 const { eq,ne } = require('drizzle-orm')
 const {valitador_config}=require('../model/user/validator_config')
+const { sendEmailProcess } = require('../utils/emailTemplateSelection')
+const { profile } = require('../model/user/profile')
 
 const new_expense=async(req,res)=>{
     try{
@@ -44,10 +46,13 @@ const new_expense=async(req,res)=>{
                 const option=await table.insert(advance_option).values({advance_opt_id:adv_id,project_name:project,payment_method:pay_met,attendees:attendee,billable_client:billable_client,location:loc_id})
             }
             const exp_detail=await table.select({id:expense.exp_id}).from(expense)
+            const user_data=await table.select().from(profile).where(eq(profile.profile_id,id))
             if(exp_detail[exp_detail.length-1]){
                 let uniq=exp_detail[exp_detail.length-1].id.split('_')[1]
                 new_id=`EXP_${Number(uniq)+1}`
             }
+
+
             const result=await table.insert(expense).values({
                 profile_id:id,
                 exp_id:new_id,
@@ -67,7 +72,16 @@ const new_expense=async(req,res)=>{
                 return res.status(400).json({
                     msg:'inavlid'
                 })
+
             }
+
+            const data ={
+    userName: user_data.full_name,
+    email:user_data.email,
+    status: "Pending",
+    date: new Date().toDateString()
+  }
+            sendEmailProcess("Expense_Submitted",data )
             const sta=await table.insert(expense_approve_history).values({
                 profile_id:id,
                 exp_id:new_id,

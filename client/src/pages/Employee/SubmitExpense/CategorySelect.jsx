@@ -144,10 +144,9 @@ category={cat.category}
 onSelect={onSelect}
 category_id = {cat.category_id}
           />
-        ))
-      
-      :(<p>No Data found</p>)}
-      </div>
+        ))}
+  </div>
+  
 
      
       <div className="mt-12 rounded-2xl bg-gradient-to-r from-blue-50 to-white p-8 border border-blue-100">

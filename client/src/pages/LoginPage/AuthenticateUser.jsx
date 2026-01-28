@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useGlobalContext from "../../config/GlobalStateContext";
 import { useNavigate } from "react-router-dom";
-import { Check, Info, LockKeyhole, ShieldCheck, User2Icon, UserCheck2, UserCheck2Icon } from "lucide-react";
+import { Check, IndianRupee, Info, LockKeyhole, ReceiptIndianRupee, ShieldCheck, User2Icon, UserCheck2, UserCheck2Icon } from "lucide-react";
 
 
 export default function LoginPage() {
@@ -34,7 +34,7 @@ const APIs = import.meta.env.VITE_BACKEND_URL
     })
       .then((e2) => {
         if (e2.status == 200) {
-          fetch(`${APIs}user/profile`, {
+          fetch(`${APIs}user/profile?emp_status=${selectedrole}`, {
           method:"GET",
           credentials:'include'})
           .then((e)=> e.json())
@@ -70,6 +70,7 @@ const APIs = import.meta.env.VITE_BACKEND_URL
           setErrorCode("")
         },3000)
         setLoginLoading(false)})
+    
   };
 
   console.log(userData);
@@ -106,12 +107,15 @@ const Icon = matchedEmpData[0]?.icon;
 <div className="text-white space-y-4  max-w-2xl mx-auto">
    <div className=" pt-2  flex flex-col self-start ">
         <div className="flex items-center gap-2">
-         <p className=" w-12 h-12 flex items-center justify-center rounded-xl bg-orange-100 text-orange-600 text-xl font-bold"> EF</p>
+         <p className=" w-12 h-12 flex items-center justify-center rounded-xl bg-orange-500 text-white text-xl font-bold"> 
+          <ReceiptIndianRupee className="
+           size-8"/> </p>
 
          <div className="f">
-           <h2 className="text-sm font-medium ">
-          ExpenseFlow
+           <h2 className="text-xl font-bold ">
+          Xpenra
         </h2>
+        <p className="text-xs">Expense suite</p>
         
          </div>
         </div>
@@ -125,32 +129,36 @@ Expense Management</h5>
 <p className="font-bold opacity-80">Banking-grade expense platform with AI-powered validation, real-time approvals, and comprehensive compliance.</p>
 </div>
     </div>
-<div className="lg:w-1/2 w-full h-full  bg-orange-50   flex items-center flex-col">
+<div className="lg:w-1/2 w-full h-full pb-2  bg-orange-50   flex items-center flex-col">
 {/* Header */}
-<div className="mt-3 rounded-xl overflow-hidden">
-      <div className=" pt-2 pb-6 flex flex-col self-start ">
-        <div className="flex items-center gap-2">
-         <p className=" w-12 h-12 flex items-center justify-center rounded-xl bg-orange-100 text-orange-600 text-xl font-bold"> EF</p>
-
-         <div className="f">
-           <h2 className="text-xl  text-gray-900">
-          ExpenseFlow
+<div className="mt rounded-xl overflow-hidden">
+      <div className=" pt-2 pb-4 flex flex-col self-start ">
+        <div className="flex flex-col items-center ">
+        
+         <h2 className="text-xl font-bold ">
+          Welcome Back
         </h2>
         <p className="text-xs text-gray-500 mt-1">
           Sign in as <span className="font-medium text-orange-600">{selectedrole}</span>
         </p>
+        </div>
+        
          </div>
         </div>
         
-        
-      </div>
 
-  <div className=" rounded-xl shadow-xl gap-2 flex bg-white justify-center flex-col border border-orange-200 ">
+
+  <div className=" rounded-xl shadow-xl gap-2 flex bg-white justify-center overflow-hidden flex-col border border-orange-200 ">
   
-      
+       
 
-      <div className="  rounded-2xl w-[400px]  ">
+      <div className="  rounded-2xl  w-[300px] sm:w-[400px]">
+         
+        {
+          LoginLoading &&  <div className="loader"></div>
       
+        }
+
          {/* tab */}
 
       <div className="grid grid-cols-3 place-items-center rounded-t-xl  gap-4 bg-gray-100">
@@ -181,7 +189,7 @@ onClick={()=> setSelectedRole("admin")}>
 
       </div>
 
-
+ 
 
   {/* hints */}
 
@@ -258,6 +266,7 @@ onClick={()=> setSelectedRole("admin")}>
         {/* Submit */}
         <button
           type="submit"
+         disabled={LoginLoading}
           className="w-full mt-2 rounded-lg bg-orange-500 py-2.5 font-medium
                      text-white flex justify-center gap-4 text-xs hover:bg-orange-600 active:scale-[0.98] transition"
         >
@@ -279,7 +288,7 @@ onClick={()=> setSelectedRole("admin")}>
     </div>
   </div></div>
   </div>
-  </div>
+  
 
 );
 
