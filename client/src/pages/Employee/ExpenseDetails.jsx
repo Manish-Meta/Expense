@@ -51,7 +51,7 @@ export const StatusConfig = {
     class: "bg-yellow-100 text-yellow-700",
     icon: Clock,
   },
-  Validated: {
+  Processing: {
     label: "Validated",
     class: "bg-green-100 text-green-700",
     icon: UserCheck,
@@ -80,7 +80,7 @@ export const StatusConfig = {
 
 /* ---------------- TIMELINE CONFIG ---------------- */
 
-const timelineSteps = ["Submitted", "Validated", "Approved"]
+const timelineSteps = ["Submission", "Validation", "Approval"]
 
 const stepUI = {
   done: {
@@ -108,18 +108,24 @@ export default function ExpenseDetails({ expense, onClose }) {
     const status = expense.status
 
     if (status === "Rejected") {
-      if (step === "Submitted") return "done"
-      if (step === "Validated") return "rejected"
+      if (step === "Submission") return "done"
+      if (step === "Validation") return "rejected"
       return "upcoming"
     }
 
     if (status === "Needs-info") {
-      if (step === "Submitted") return "done"
-      if (step === "Validated") return "pending"
+      if (step === "Submission") return "done"
+      if (step === "Validation") return "pending"
+      return "upcoming"
+    }
+     if (status === "Processing") {
+      if (step === "Submission") return "done"
+      if (step === "Validation") return "done"
+      if (step === "Approval") return "pending"
       return "upcoming"
     }
     if (status === "Pending") {
-      if (step === "Submitted") return "done"
+      if (step === "Submission") return "done"
       if (step === "Validated") return "pending"
       return "upcoming"
     }
@@ -194,7 +200,7 @@ export default function ExpenseDetails({ expense, onClose }) {
                 </p>
 
                 <p className="text-[10px] text-gray-500">
-                  {state !== "upcoming"
+                  {state !== "upcoming" && state == "done"
                     ? formatDate(
                         step === "Submitted"
                           ? expense.created_at
