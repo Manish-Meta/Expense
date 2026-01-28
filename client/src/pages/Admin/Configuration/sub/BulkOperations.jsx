@@ -21,6 +21,7 @@ const [empOptions, setEmpOptions] = useState([]);
   const [sendWelcome, setSendWelcome] = useState(true);
   const [enableNotif, setEnableNotif] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectPayload,setSelectPayload] = useState([])
 
   const [form, setForm] = useState({
     full_name: "",
@@ -53,12 +54,14 @@ if (!res.ok) return;
   const data = await res.json();
   setEmpOptions(data);
 };
-  const toggleCategory = (catName) => {
+  const toggleCategory = (catId) => {
   setSelectedCategories((prev) =>
-    prev.includes(catName)
-      ? prev.filter((c) => c !== catName)
-      : [...prev, catName]
+    prev.includes(catId)
+      ? prev.filter((c) => c !== catId)
+      : [...prev, catId]
+      
   );
+  console.log(selectedCategories)
 };
 
 
@@ -112,7 +115,16 @@ if (!res.ok) return;
     a.download = "users.csv";
     a.click();
   };
-
+  function add_category(cat_id){
+    if(selectPayload.includes(cat_id)){
+      let value=selectPayload.filter(res=>res!=cat_id)
+      setSelectPayload(value)
+      console.log(selectPayload)
+    }else{
+      selectPayload.push(cat_id)
+      console.log(selectPayload)
+    }
+  }
   const handleBulkRoleAssign = async () => {
     await fetch(`${import.meta.env.VITE_BACKEND_URL}user/bulk-role`, {
       method: "POST",
@@ -137,7 +149,7 @@ if (!res.ok) return;
   const cats = data.data || [];
 
   setDbCategories(cats);
-  setSelectedCategories(cats.map(cat => cat.cat_name)); 
+  setSelectedCategories(cats.map(cat => cat.cat_id)); 
 };
   const handleSendBulkInvites = async () => {
     await fetch(`${import.meta.env.VITE_BACKEND_URL}user/send-invites`, {
@@ -159,7 +171,7 @@ if (!res.ok) return;
             dept_id: form.dept_id,
             reporting_manager: form.reporting_manager,
             expense_limit: Number(form.expense_limit),
-            allow_cat: selectedCategories,
+            allow_cat: selectPayload,
             welcome_email: sendWelcome,
           }
         : {
@@ -171,6 +183,8 @@ if (!res.ok) return;
             priority_level: form.priority_level,
             notify: enableNotif,
           };
+
+      console.log(payload)
 
     const res = await fetch(
       `${import.meta.env.VITE_BACKEND_URL}user/signup`,
@@ -401,13 +415,13 @@ if (!res.ok) return;
     setSelectedCategories(
       selectedCategories.length === dbCategories.length
         ? []
-        : dbCategories.map((cat) => cat.cat_name)
+        : dbCategories.map((cat) => cat.cat_id)
     )
   }
   className={`px-3 py-1 rounded-full text-[11px] border ${
     selectedCategories.length === dbCategories.length
-      ? "bg-orange-500 text-white border-orange-500"
-      : "bg-white border-orange-200 mb-2"
+      ? "bg-orange-500 text-white border-orange-500 mb-2"
+      : "bg-white border-orange-200 mb-1"
   }`}
 >
   All Categories
@@ -416,13 +430,14 @@ if (!res.ok) return;
               {Array.isArray(dbCategories) &&
   dbCategories.map((cat) => {
     const name = cat.cat_name;
-    const isActive = selectedCategories.includes(name);
+    const id=cat.cat_id;
+    const isActive = selectedCategories.includes(id);
 
     return (
       <button
         key={cat.id}
         type="button"
-        onClick={() => toggleCategory(name)}
+        onClick={() => add_category(cat.id)}
         className={`px-3 py-1 rounded-full text-[11px] border ${
           isActive
             ? "bg-orange-500 text-white border-orange-500"

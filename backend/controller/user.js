@@ -13,6 +13,8 @@ const { dept } = require('../model/user/dept')
 const {allow_category}=require('../model/user/allowed_category')
 const {employee_config}=require('../model/user/emp_config')
 const {valitador_config}=require('../model/user/validator_config')
+const {signup_emp,signup_user,user_id,user_login,add_validator}=require('../zod_schema/user_schema')
+
 
 const generate_emp_id=async(req,res,next)=>{
     try{
@@ -58,14 +60,25 @@ const generate_dept=async(req,res,next)=>{
 
 const signup=async(req,res,next)=>{
     try{
-        const {emp_id,email,dept_id,full_name,allow_cat,emp_status,welcome_email}=req.body
-        console.log(allow_cat)
-        if(!emp_id||!email||!dept_id||!full_name||!emp_status){
+        const sighnup_cre=signup_user.safeParse(req.body)
+        if(!sighnup_cre.success){
+            return res.status(400).json({
+                msg:'invalid data formate'
+            })
+        }
+        const {emp_id,email,dept_id,full_name,emp_status,welcome_email}=sighnup_cre.data
+        console.log(sighnup_cre.data," : success : ",sighnup_cre.success," : err : ",sighnup_cre.error)
+        if(!emp_id||!dept_id||!emp_status){
             return res.status(400).json({
                 msg:"Invalid data's"
             })
         }
-       let finish=await db.transaction(async(table)=>{
+
+        // insert the data
+        let finish=await db.transaction(async(table)=>{
+
+        // craete new user or new admin account
+        if(emp_status!='validator'){
         const user_detail=await table.select().from(profile).where(eq(profile.profile_id,emp_id))
         if(user_detail.length!=0){
             return res.status(400).json({
@@ -78,34 +91,78 @@ const signup=async(req,res,next)=>{
                      msg:'Invalid role or something went wrong'
                     })
          }
+         
          const pro=await table.insert(profile).values({
              profile_id:emp_id,
              email:email,
              full_name:full_name,
              username:full_name,
              dept_id:dept_id,
-        })
-           
-           
+            })
+
+        // adding emp credential like password
+            const password=emp_id
+            const hashpass=await encrypt(password)
+            let value=await db.select({user_id:user.user_id}).from(user)
+            let value_id='U_111111'
+            if(value[value.length-1]){
+                let gen_id=value[value.length-1].user_id.split('_')[1]
+                value_id=`U_${Number(gen_id)+1}`
+            }
+            const data=await db.insert(user).values({profile_id:emp_id,password_hash:hashpass,user_id:value_id})
+            
+        }
+
         const emp_role_detail=await table.insert(employee_roles).values({profile_id:emp_id,role_id:role_detail[0].role_id})
+
+        // adding the emp/validator detaile based on the emp status
         if(emp_status=='employee'){
-            console.log(req.body)
-            const {reporting_manager,expense_limit,allow_cat}=req.body;
+            const employee=signup_emp.safeParse(req.body)
+            if(!employee.success){
+                return res.status(400).json({
+                    msg:"Invalid data formate",
+                    err:employee.error.flatten()
+                })
+            }
+            let {reporting_manager,expense_limit,allow_cat}=req.body;
             if(!reporting_manager||!expense_limit||!allow_cat){
                 return res.status(400).json({
                     msg:"Invalid data"
                 })
             }
+            let password=emp_id
+            console.log("pass word : ",password)
             const emp=await table.insert(employee_config).values({
                 profile_id:emp_id,
                 reporting_manager:reporting_manager,
                 monthly_limit:expense_limit
             })
-
-            const cat=await table.insert(allow_category).values({
-                profile_id:emp_id,
-                category:allow_cat
-            });
+            for(let cat of allow_cat){
+                let value=await table.insert(allow_category).values({
+                    profile_id:emp_id,
+                    category:cat
+                });
+                if(value.rowCount==0){
+                    table.rollback()
+                    return res.status(400).json({
+                        msg:'Invalid'
+                    })
+                }
+            }
+            const hashpass=await encrypt(password)
+            let value=await table.select({user_id:user.user_id}).from(user)
+            let value_id='U_111111'
+            if(value[value.length-1]){
+                let gen_id=value[value.length-1].user_id.split('_')[1]
+                value_id=`U_${Number(gen_id)+1}`
+            }
+            const data=await table.insert(user).values({profile_id:emp_id,password_hash:hashpass,user_id:value_id})
+            if(!data){
+                table.rollback()
+                return res.status(400).json({
+                    msg:'something went wrong'
+                })
+            }
 
             if(!emp||!cat){
                 table.rollback()
@@ -113,8 +170,16 @@ const signup=async(req,res,next)=>{
                     msg:"Invalid data"
                 })
             }
-        }else if(emp_status=='validator'){
-            const {validator_scope,approve_limit,priority_level,notify}=req.body;
+        }
+        else if(emp_status=='validator'){
+            let validator=add_validator.safeParse(req.body)
+            if(!validator.success){
+                return res.status(400).json({
+                    msg:'invalid data formate',
+                    err:validator.error.flatten()
+                })
+            }
+            const {validator_scope,approve_limit,priority_level,notify}=validator.data;
             if(!validator_scope||!approve_limit||!priority_level){
                 return res.status(400).json({
                     msg:"Invalid data"
@@ -133,23 +198,8 @@ const signup=async(req,res,next)=>{
                     msg:"Invalid data"
                 })
             }
-        }else{
-            const {password}=req.body
-            const hashpass=await encrypt(password)
-            let value=await table.select({user_id:user.user_id}).from(user)
-            let value_id='U_111111'
-            if(value[value.length-1]){
-                let gen_id=value[value.length-1].user_id.split('_')[1]
-                value_id=`U_${Number(gen_id)+1}`
-            }
-            const data=await table.insert(user).values({profile_id:emp_id,password_hash:hashpass,user_id:value_id})
-            if(!data){
-                table.rollback()
-                return res.status(400).json({
-                    msg:'something went wrong'
-                })
-            }
         }
+
         if(!pro){
             table.rollback()
             return res.status(400).json({
@@ -158,25 +208,16 @@ const signup=async(req,res,next)=>{
         }
         
         return true
-    })
-    const {password}=req.body
-    const hashpass=await encrypt(password)
-    let value=await db.select({user_id:user.user_id}).from(user)
-    let value_id='U_111111'
-    if(value[value.length-1]){
-        let gen_id=value[value.length-1].user_id.split('_')[1]
-        value_id=`U_${Number(gen_id)+1}`
-    }
-    const data=await db.insert(user).values({profile_id:emp_id,password_hash:hashpass,user_id:value_id})
-            
-    if(!finish){
-        return res.status(400).json({
-            msg:'Invalid data'
         })
-    }
-    res.status(200).json({
-        msg:"user inserted"
-    })
+    
+        if(!finish){
+            return res.status(400).json({
+                msg:'Invalid data'
+            })
+        }
+        res.status(200).json({
+            msg:"user inserted"
+        })
     }catch(err){
         next(err)
     }

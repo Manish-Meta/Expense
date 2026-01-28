@@ -11,6 +11,8 @@ const {signup,login,logout,my_profile,generate_emp_id,generate_dept}=require('..
 const {token_decode}=require('../midleware/jwt')
 const {user_overview}=require("../controller/user")
 const check_user=require('../midleware/checking_user')
+const validate=require('../midleware/zod_validation')
+const {user_id,user_login}=require('../zod_schema/user_schema')
 
 router.route('/signup').post(token_decode,check_user('admin'),signup)
 router.route('/login').post(login)

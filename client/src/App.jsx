@@ -12,6 +12,7 @@ import Routters from "./route/Routters"
 import ProtectedRoute from "./route/ProtectedRoute"
 import useGlobalContext from "./config/GlobalStateContext"
 import PublicRoute from "./route/PublicRoute"
+import NotFound from "./pages/NotFoundPage"
 // import useGlobalContext from './config/GlobalStateContext'
  
 
@@ -47,6 +48,7 @@ const App = () => {
       </Route>
     
 
+<Route path="*" element={<NotFound/>} />
         </Routes>
   ) 
 }
