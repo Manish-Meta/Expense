@@ -3,11 +3,18 @@ const {db}=require('../db/db')
 const {category}=require('../model/expense/category')
 const {allow_category}=require('../model/user/allowed_category')
 const { date } = require('drizzle-orm/mysql-core')
+const {new_category,exist_category}=require('../zod_schema/category_schema')
 
 const cre_category=async(req,res,next)=>{
     try{
         const id=req.user
-        const {cat_name,limit,rec_req,is_active,description}=req.body
+        let data=new_category.safeParse(req.body)
+        if(!data.success){
+            return res.status(400).json({
+                msg:"invalid format"
+            })
+        }
+        const {cat_name,limit,rec_req,is_active,description}=data.data
         if(!cat_name || !limit){
             return res.status(400).json({
                 msg:'Invalid data'
@@ -79,7 +86,13 @@ const delete_category=async(req,res,next)=>{
 const update_category=async(req,res,next)=>{
     try{
         const {id}=req.params
-        const {cat_name,limit,rec_req,is_active,description}=req.body
+        const recieved_data=exist_category.safeParse(req.body)
+        if(!recieved_data.success){
+            return res.status(400).json({
+                msg:'invalid format'
+            })
+        }
+        const {cat_name,limit,rec_req,is_active,description}=recieved_data.data
         if(!id){
             return res.status(404).json({
                 msg:"category not found"

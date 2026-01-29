@@ -38,5 +38,10 @@ const user_id=z.object({
     id:z.string()
 })
 
+const login_schema=z.object({
+    emp_id:z.string(),
+    password:z.string(),
+    emp_status:z.string()
+})
 
-module.exports={signup_user,signup_emp,user_login,user_id,new_validator}
+module.exports={signup_user,signup_emp,user_login,user_id,new_validator,login_schema}

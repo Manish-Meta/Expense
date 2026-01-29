@@ -5,6 +5,7 @@ const handle_error=(err,req,res,next)=>{
         msg:'Internal server error', 
     })
     }else{
+        console.log(err)
         return res.status(500).json({
             msg:'Internal error',
             stack:err.stack,

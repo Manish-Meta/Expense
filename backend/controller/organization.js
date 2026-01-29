@@ -5,10 +5,18 @@ const {currency}=require('../model/currency/currency')
 const { eq } = require("drizzle-orm");
 const add_secure_detail=require('../utils/add_security_detail')
 const {secure_password}=require('../model/secure')
- 
+const {org_detail}=require('../zod_schema/org_schema') 
+
 const create_org=async(req,res,next)=>{
   try{
     const file=req.file
+    let details=org_detail.safeParse(req.body)
+    if(!details.success){
+      return res.status(400).json({
+        msg:'Invalid formate'
+      })
+    }
+
     const {
       org_name,
       industry_type,
@@ -24,7 +32,7 @@ const create_org=async(req,res,next)=>{
       year,
       tax_jurisdiction,
       tax_cal
-    }=req.body
+    }=details.data
     const id=req.user
     if(!file||!id){
       return res.status(400).json({
