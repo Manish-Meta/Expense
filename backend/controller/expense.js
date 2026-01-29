@@ -418,8 +418,9 @@ const expense_validate=async(req,res,next)=>{
 
 const show_admin_expense=async(req,res,next)=>{
     try{
-        const admin_expenses=await db.select({expense:expense,cat_name:category.cat_name}).from(expense)
+        const admin_expenses=await db.select({expense:expense,cat_name:category.cat_name,name:profile.username}).from(expense)
         .innerJoin(category,eq(expense.cat_id,category.category_id))
+        .innerJoin(profile,eq(profile.profile_id,expense.profile_id))
         .where(or(eq(expense.status,'Escalated'),eq(expense.next_level,'Admin')))
         if(admin_expenses.length==0){
             return res.status(500).json({
