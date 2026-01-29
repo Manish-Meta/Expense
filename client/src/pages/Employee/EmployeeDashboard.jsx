@@ -1,8 +1,9 @@
-import { Album, ArrowUp, Calendar, CircleXIcon, DollarSign, Download, Edit2, Edit3, Eye, HdIcon, PlusCircle, Receipt, RefreshCw, Search, Ticket, TicketCheck, Timer, Clock, FileText } from 'lucide-react'
+import { ArrowUp, Calendar, CircleXIcon, DollarSign, Download, Edit3, Eye, PlusCircle, RefreshCw, Search, Ticket, TicketCheck, Timer  } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import useGlobalContext from '../../config/GlobalStateContext';
 import ExpenseDetails from './ExpenseDetails';
+import { formatDateTime } from '../../utils/dateFormater';
 
 const EmployeeDashboard = () => {
     const navigate=useNavigate()
@@ -199,6 +200,16 @@ console.log(filteredData)
 console.log(myExpenseData)
 
 
+
+// date
+
+const today = new Date().toLocaleDateString('en-GB', {
+  weekday:"short",
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric'
+});
+
   return (
    <div className='p-3 space-y-4 '>
        <section className='py-7 space-y-7 lg:space-y-0 bg-linear-to-r  from-orange-50 via-50% to-white border-[#d9770633]  borders p-4 rounded-md  lg:flex items-center justify-between '>
@@ -210,7 +221,7 @@ console.log(myExpenseData)
 
                 <div className="space-y-">
                     <h1 className='font-semibold text-2xl'>Hi 👋, <span className='text-orange-600'>{userData?.profile?.full_name}</span></h1>
-                    <p className='text-sm font-medium text-[#653600f2]'>Welcome to your expense dashboard • Wednesday, January 7, 2026</p>
+                    <p className=''>Welcome to your expense dashboard <span className='text-lg ml-2'>•{today}</span></p>
                 </div>
                  </div>
                     {/* buttons for applies */}
@@ -341,8 +352,8 @@ ctg?.map((e)=>(
           <span
             className={`px-2 py-1 rounded text-[8px] font-medium
               ${
-                (e.expense.status) == "paid"
-                  ? "bg-green-100 text-green-700 border border-green-200"
+                (e.expense.status.toLocaleLowerCase()) == "paid"
+                  ? "bg-green-100 text-green-700 border border-green-800"
                   : e.expense.status.toLocaleLowerCase() == "pending"
                   ? "bg-yellow-100 text-yellow-700 border border-yellow-300"
                   : e.expense.status.toLocaleLowerCase() == "rejected"
@@ -379,14 +390,14 @@ ctg?.map((e)=>(
 
     </section>
     {openExpense && (
-      <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center">
+      <div className="fixed inset-0 z-50 w-full mx-auto bg-black/30 flex items-center justify-center">
     {/* Expense Page Container */}
-    <div className="w-full max-w-6xl h-[90vh] bg-[#fff7ed] rounded-2xl shadow-xl overflow-y-auto relative">
+    <div className="w-full max-w-md mx-auto h-fit bg-[#fff7ed] rounded-2xl shadow-xl overflow-y-auto relative">
       <button
         onClick={() => setopenExpense(false)}
         className=" cursor-pointer absolute top-4 right-4 text-gray-500 hover:text-gray-700"
       >
-        ✕
+        <CircleXIcon className='text-red-600 size-5'/>
       </button>
 
       {/* Expense Page */}

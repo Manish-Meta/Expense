@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Car, CarIcon, Droplet, FileText, Globe, GraduationCap, Hamburger, Home, ListCollapse, MapPin, Plane, Smartphone, Users, Users2 } from "lucide-react";
 import ExpenseCategoryCard from '../../../components/ExpenseCategoryCard'
+import ReflectionCard from "../../../components/loading/ReflectionCard";
 
 const iconMap = [{
     icon: Plane,
@@ -122,11 +123,11 @@ useEffect(()=>{
   return (
     <div>
   
-      <div className="mb-8">
-        <h1 className="text-3xl font-semibold text-gray-900">
+      <div className="mb-6">
+        <h1 className="text-xl font-semibold text-gray-900">
           Select Expense Category
         </h1>
-        <p className="text-orange-600 mt-2 max-w-3xl">
+        <p className="max-w-3xl  mt-2">
           Please choose the category that best describes your business expense.
           Each category is configured with specific validation rules, approval
           workflows, and compliance requirements.
@@ -150,31 +151,31 @@ category_id = {cat.category_id}
       </div>
 
      
-      <div className="mt-12 rounded-2xl bg-gradient-to-r from-blue-50 to-white p-8 border border-blue-100">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="mt-12 rounded-2xl bg-gradient-to-r from-blue-50 to-white p-5 border border-blue-100">
+        <h3 className="text-sm font-semibold text-gray-900 mb-4">
           Category Selection Guidelines
         </h3>
 
         <div className="grid md:grid-cols-3 gap-6 text-sm">
           <div>
-            <p className="font-medium text-orange-600">Tailored Forms</p>
-            <p className="text-gray-600 mt-1">
+            <p className="font-medium text-sm text-orange-600">Tailored Forms</p>
+            <p className="text-gray-600  text-xs mt-1">
               Each category unlocks specific input fields optimized for that
               expense type.
             </p>
           </div>
 
           <div>
-            <p className="font-medium text-orange-600">Policy Compliance</p>
-            <p className="text-gray-600 mt-1">
+            <p className="font-medium text-sm text-orange-600">Policy Compliance</p>
+            <p className="text-gray-600 text-xs mt-1">
               Categories may enforce amount limits, approval rules, or location
               constraints.
             </p>
           </div>
 
           <div>
-            <p className="font-medium text-orange-600">Unified Workflow</p>
-            <p className="text-gray-600 mt-1">
+            <p className="font-medium text-sm text-orange-600">Unified Workflow</p>
+            <p className="text-gray-600 text-xs mt-1">
               All expenses follow a consistent approval and audit process.
             </p>
           </div>

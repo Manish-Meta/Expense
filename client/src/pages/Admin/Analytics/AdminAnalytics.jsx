@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState,useEffect } from "react"
 import {
   DollarSign,
   Users,
@@ -35,6 +35,7 @@ import {
 
 function AnalyticsHubHeader() {
   const [open, setOpen] = useState(false)
+
 
   return (
     <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
@@ -339,9 +340,21 @@ const renderPieLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, n
 
 
 export default function AdminAnalytics() {
+   const [predictions, setPredictions] = useState([]);
   const [hoveredKpi, setHoveredKpi] = useState(null)
   const [activeCategory, setActiveCategory] = useState(null)
   const [activeTab, setActiveTab] = useState("overview")
+ useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}analytics/predictions`, {
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Predictions API response:", data); 
+        setPredictions(data.data || []);
+      })
+      .catch(err => console.error(err));
+  }, []);
 
   return (
     <div className="p-6 bg-[#fffaf4] min-h-screen space-y-8">
@@ -696,6 +709,61 @@ export default function AdminAnalytics() {
     })}
   </div>
 )}
+{activeTab === "predictions" && (
+  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    {predictions.length === 0 ? (
+      <div className="col-span-full text-center text-gray-500">
+        No AI predictions available
+      </div>
+    ) : (
+      predictions.map((p) => (
+        <div
+          key={p.prediction_id}
+          className="bg-white rounded-2xl p-6 shadow hover:shadow-lg transition"
+        >
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="font-semibold text-slate-900">
+              {p.title}
+            </h3>
+            <span
+              className={`text-xs px-3 py-1 rounded-full font-semibold
+                ${p.impact === "High"
+                  ? "bg-red-100 text-red-600"
+                  : "bg-green-100 text-green-600"
+                }`}
+            >
+              {p.impact}
+            </span>
+          </div>
+
+          <p className="text-sm text-gray-600 mb-4">
+            {p.description}
+          </p>
+
+          <div className="flex justify-between text-sm mb-2">
+            <span className="text-gray-500">Confidence</span>
+            <span className="font-semibold">{p.confidence}%</span>
+          </div>
+
+          <div className="w-full h-2 bg-orange-100 rounded-full overflow-hidden mb-4">
+            <div
+              className="h-full bg-orange-500"
+              style={{ width: `${p.confidence}%` }}
+            />
+          </div>
+
+          <div className="text-xs text-gray-500">
+            Recommendation
+          </div>
+          <p className="text-sm font-medium mt-1">
+            {p.recommendation}
+          </p>
+        </div>
+      ))
+    )}
+  </div>
+)}
+
 
 
     </div>

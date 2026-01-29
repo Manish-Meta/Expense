@@ -64,18 +64,19 @@ export default function Capture({ category, onDone }) {
   }
 
   return (
-    <div className="border-2 border-dashed border-orange-300 rounded-2xl p-12 text-center bg-orange-50">
-      <div className="mx-auto w-14 h-14 flex items-center justify-center rounded-full bg-orange-100 mb-4">
-        <Camera className="text-orange-600" />
+    <div className=" p-4 bg-orange-50 rounded-xl">
+      <div className="border border-dashed border-borderLine/40 rounded-2xl p-6 text-center bg-secondary">
+      <div className="mx-auto w-14 h-14 flex items-center justify-center rounded-full bg-orange-50 border border-borderLine/30 mb-4">
+        <Camera className="text-primary" />
       </div>
 
-      <h3 className="text-lg font-semibold">Capture Receipt</h3>
-      <p className="text-sm text-orange-600 mt-1">
+      <h3 className="text-sm font-semibold">Capture Receipt</h3>
+      <p className="text-[10px]  mt-1">
         Upload a receipt for instant processing
       </p>
 
-      <div className="mt-6 flex justify-center">
-        <label className="cursor-pointer bg-orange-500 text-white px-5 py-2 rounded-lg text-sm">
+      <div className="mt-3 flex justify-center">
+        <label className="cursor-pointer bg-primary text-white px-5 py-2 rounded-lg text-xs">
           Upload File
           <input
             type="file"
@@ -86,8 +87,8 @@ export default function Capture({ category, onDone }) {
         </label>
       </div>
 
-      <p className="mt-3 text-xs text-gray-500">
-        Allowed formats: png, jpg, jpeg, pdf
+      <p className="mt-3 text-[10px] text-gray-500">
+        * Allowed formats: png, jpg, jpeg, pdf *
       </p>
 
       {loading && (
@@ -95,6 +96,7 @@ export default function Capture({ category, onDone }) {
           Reading receipt…
         </p>
       )}
+    </div>
     </div>
   )
 }

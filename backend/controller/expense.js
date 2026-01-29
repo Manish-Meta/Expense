@@ -551,6 +551,70 @@ const admin_approve_expense=async(req,res,next)=>{
         next(err)
     }
 }
+const category_summary = async (req, res, next) => {
+  try {
+    const user_id = req.query.user_id || req.user;
+
+    const result = await db
+      .select({
+        category_id: category.category_id,
+        category_name: category.cat_name,
+        total: db.sql`SUM(${expense.amount})`
+      })
+      .from(expense)
+      .innerJoin(category, eq(category.category_id, expense.cat_id))
+      .where(eq(expense.profile_id, user_id))
+      .groupBy(category.category_id, category.cat_name);
+
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+const expense_summary = async (req, res, next) => {
+  try {
+    const user_id = req.query.user_id || req.user;
+
+    const total = await db
+      .select({
+        total: db.sql`SUM(${expense.amount})`
+      })
+      .from(expense)
+      .where(eq(expense.profile_id, user_id));
+
+    const budget = await db
+      .select({ limit: employee_config.expense_limit })
+      .from(employee_config)
+      .where(eq(employee_config.profile_id, user_id));
+
+    res.json({
+      total_spent: Number(total[0]?.total || 0),
+      monthly_budget: Number(budget[0]?.limit || 0)
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const monthly_expense_trend = async (req, res, next) => {
+  try {
+    const user_id = req.query.user_id || req.user;
+
+    const result = await db.execute(db.sql`
+      SELECT 
+        EXTRACT(MONTH FROM date) AS month,
+        SUM(amount) AS amount
+      FROM expense
+      WHERE profile_id = ${user_id}
+      GROUP BY month
+      ORDER BY month
+    `);
+
+    res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
+};
 
 const need_information=async(req,res,next)=>{
     try{
@@ -579,4 +643,6 @@ const need_information=async(req,res,next)=>{
     }
 }
 
-module.exports={new_expense,my_exp,show_particuler_expense,show_pending_expense,expense_validate,show_admin_expense,need_information,admin_approve_expense,expense_withdraw}
+module.exports={expense_summary,
+  monthly_expense_trend,
+  category_summary,new_expense,my_exp,show_particuler_expense,show_pending_expense,expense_validate,show_admin_expense,need_information,admin_approve_expense,expense_withdraw}

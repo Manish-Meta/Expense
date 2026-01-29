@@ -1,7 +1,3 @@
-
-import { StatCard } from "../../components/StatCard";
-import FilterBar from "../../components/FilterBar";
-import { CardComp } from "./EmployeeDashboard";
 import ReportCard from "../../components/ReportCard";
 import PaymentRow from "../../components/PaymentRow";
 import {
@@ -23,7 +19,6 @@ import {
   Tooltip,
   CartesianGrid,
 } from "recharts"
-import { MoreHorizontal } from "lucide-react"
 
 const spendingData = [
   { month: "Aug", actual: 210, budget: 220, forecast: 215 },
@@ -39,25 +34,25 @@ const spendingData = [
 
 const EmployeeReports = () => {
   return (
-    <div className="bg-[#fffaf4] p-6 space-y-6">
+    <div className="bg-secondary p-6 space-y-6">
 
         {/* HEADER */}
-        <section className="flex items-center justify-between">
+        <section className="flex gap-4 flex-col lg:flex-row justify-between">
           <div>
             <h1 className="text-2xl font-semibold">Personal Reports</h1>
-            <p className="text-sm text-[#c2410c]">
+            <p className="text-sm ">
               Analyze your expense patterns and track spending insights.
             </p>
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="px-3 py-2 text-sm rounded-md bg-orange-100 shadow">
+            <button className="px-3 py-2 text-[10px] rounded-md bg-primary text-white shadow">
               Last 3 Month
             </button>
-            <button className="px-3 py-2 text-sm rounded-md bg-white border border-orange-200 flex items-center gap-2">
+            <button className="px-3 py-2 text-[10px] rounded-md bg-white border border-orange-200 flex items-center gap-2">
               <RefreshCw size={14} /> Refresh
             </button>
-            <button className="px-4 py-2 text-sm rounded-md bg-[#d97706] text-white flex items-center gap-2">
+            <button className="px-4 py-2 text-[10px] rounded-md bg-primary text-white flex items-center gap-2">
               <Download size={14} /> Export Report
             </button>
           </div>
@@ -100,11 +95,11 @@ const EmployeeReports = () => {
         </section>
 
         {/* TABS */}
-        <div className="bg-orange-50 rounded-full p-1 flex justify-between text-sm font-medium">
+        <div className=" rounded-full p-1 gap-2 flex justify-between text-sm font-medium ">
           {["Overview", "Categories", "Trends", "Compliance"].map(tab => (
             <button
               key={tab}
-              className="px-20 py-2 rounded-full bg-white shadow"
+              className={`px-6 text-xs py-2 w-full rounded-md  ${tab == "Overview"?"bg-primary text-white":""} `}
             >
               {tab}
             </button>
@@ -115,7 +110,7 @@ const EmployeeReports = () => {
         <section className="grid grid-cols-1 lg:grid-cols-2 gap-6 pb-10">
 
           {/* LEFT: CHART */}
-          <div className="bg-white rounded-xl shadow p-5 h-[420px]">
+          <div className="bg-white rounded-xl shadow p-5 h-105">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold">Spending Timeline</h3>
               <button className="px-3 py-1 text-xs border border-orange-200 bg-white rounded-md flex items-center gap-2">

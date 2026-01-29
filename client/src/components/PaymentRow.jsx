@@ -1,7 +1,7 @@
 const PaymentRow = ({ label, amount, percent, tx }) => {
   return (
     <div className="space-y-2 mb-6">
-      <div className="flex justify-between font-medium">
+      <div className="flex justify-between font-medium text-sm">
         <span>{label}</span>
         <span>{amount}</span>
       </div>

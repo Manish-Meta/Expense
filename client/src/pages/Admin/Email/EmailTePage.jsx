@@ -7,7 +7,7 @@ const ACTION_TYPES = [
   "EXPENSE_APPROVED",
   "EXPENSE_APPROVEL",
   "EXPENSE_REJECTED",
-];
+];  
 
 const PLACEHOLDERS = [
   "employeeName",

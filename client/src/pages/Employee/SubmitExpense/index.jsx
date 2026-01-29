@@ -10,7 +10,7 @@ export default function SubmitExpense() {
   const [expenseData, setExpenseData] = useState(null)
 
   return (
-    <div className="p-8 bg-[#fff7ed] min-h-screen">
+    <div className="p-6 space-y-6  bg-secondary min-h-screen">
       <StepProgress step={step} />
 
       {step === 1 && (

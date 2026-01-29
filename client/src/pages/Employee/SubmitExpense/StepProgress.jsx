@@ -10,11 +10,11 @@ export default function StepProgress({ step }) {
           <div key={label} className="flex items-center gap-2">
             <div
               className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold
-                ${active ? "bg-orange-500 text-white" : "bg-orange-100 text-orange-600"}`}
+                ${active ? "bg-orange-500 text-white " : "bg-orange-100 text-orange-600"}`}
             >
               {idx}
             </div>
-            <span className={`text-sm ${active ? "text-orange-600" : "text-gray-400"}`}>
+            <span className={`text-xs ${active ? "text-primary font-semibold " : "text-gray-400"}`}>
               {label}
             </span>
             {idx < steps.length && <div className="w-10 h-px bg-orange-200 mx-2" />}

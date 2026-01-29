@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import useGlobalContext from "../../config/GlobalStateContext";
 import { useNavigate } from "react-router-dom";
-import { Check, IndianRupee, Info, LockKeyhole, ReceiptIndianRupee, ShieldCheck, User2Icon, UserCheck2, UserCheck2Icon } from "lucide-react";
+import { Info, LockKeyhole, LogIn, ReceiptIndianRupee, ShieldCheck, User2Icon, UserCheck2, UserCheck2Icon } from "lucide-react";
 
 
 export default function LoginPage() {
@@ -130,16 +130,16 @@ Expense Management</h5>
 <p className="font-bold opacity-80">Banking-grade expense platform with AI-powered validation, real-time approvals, and comprehensive compliance.</p>
 </div>
     </div>
-<div className="lg:w-1/2 w-full h-full pb-2  bg-orange-50   flex items-center flex-col">
+<div className="lg:w-1/2 w-full h-full pb-2  bg-orange-50/50   flex items-center flex-col">
 {/* Header */}
-<div className="mt rounded-xl overflow-hidden">
-      <div className=" pt-2 pb-4 flex flex-col self-start ">
-        <div className="flex flex-col items-center ">
+<div className="mt-3 w-[350px] lg:w-[400px] rounded-xl overflow-hidden">
+      <div className=" pt-2 pb-4 left-0 ">
+        <div className="flex flex-col ">
         
          <h2 className="text-xl font-bold ">
           Welcome Back
         </h2>
-        <p className="text-xs text-gray-500 mt-1">
+        <p className="text-xs  text-gray-500 mt-1">
           Sign in as <span className="font-medium text-orange-600">{selectedrole}</span>
         </p>
         </div>
@@ -149,11 +149,11 @@ Expense Management</h5>
         
 
 
-  <div className=" rounded-xl shadow-xl gap-2 flex bg-white justify-center overflow-hidden flex-col border border-orange-200 ">
+  <div className=" rounded-xl shadow gap-2 flex bg-white/70  justify-center overflow-hidden flex-col border border-borderLine/30 ">
   
        
 
-      <div className="  rounded-2xl  w-[300px] sm:w-[400px]">
+      <div className="  rounded-2xl  w-[350px] sm:w-[400px]">
          
         {
           LoginLoading &&  <div className="loader"></div>
@@ -164,14 +164,14 @@ Expense Management</h5>
 
       <div className="grid grid-cols-3 place-items-center rounded-t-xl  gap-4 bg-gray-100">
   
-<div className={`${selectedrole == "employee" ? "bg-white shadow border-b-2 rounded-tl-xl border-orange-400" :"bg-none"} flex items-center flex-col  w-full p-4`}
+<div className={`${selectedrole == "employee" ? "bg-white shadow border-b-2 rounded-tl-xl border-borderLine" :"bg-none"} flex items-center flex-col  w-full p-4`}
 onClick={()=> setSelectedRole("employee")}>
           {/* icon */}
           <span className=""><User2Icon className="size-4"/></span>
           <p className="text-[10px] font-medium">Employee</p>
         </div>
 
-<div className={`${selectedrole == "validator" ? "bg-white shadow border-b-2 border-orange-400" :"bg-none"} flex items-center flex-col  w-full p-4`}
+<div className={`${selectedrole == "validator" ? "bg-white shadow border-b-2 border-borderLine" :"bg-none"} flex items-center flex-col  w-full p-4`}
 onClick={()=> {
   setSelectedRole("validator")}}>
           {/* icon */}
@@ -181,7 +181,7 @@ onClick={()=> {
 
 
      
-<div className={`${selectedrole == "admin" ? "bg-white border-b-2 shadow rounded-tr-xl border-orange-400" :"bg-none"} flex items-center flex-col  w-full p-4`}
+<div className={`${selectedrole == "admin" ? "bg-white border-b-2 shadow rounded-tr-xl border-borderLine" :"bg-none"} flex items-center flex-col  w-full p-4`}
 onClick={()=> setSelectedRole("admin")}>
           {/* icon */}
           <span className=""><ShieldCheck className="size-4"/></span>
@@ -197,7 +197,7 @@ onClick={()=> setSelectedRole("admin")}>
 
 
  <div className="p-2 my-3">
-    <div className={`flex  w-full p-4 rounded-xl items-center gap-2 bg-orange-50/30 border border-b-4 border-orange-200`}>
+    <div className={`flex  w-full p-4 rounded-xl items-center gap-2 bg-orange-50/30 `}>
           {/* icon */}
           <span className="bg-orange-100 rounded-md p-3">{Icon && <Icon className="size-4"/>}</span> 
           <div className="flex flex-col gap-1">
@@ -223,7 +223,7 @@ onClick={()=> setSelectedRole("admin")}>
             onChange={(e) => setEmail(e.target.value)}
             placeholder="EXP-7894-90"
             className="w-full rounded-lg pl-8 border border-gray-200 px-4 py-2.5 text-xs
-                       focus:outline-none focus:ring-0.5 focus:ring-orange-400 focus:border-orange-400"
+                       focus:outline-none focus:ring-0.5 focus:ring-orange-400 focus:border-borderLine "
             required
           />
           </div>
@@ -242,7 +242,7 @@ onClick={()=> setSelectedRole("admin")}>
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
             className="w-full text-xs rounded-lg pl-8 border border-gray-200 px-4 py-2.5 
-                       focus:outline-none focus:ring-0.5 focus:ring-orange-400 focus:border-orange-400"
+                       focus:outline-none focus:ring-0.5 focus:ring-orange-400 focus:border-borderLine"
             required
           />
          </div>
@@ -250,32 +250,44 @@ onClick={()=> setSelectedRole("admin")}>
 
         {/* Error */}
         {ErrorCode !="" && (
-          <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2 flex items-center gap-2 transition-all">
+          <div className="text-sm text-red-600 bg-red-50 border border-borderLine rounded-lg px-3 py-2 flex items-center gap-2 transition-all">
              <Info className="size-4"/> {
               ErrorCode == "400" ? "Unauthorized Access": ErrorCode == "500" ?"Invaild Username / password": ErrorCode == "Failed to fetch"? "Unable to Fetch": "Invaild Username / password"
             }
           </div>
         )}
 
-        {/* Submit */}
-        <button
-          type="submit"
-         disabled={LoginLoading}
-          className="w-full mt-2 rounded-lg bg-orange-500 py-2.5 font-medium
-                     text-white flex justify-center gap-4 text-xs hover:bg-orange-600 active:scale-[0.98] transition"
-        >
-           {!LoginLoading ? <p> Sign In</p>: <div>signing....</div>}
-        </button>
-
-        {/* Footer */}
-        <div className="text-center">
+ <div className="flex justify-between">
+       <div className="flex items-center">
+            <input
+            type="checkbox"
+            id={"btn"}
+            className=" text-gray-500 hover:text-orange-600 transition"
+          />
+          <label htmlFor="btn " className="text-xs text-gray-500">Remeber me</label>
+         
+            
+       </div>
+          
           <button
             type="button"
-            className="text-sm text-gray-500 hover:text-orange-600 transition"
+            className="text-xs text-gray-500 hover:text-orange-600 transition"
           >
             Forgot password?
           </button>
         </div>
+        {/* Submit */}
+        <button
+          type="submit"
+         disabled={LoginLoading}
+          className="w-full mt-2 rounded-lg bg-primary  py-2.5 font-medium
+                     text-white flex justify-center gap-4 text-xs hover:bg-primary/70 active:scale-[0.98] transition"
+        >
+           {!LoginLoading ? <p className="flex items-center gap-3"> <LogIn className="size-4"/> Sign In</p>: <div>signing....</div>}
+        </button>
+
+     
+       
       </form>
 
 
