@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 export const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [selectedrole, setSelectedRole] = useState("");
+  const [selectedrole, setSelectedRole] = useState("employee" ||"");
   const [localSelectedRole, setLocalSelectedRole] = useState("");
   const [valid, setValid] = useState(false);
   const [userData, setUserData] = useState("");
