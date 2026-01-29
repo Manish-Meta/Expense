@@ -19,12 +19,23 @@ const new_expense=async(req,res,next)=>{
     try{
         const id=req.user
         const {amount,date,merchant,category_id,business_purpose,adv_option}=req.body;
-        const iamges=req.files
-        if(!amount||!date||!merchant||!category_id){
-            return res.status(400).json({
-                msg:'Invalid'
-            })
-        }
+        const images=req.files
+        const category_detail=await db.select().from(category).where(eq(category.category_id,category_id))
+        let compilant=null
+        // if(category_detail[0].limit<amount){
+        //         compilant=true
+        // }
+
+        // if(category_detail[0].rec_req&&!images){
+        //     return res.status(400).json({
+        //         msg:'Without receipt you can\'t submit the expense'
+        //     })
+        // }
+        // if(!amount||!date||!merchant||!category_id){
+        //     return res.status(400).json({
+        //         msg:'Invalid'
+        //     })
+        // }
         // rec require condition
         // const rec_permission=await db.select({permission:category.rec_req}).from(category)
         // .where(eq(category.category_id,category_id))
@@ -72,6 +83,8 @@ const new_expense=async(req,res,next)=>{
                 let uniq=exp_detail[exp_detail.length-1].id.split('_')[1]
                 new_id=`EXP_${Number(uniq)+1}`
             }
+
+
             const result=await table.insert(expense).values({
                 profile_id:id,
                 exp_id:new_id,
@@ -83,15 +96,25 @@ const new_expense=async(req,res,next)=>{
                 advance_option:adv_option?adv_id:null,
                 status:'Pending',
                 priority:'Low',
-                compliance:'Compliant',
+                compliance:compilant==null?'Compliant':compilant?'Warning':'Violation',
                 next_level:'Validator',
+                reciept:images?images.originalname:null
             }).returning({profile_id:expense.profile_id})
             if(!result){
                 table.rollback()
                 return res.status(400).json({
                     msg:'inavlid'
                 })
+
             }
+
+            const data ={
+    userName: user_data.full_name,
+    email:user_data.email,
+    status: "Pending",
+    date: new Date().toDateString()
+  }
+            sendEmailProcess("Expense_Submitted",data )
             const sta=await table.insert(expense_approve_history).values({
                 profile_id:id,
                 exp_id:new_id,
@@ -175,7 +198,9 @@ const show_particuler_expense=async(req,res,next)=>{
                     msg:'The expense not found'
                 })
             }
-            const status=await table.select().from(expense_approve_history).where(eq(expense_approve_history.exp_id,id))
+            const status=await table.select({status:expense_approve_history,name:profile.username}).from(expense_approve_history)
+            .innerJoin(profile,eq(profile.profile_id,expense_approve_history.profile_id))
+            .where(eq(expense_approve_history.exp_id,id))
             if(!status){
                 return res.status(404).json({
                     msg:'The expense not found'
@@ -393,8 +418,9 @@ const expense_validate=async(req,res,next)=>{
 
 const show_admin_expense=async(req,res,next)=>{
     try{
-        const admin_expenses=await db.select({expense:expense,cat_name:category.cat_name}).from(expense)
+        const admin_expenses=await db.select({expense:expense,cat_name:category.cat_name,name:profile.username}).from(expense)
         .innerJoin(category,eq(expense.cat_id,category.category_id))
+        .innerJoin(profile,eq(profile.profile_id,expense.profile_id))
         .where(or(eq(expense.status,'Escalated'),eq(expense.next_level,'Admin')))
         if(admin_expenses.length==0){
             return res.status(500).json({
@@ -583,6 +609,7 @@ const need_information=async(req,res,next)=>{
         next(err)
     }
 }
+
 module.exports={expense_summary,
   monthly_expense_trend,
   category_summary,new_expense,my_exp,show_particuler_expense,show_pending_expense,expense_validate,show_admin_expense,need_information,admin_approve_expense,expense_withdraw}

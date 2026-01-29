@@ -51,7 +51,7 @@ const dashboardConfig = {
 },
 }
 
- const config = dashboardConfig[localSelectedRole || selectedrole];
+ const config = dashboardConfig[selectedrole];
   return (
     <Routes>
       <Route index element={<Navigate to={config&&config?.default} replace />} />
@@ -61,5 +61,4 @@ const dashboardConfig = {
     </Routes>
   );
 }
-666
 export default Routters

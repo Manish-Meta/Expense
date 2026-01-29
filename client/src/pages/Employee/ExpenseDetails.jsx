@@ -144,31 +144,33 @@ export default function ExpenseDetails({ expense, onClose }) {
   return (
     <div className="p-6 space-y-6 text-sm">
 
-      {/* Back */}
+      {/* Back
       <button
         onClick={onClose}
         className="text-orange-600 hover:underline text-xs"
       >
         ← Back to Dashboard
-      </button>
+      </button> */}
 
       {/* Header */}
-      <div>
-        <h1 className="text-lg font-semibold text-gray-800">
+      <div className="flex gap-5 items-center">
+        <div>
+          <h1 className="text-lg font-semibold text-gray-800">
           Expense Details
         </h1>
         <p className="text-xs text-gray-500 mt-1">
           Expense #{expense.exp_id} • {statusCfg.label}
         </p>
-      </div>
+        </div>
 
-      {/* Status Badge */}
+        {/* Status Badge */}
       <span
         className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium ${statusCfg.class}`}
       >
         {StatusIcon && <StatusIcon size={14} />}
         {statusCfg.label}
       </span>
+      </div>
 
       {/* Timeline */}
       <div className="bg-white rounded-xl p-5 shadow-sm border border-orange-100">

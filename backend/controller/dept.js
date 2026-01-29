@@ -2,7 +2,7 @@ const { eq } = require('drizzle-orm')
 const {db}=require('../db/db')
 const {dept}=require('../model/user/dept')
 
-const add_dept=async(req,res)=>{
+const add_dept=async(req,res,next)=>{
     try{
         const {dept_name}=req.body
         if(!dept_name){
@@ -23,14 +23,11 @@ const add_dept=async(req,res)=>{
             msg:"Added the department"
         })
     }catch(err){
-        console.log(err)
-        res.status(500).json({
-            msg:"Internal server error"
-        })
+        next(err)
     }
 }
 
-const delete_dept=async(req,res)=>{
+const delete_dept=async(req,res,next)=>{
     try{
         const {id}=req.params
         if(!id){
@@ -50,11 +47,24 @@ const delete_dept=async(req,res)=>{
             msg:"Data Deleted"
         })
     }catch(err){
-        console.log(err)
-        res.status(500).json({
-            msg:"Internal server error"
-        })
+        next(err)
     }
 }
 
-module.exports={add_dept,delete_dept}
+const show_dept=async(req,res,next)=>{
+    try{
+        const result=await db.select().from(dept)
+        if(result.length==0){
+            return res.status(200).json({
+                msg:'The dept is empty'
+            })
+        }
+        res.status(200).json({
+            msg:'Dept',
+            data:result
+        })
+    }catch(err){
+        next(err)
+    }
+}
+module.exports={add_dept,delete_dept,show_dept}

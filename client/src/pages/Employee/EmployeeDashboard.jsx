@@ -341,8 +341,8 @@ ctg?.map((e)=>(
           <span
             className={`px-2 py-1 rounded text-[8px] font-medium
               ${
-                (e.expense.status) == "paid"
-                  ? "bg-green-100 text-green-700 border border-green-200"
+                (e.expense.status.toLocaleLowerCase()) == "paid"
+                  ? "bg-green-100 text-green-700 border border-green-800"
                   : e.expense.status.toLocaleLowerCase() == "pending"
                   ? "bg-yellow-100 text-yellow-700 border border-yellow-300"
                   : e.expense.status.toLocaleLowerCase() == "rejected"
@@ -379,14 +379,14 @@ ctg?.map((e)=>(
 
     </section>
     {openExpense && (
-      <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center">
+      <div className="fixed inset-0 z-50 w-full mx-auto bg-black/30 flex items-center justify-center">
     {/* Expense Page Container */}
-    <div className="w-full max-w-6xl h-[90vh] bg-[#fff7ed] rounded-2xl shadow-xl overflow-y-auto relative">
+    <div className="w-full max-w-md mx-auto h-fit bg-[#fff7ed] rounded-2xl shadow-xl overflow-y-auto relative">
       <button
         onClick={() => setopenExpense(false)}
         className=" cursor-pointer absolute top-4 right-4 text-gray-500 hover:text-gray-700"
       >
-        ✕
+        <CircleXIcon className='text-red-600 size-5'/>
       </button>
 
       {/* Expense Page */}

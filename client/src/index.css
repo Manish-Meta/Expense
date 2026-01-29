@@ -15,13 +15,17 @@
 }
 
 
-.custom-loader {
-  width:20px;
-  height:20px;
-  border-radius:50%;
-  border:4px solid;
-  border-color:#E4E4ED;
-  border-right-color: #F4F4F4;
-  animation:s2 1s infinite linear;
+
+.loader {
+  height: 4px;
+  width: 100%;
+  --c:no-repeat linear-gradient(#fff3e7 0 0);
+  background: var(--c),var(--c), rgb(255 137 4);
+  background-size: 60% 100%;
+  animation: l16 3s infinite;
 }
-@keyframes s2 {to{transform: rotate(1turn)}}
+@keyframes l16 {
+  0%   {background-position:-150% 0,-150% 0}
+  66%  {background-position: 250% 0,-150% 0}
+  100% {background-position: 250% 0, 250% 0}
+}

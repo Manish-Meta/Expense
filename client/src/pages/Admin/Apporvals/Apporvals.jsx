@@ -1,6 +1,7 @@
 import { ActivityIcon, Download, Edit3, Eye, RefreshCw, Search, Target, Timer, Zap } from 'lucide-react'
-import React, { Activity } from 'react'
+import React, { Activity, useEffect, useState } from 'react'
 import { CardComp } from '../../Employee/EmployeeDashboard'
+import { formatDateTime } from '../../../utils/dateFormater'
 
 const Apporvals = () => {
 
@@ -52,6 +53,29 @@ const Apporvals = () => {
     "actions": ["View", "Resubmit"]
   }
 ]
+const [Mypending,setMypending] = useState([])
+const pending_approvals = () => {
+  fetch(import.meta.env.VITE_BACKEND_URL+"expenses/admin_expense",
+    {method:'GET',
+      credentials:'include'
+    }
+  )
+  .then((res)=> res.json())
+  .then((res)=> {
+    // setRefresh(true);
+    setMypending(res.data)
+    // setRefresh(false)
+  })
+  .catch(()=>{
+    // setRefresh(false)
+  })
+}
+useEffect(()=>{
+  pending_approvals()
+  // console.log(Mypending)
+},[]
+)
+console.log(Mypending)
 
   return (
     <div className='p-3 space-y-6'>
@@ -159,50 +183,50 @@ const Apporvals = () => {
       <th className="px-4 py-2 text-xs font-semibold text-gray-600">Amount</th>
       <th className="px-4 py-2 text-xs font-semibold text-gray-600">Date Submitted</th>
       <th className="px-4 py-2 text-xs font-semibold text-gray-600">Priority</th>
-      <th className="px-4 py-2 text-xs font-semibold text-gray-600">Status</th>
+      <th className="px-4 py-2 text-xs font-semibold text-gray-600">Compliance</th>
       <th className="px-4 py-2 text-xs font-semibold text-gray-600">Actions</th>
     </tr>
   </thead>
 
  <tbody>
-  {req.map((e, idx) => (
+  {Mypending.map((e, idx) => (
     <tr
-      key={e.id}
+      key={idx}
       className={`hover:bg-gray-50 transition ${
         idx % 2 === 0 ? "bg-white" : "bg-gray-50"
       }`}
     >
       {/* ID */}
       <td className="px-4 py-2 text-[10px] font-medium text-gray-600">
-        {e.id}
+        {e?.expense?.exp_id}
       </td>
 
       {/* Type */}
       <td className="px-4 py-2 text-[10px] font-medium">
-        {e.type}
+        {e?.cat_name}
       </td>
 
       {/* Employee */}
       <td className="px-4 py-2 text-[10px]">
         <div className="flex flex-col">
-          <span className="font-medium">{e.employee.name}</span>
-          <span className="text-gray-500">{e.employee.department}</span>
+          <span className="font-medium">{e?.name}</span>
+          <span className="text-gray-500">{e?.employee?.department}</span>
         </div>
       </td>
 
       {/* Details */}
       <td className="px-4 py-2 text-[10px] text-gray-700">
-        {e.details}
+        {e.expense.business_purpose}
       </td>
 
       {/* Amount */}
       <td className="px-4 py-2 text-[10px] font-semibold text-black">
-        ${e.amount.toFixed(2)}
+        ${e.expense.amount}
       </td>
 
       {/* Date Submitted */}
       <td className="px-4 py-2 text-[10px] text-gray-600">
-        {e.dateSubmitted}
+        {formatDateTime(e.expense.created_at)}
       </td>
 
       {/* Priority */}
@@ -210,14 +234,14 @@ const Apporvals = () => {
         <span
           className={`px-2 py-1 rounded font-medium
             ${
-              e.priority === "High"
+              e.expense.priority === "High"
                 ? "bg-red-100 text-red-700"
-                : e.priority === "Medium"
+                : e.expense.priority === "Medium"
                 ? "bg-yellow-100 text-yellow-700"
                 : "bg-green-100 text-green-700"
             }`}
         >
-          {e.priority}
+          {e.expense.priority}
         </span>
       </td>
 
@@ -226,21 +250,24 @@ const Apporvals = () => {
         <span
           className={`px-2 py-1 rounded font-medium
             ${
-              e.status === "Approved"
+              e.expense.compliance.toLocaleLowerCase() === "compliant"
                 ? "bg-green-100 text-green-700"
-                : e.status === "Pending"
+                : e.expense.compliance.toLocaleLowerCase() === "not compliant"
                 ? "bg-yellow-100 text-yellow-700"
                 : "bg-red-100 text-red-700"
             }`}
         >
-          {e.status}
+          {e.expense.compliance}
         </span>
       </td>
 
       {/* Actions */}
-      <td className="px-4 py-2 text-xs flex gap-2 cursor-pointer">
-        <Eye className="size-4 text-black" />
-        Review & Approve
+      <td className='p-2'>
+        <button className="px-4 rounded-md cursor-pointer py-2 p-2 border border-r-2 border-b-2 border-orange-300 text-xs flex ">
+          <Eye className="size-4  text-black" />
+        Review
+        </button>
+        
       </td>
     </tr>
   ))}

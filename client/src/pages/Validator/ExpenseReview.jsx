@@ -1,22 +1,9 @@
 import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { Check, X, AlertTriangle, CircleX, TicketCheck, CircleCheck } from "lucide-react"
+import { formatDateTime } from "../../utils/dateFormater"
 
 /* ---------- Helpers ---------- */
-
-const formatDateTime = (date) => {
-  if (!date) return "-"
-  const d = new Date(date)
-  return new Date(date).toLocaleString("en-IN", {
-    timeZone: "UTC",
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  })
-}
 
 const StatusBadgeStyles = {
   Approved: "bg-green-100 text-green-700",
@@ -51,6 +38,7 @@ export default function ExpenseReview() {
       .then((res) => res.json())
       .then((res) => setData(res.data))
   }, [id])
+  console.log(data)
 
   const submitAction = async (status) => {
   try {
