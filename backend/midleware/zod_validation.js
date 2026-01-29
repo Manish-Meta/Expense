@@ -1,5 +1,4 @@
-const validate=(schema)=>{
-    (req,res,next)=>{
+const validate=(schema)=>(req,res,next)=>{
         let data=schema.safeParse(req.body)
         if(!data.success){
             return res.status(400).json({
@@ -10,5 +9,4 @@ const validate=(schema)=>{
         req.body=data.data
         next()
     }
-}
 module.exports=validate
