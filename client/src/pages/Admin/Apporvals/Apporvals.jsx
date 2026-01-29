@@ -1,57 +1,44 @@
-import { ActivityIcon, Download, Edit3, Eye, RefreshCw, Search, Target, Timer, Zap } from 'lucide-react'
-import React, { Activity } from 'react'
+import { ActivityIcon, CircleXIcon, Download, Edit3, Eye, RefreshCw, Search, Target, Timer, Zap } from 'lucide-react'
+import React, { Activity, useEffect, useState } from 'react'
 import { CardComp } from '../../Employee/EmployeeDashboard'
+import { formatDateTime } from '../../../utils/dateFormater'
+import ExpenseReview from '../../Validator/ExpenseReview'
+import ExpenseAproval from './ExpenseAproval'
 
 const Apporvals = () => {
+const [Mypending,setMypending] = useState([])
+const [openBox,setOpenBox] = useState(false)
+const [id,setId] = useState()
+const pending_approvals = () => {
+  fetch(import.meta.env.VITE_BACKEND_URL+"expenses/admin_expense",
+    {method:'GET',
+      credentials:'include'
+    }
+  )
+  .then((res)=> res.json())
+  .then((res)=> {
+    // setRefresh(true);
+    setMypending(res.data)
+    // setRefresh(false)
+  })
+  .catch(()=>{
+    // setRefresh(false)
+  })
+}
+useEffect(()=>{
+  pending_approvals()
+  // console.log(Mypending)
+},[]
+)
+console.log(Mypending)
 
-    const req = 
-        [
-  {
-    "id": "REQ-001",
-    "type": "Reimbursement",
-    "employee": {
-      "employeeId": "EMP-1023",
-      "name": "John Doe",
-      "department": "Finance"
-    },
-    "details": "Travel expenses for client meeting",
-    "amount": 245.75,
-    "dateSubmitted": "2025-01-10",
-    "priority": "High",
-    "status": "Pending",
-    "actions": ["Approve", "Reject"]
-  },
-  {
-    "id": "REQ-002",
-    "type": "Purchase Request",
-    "employee": {
-      "employeeId": "EMP-1041",
-      "name": "Sarah Smith",
-      "department": "IT"
-    },
-    "details": "New laptop for development work",
-    "amount": 1350.00,
-    "dateSubmitted": "2025-01-08",
-    "priority": "Medium",
-    "status": "Approved",
-    "actions": ["View"]
-  },
-  {
-    "id": "REQ-003",
-    "type": "Expense Claim",
-    "employee": {
-      "employeeId": "EMP-1007",
-      "name": "Michael Brown",
-      "department": "Marketing"
-    },
-    "details": "Conference registration fee",
-    "amount": 499.99,
-    "dateSubmitted": "2025-01-05",
-    "priority": "Low",
-    "status": "Rejected",
-    "actions": ["View", "Resubmit"]
-  }
-]
+//open
+function openAproval(exp_id){
+  console.log(exp_id)
+  setId(exp_id)
+  setOpenBox(true)
+
+}
 
   return (
     <div className='p-3 space-y-6'>
@@ -159,50 +146,50 @@ const Apporvals = () => {
       <th className="px-4 py-2 text-xs font-semibold text-gray-600">Amount</th>
       <th className="px-4 py-2 text-xs font-semibold text-gray-600">Date Submitted</th>
       <th className="px-4 py-2 text-xs font-semibold text-gray-600">Priority</th>
-      <th className="px-4 py-2 text-xs font-semibold text-gray-600">Status</th>
+      <th className="px-4 py-2 text-xs font-semibold text-gray-600">Compliance</th>
       <th className="px-4 py-2 text-xs font-semibold text-gray-600">Actions</th>
     </tr>
   </thead>
 
  <tbody>
-  {req.map((e, idx) => (
+  {Mypending.map((e, idx) => (
     <tr
-      key={e.id}
+      key={idx}
       className={`hover:bg-gray-50 transition ${
         idx % 2 === 0 ? "bg-white" : "bg-gray-50"
       }`}
     >
       {/* ID */}
       <td className="px-4 py-2 text-[10px] font-medium text-gray-600">
-        {e.id}
+        {e?.expense?.exp_id}
       </td>
 
       {/* Type */}
       <td className="px-4 py-2 text-[10px] font-medium">
-        {e.type}
+        {e?.cat_name}
       </td>
 
       {/* Employee */}
       <td className="px-4 py-2 text-[10px]">
         <div className="flex flex-col">
-          <span className="font-medium">{e.employee.name}</span>
-          <span className="text-gray-500">{e.employee.department}</span>
+          <span className="font-medium">{e?.name}</span>
+          <span className="text-gray-500">{e?.employee?.department}</span>
         </div>
       </td>
 
       {/* Details */}
       <td className="px-4 py-2 text-[10px] text-gray-700">
-        {e.details}
+        {e.expense.business_purpose}
       </td>
 
       {/* Amount */}
       <td className="px-4 py-2 text-[10px] font-semibold text-black">
-        ${e.amount.toFixed(2)}
+        ${e.expense.amount}
       </td>
 
       {/* Date Submitted */}
       <td className="px-4 py-2 text-[10px] text-gray-600">
-        {e.dateSubmitted}
+        {formatDateTime(e.expense.created_at)}
       </td>
 
       {/* Priority */}
@@ -210,14 +197,14 @@ const Apporvals = () => {
         <span
           className={`px-2 py-1 rounded font-medium
             ${
-              e.priority === "High"
+              e.expense.priority === "High"
                 ? "bg-red-100 text-red-700"
-                : e.priority === "Medium"
+                : e.expense.priority === "Medium"
                 ? "bg-yellow-100 text-yellow-700"
                 : "bg-green-100 text-green-700"
             }`}
         >
-          {e.priority}
+          {e.expense.priority}
         </span>
       </td>
 
@@ -226,21 +213,26 @@ const Apporvals = () => {
         <span
           className={`px-2 py-1 rounded font-medium
             ${
-              e.status === "Approved"
+              e.expense.compliance.toLocaleLowerCase() === "compliant"
                 ? "bg-green-100 text-green-700"
-                : e.status === "Pending"
+                : e.expense.compliance.toLocaleLowerCase() === "not compliant"
                 ? "bg-yellow-100 text-yellow-700"
                 : "bg-red-100 text-red-700"
             }`}
         >
-          {e.status}
+          {e.expense.compliance}
         </span>
       </td>
 
       {/* Actions */}
-      <td className="px-4 py-2 text-xs flex gap-2 cursor-pointer">
-        <Eye className="size-4 text-black" />
-        Review & Approve
+      <td className='p-2'>
+        <button 
+        onClick={()=>openAproval(e.expense.exp_id)}
+        className="px-4 rounded-md cursor-pointer py-2 p-2 border border-orange-300 text-xs flex gap-2 ">
+          <Eye className="size-4  text-black" />
+        Review
+        </button>
+        
       </td>
     </tr>
   ))}
@@ -251,6 +243,23 @@ const Apporvals = () => {
 </div>
 
     </section>
+    {openBox && (
+      <div className="fixed inset-0 z-50 w-full mx-auto bg-black/30 flex items-center justify-center">
+    {/* Expense Page Container */}
+    <div className="w-full max-w-md mx-auto bg-[#fff7ed] rounded-2xl shadow-xl overflow-y-auto relative">
+      <button
+        onClick={() => setOpenBox(false)}
+        className=" cursor-pointer absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+      >
+        <CircleXIcon className='text-red-600 size-5'/>
+      </button>
+      <ExpenseAproval
+      exp_id={id}
+      onClose={() => setopenExpense(false)}
+      />
+      </div>
+      </div>
+    )}
 
 
 

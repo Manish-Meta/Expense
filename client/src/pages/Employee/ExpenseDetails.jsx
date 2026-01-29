@@ -51,7 +51,7 @@ export const StatusConfig = {
     class: "bg-yellow-100 text-yellow-700",
     icon: Clock,
   },
-  Validated: {
+  Processing: {
     label: "Validated",
     class: "bg-green-100 text-green-700",
     icon: UserCheck,
@@ -80,7 +80,7 @@ export const StatusConfig = {
 
 /* ---------------- TIMELINE CONFIG ---------------- */
 
-const timelineSteps = ["Submitted", "Validated", "Approved"]
+const timelineSteps = ["Submission", "Validation", "Approval"]
 
 const stepUI = {
   done: {
@@ -108,18 +108,24 @@ export default function ExpenseDetails({ expense, onClose }) {
     const status = expense.status
 
     if (status === "Rejected") {
-      if (step === "Submitted") return "done"
-      if (step === "Validated") return "rejected"
+      if (step === "Submission") return "done"
+      if (step === "Validation") return "rejected"
       return "upcoming"
     }
 
     if (status === "Needs-info") {
-      if (step === "Submitted") return "done"
-      if (step === "Validated") return "pending"
+      if (step === "Submission") return "done"
+      if (step === "Validation") return "pending"
+      return "upcoming"
+    }
+     if (status === "Processing") {
+      if (step === "Submission") return "done"
+      if (step === "Validation") return "done"
+      if (step === "Approval") return "pending"
       return "upcoming"
     }
     if (status === "Pending") {
-      if (step === "Submitted") return "done"
+      if (step === "Submission") return "done"
       if (step === "Validated") return "pending"
       return "upcoming"
     }
@@ -138,31 +144,33 @@ export default function ExpenseDetails({ expense, onClose }) {
   return (
     <div className="p-6 space-y-6 text-sm">
 
-      {/* Back */}
+      {/* Back
       <button
         onClick={onClose}
         className="text-orange-600 hover:underline text-xs"
       >
         ← Back to Dashboard
-      </button>
+      </button> */}
 
       {/* Header */}
-      <div>
-        <h1 className="text-lg font-semibold text-gray-800">
+      <div className="flex gap-5 items-center">
+        <div>
+          <h1 className="text-lg font-semibold text-gray-800">
           Expense Details
         </h1>
         <p className="text-xs text-gray-500 mt-1">
           Expense #{expense.exp_id} • {statusCfg.label}
         </p>
-      </div>
+        </div>
 
-      {/* Status Badge */}
+        {/* Status Badge */}
       <span
         className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium ${statusCfg.class}`}
       >
         {StatusIcon && <StatusIcon size={14} />}
         {statusCfg.label}
       </span>
+      </div>
 
       {/* Timeline */}
       <div className="bg-white rounded-xl p-5 shadow-sm border border-orange-100">
@@ -194,7 +202,7 @@ export default function ExpenseDetails({ expense, onClose }) {
                 </p>
 
                 <p className="text-[10px] text-gray-500">
-                  {state !== "upcoming"
+                  {state !== "upcoming" && state == "done"
                     ? formatDate(
                         step === "Submitted"
                           ? expense.created_at
