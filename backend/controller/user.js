@@ -243,7 +243,6 @@ const add_validator=async(req,res,next)=>{
         .innerJoin(employee_roles,eq(employee_roles.profile_id,emp_id))
         .innerJoin(roles,eq(roles.role_id,employee_roles.role_id))
         .where(eq(profile.profile_id,emp_id))
-        console.log("detail : ",details)
         if(details.length==0){
             res.status(403).json({
                 msg:"Unauthorzied Access"
@@ -271,6 +270,9 @@ const add_validator=async(req,res,next)=>{
             })
             return
         }
+        console.log("date : ",new Date().getMinutes(),new Date(),new Date(user_detail[0].locking_time))
+        let date=new Date().setMinutes(10)
+        console.log("date  :  ",date)
         if(user_detail[0].is_locked){
             return res.status(400).json({
                 msg:"Your account was locked try to login after 10 mintes"

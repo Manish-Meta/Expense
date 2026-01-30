@@ -1,21 +1,21 @@
 [
   {
     "role_id": "R_111111",
-    "role_name": "Employee",
+    "role_name": "employee",
     "description": "Standard employee role with basic access",
     "is_active": true,
     "limit": 500
   },
   {
     "role_id": "R_111112",
-    "role_name": "Validator",
+    "role_name": "validator",
     "description": "Responsible for validating and approving records",
     "is_active": true,
     "limit": 10000
   },
   {
     "role_id": "R_111113",
-    "role_name": "Admin",
+    "role_name": "admin",
     "description": "System administrator with full access",
     "is_active": true
   }

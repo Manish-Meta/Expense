@@ -84,10 +84,12 @@ const seed = async () => {
         await db.insert(employee_roles).values({profile_id:emp_roles.profile_id,role_id:emp_roles.role_id,assigned_at:new Date(emp_roles.assigned_at)})
     }
 
-    console.log('Roles inserted');
+    console.log('Seed finished');
+    process.exit(0)
   } catch (err) {
     console.error('Seeding failed:', err);
+    process.exit(1)
   } 
 };
 
-seed().then(() => console.log('🌟 Seed finished'));
+seed();
