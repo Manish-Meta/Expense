@@ -127,7 +127,7 @@ const Icon = matchedEmpData[0]?.icon;
   <h5 className="text-4xl font-bold ">Streamline Your
 Expense Management</h5>
 
-<p className="font-bold opacity-80">Banking-grade expense platform with AI-powered validation, real-time approvals, and comprehensive compliance.</p>
+<p className="font-bold opacity-80 text-white">Banking-grade expense platform with AI-powered validation, real-time approvals, and comprehensive compliance.</p>
 </div>
     </div>
 <div className="lg:w-1/2 w-full h-full pb-2  bg-orange-50/50   flex items-center flex-col">

@@ -1,0 +1,10 @@
+[
+  {
+    "profile_id": "E_100002",
+    "category_ids": ["ALL"]
+  },
+  {
+    "profile_id": "E_100003",
+    "category_ids": ["C_100002", "C_100004"]
+  }
+]

@@ -55,11 +55,14 @@ app.use("/organization", org_router);
 // app.use("form-fields",expense_form_field)
 app.use("/analytics", analyticsRouter);
 
+app.use(handle_error);
+app.get('/server', (req, res)=>{
+  res.send("The port is Working.....")
+})
+
+
 
 app.use("/", file_not_found);
-
-app.use(handle_error);
-
 app.listen(port, () => {
   console.log(" Server running on port", port);
 });

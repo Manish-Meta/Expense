@@ -49,4 +49,8 @@
 }
 
 
+.approvalScroll::-webkit-scrollbar{
+
+  display: none;
+}
 

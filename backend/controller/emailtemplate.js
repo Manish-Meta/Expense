@@ -1,5 +1,6 @@
 const {profile} = require("../model/user/profile")
-const { emailtemplate } = require("../model/emailTemplate");
+// path conflict 
+const { emailtemplate } = require("../model/EmailTemplate/emailTemplate");
 const {eq}=require('drizzle-orm')
 const {db}=require('../db/db')
 const ShowAllEmailTemplates = async(req, res,next)=>{

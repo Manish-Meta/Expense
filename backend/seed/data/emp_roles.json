@@ -1,0 +1,17 @@
+[
+  {
+    "profile_id": "E_100001",
+    "role_id": "R_111113",
+    "assigned_at": "2026-01-30T00:00:00Z"
+  },
+  {
+    "profile_id": "E_100002",
+    "role_id": "R_111111",
+    "assigned_at": "2026-01-30T00:00:00Z"
+  },
+  {
+    "profile_id": "E_100003",
+    "role_id": "R_111112",
+    "assigned_at": "2026-01-30T00:00:00Z"
+  }
+]

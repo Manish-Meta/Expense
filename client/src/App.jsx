@@ -13,6 +13,7 @@ import ProtectedRoute from "./route/ProtectedRoute"
 import useGlobalContext from "./config/GlobalStateContext"
 import PublicRoute from "./route/PublicRoute"
 import NotFound from "./pages/NotFoundPage"
+import AccesManagement from "./pages/Admin/access_manager/AccesManagement"
 // import useGlobalContext from './config/GlobalStateContext'
  
 
@@ -47,6 +48,7 @@ const App = () => {
       <Route path="*" element={<Routters />} /> 
       </Route>
     
+    <Route path="admins" element={<AccesManagement/>}/>
 
 <Route path="*" element={<NotFound/>} />
         </Routes>

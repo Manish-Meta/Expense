@@ -14,11 +14,20 @@ const {info}=require('../model/info')
 const {payment_info}=require('../model/payment/payment')
 const send_need_info=require('../utils/send_need_info')
 const { dept } = require('../model/user/dept')
+const {check_new_expense,check_advance_option,ckeck_recieve_exp_status,admin_send_status,exp_needs_info}=require('../zod_schema/expense_schema')
 
 const new_expense=async(req,res,next)=>{
     try{
         const id=req.user
-        const {amount,date,merchant,category_id,business_purpose,adv_option}=req.body;
+        console.log("id : ",id)
+        const expense_zod=check_new_expense.safeParse(req.body)
+        console.log(expense_zod.data)
+        if(!expense_zod.success){
+            return res.status(400).json({
+                msg:'invalid format'
+            })
+        }
+        const {amount,date,merchant,category_id,business_purpose,adv_option}=expense_zod.data;
         const images=req.files
         const category_detail=await db.select().from(category).where(eq(category.category_id,category_id))
         let compilant=null
@@ -53,7 +62,14 @@ const new_expense=async(req,res,next)=>{
             let adv_id='ADV_12113'
             let loc_id='LOC_33333'
             if(adv_option){
-                const {project,pay_met,locat,attendee,billable_client}=req.body;
+                let value=check_advance_option.safeParse(req.body)
+                console.log(value.data)
+                if(!value.success){
+                    return res.status(400).json({
+                        msg:'invalid format'
+                    })
+                }
+                const {project,pay_met,locat,attendee,billable_client}=value.data;
                 // insert the location values
                 const loc_detail=await table.select({address:loc.location_id}).from(loc)
                 if(loc_detail[loc_detail.length-1]){
@@ -84,7 +100,6 @@ const new_expense=async(req,res,next)=>{
                 new_id=`EXP_${Number(uniq)+1}`
             }
 
-
             const result=await table.insert(expense).values({
                 profile_id:id,
                 exp_id:new_id,
@@ -108,13 +123,13 @@ const new_expense=async(req,res,next)=>{
 
             }
 
-            const data ={
-    userName: user_data.full_name,
-    email:user_data.email,
-    status: "Pending",
-    date: new Date().toDateString()
-  }
-            sendEmailProcess("Expense_Submitted",data )
+            // const data ={
+            //     userName: user_data.full_name,
+            //     email:user_data.email,
+            //     status: "Pending",
+            //     date: new Date().toDateString()
+            // }
+            // sendEmailProcess("Expense_Submitted",data )
             const sta=await table.insert(expense_approve_history).values({
                 profile_id:id,
                 exp_id:new_id,
@@ -306,7 +321,13 @@ const show_pending_expense=async(req,res,next)=>{
 
 const expense_validate=async(req,res,next)=>{
     try{
-        const {receive_status}=req.body
+        let result=ckeck_recieve_exp_status.safeParse(req.body)
+        if(!result.success){
+            return res.status(400).json({
+                msg:'invalid format'
+            })
+        }
+        const {receive_status,remark}=result.data
         const {id}=req.params
         const user_id=req.user
         if(!id){
@@ -321,7 +342,7 @@ const expense_validate=async(req,res,next)=>{
         //     .where(eq(employee_roles.profile_id, user_id));
 
         if(receive_status=='Escaleded'){
-            const {remark}=req.body
+            // const {remark}=req.body
             if(!remark){
                 return res.status(400).json({
                     msg:'Missing the remark and why you escaleded the expense'
@@ -363,7 +384,7 @@ const expense_validate=async(req,res,next)=>{
             }
         }
         else if(receive_status=='Rejected'){
-            const {remark}=req.body
+            // const {remark}=req.body
             if(!remark){
                 return res.status(400).json({
                     msg:'Missing the remark and why you escaleded the expense'
@@ -387,7 +408,7 @@ const expense_validate=async(req,res,next)=>{
             }
         }
         else if(receive_status=='Needs-info'){
-            const {remark}=req.body
+            // const {remark}=req.body
             const detail=await db.transaction(async(table)=>{
                 const exp_status=await table.update(expense).set({status:'Needs-info'}).where(eq(expense.exp_id,id)).returning({id:expense.profile_id})
                 const add_status=await table.insert(expense_approve_history).values({status:'Needs-info',remark:remark,exp_id:id,profile_id:user_id})
@@ -438,7 +459,13 @@ const show_admin_expense=async(req,res,next)=>{
 
 const admin_approve_expense=async(req,res,next)=>{
     try{
-        const {status_type}=req.body
+        let data=admin_send_status.safeParse(req.body)
+        if(!data.success){
+            return res.status(400).json({
+                msg:'invalid format'
+            })
+        }
+        const {status_type,remark}=data.data
         const {id}=req.params;
         const user_id=req.user
         if(!status_type||!id||!user_id){
@@ -464,7 +491,7 @@ const admin_approve_expense=async(req,res,next)=>{
             })
         }
         else if(status_type=='Reject'){
-            const {remark}=req.body;
+            // const {remark}=req.body;
             await db.transaction(async(table)=>{
                  const change_expense_status=await table.update(expense).set({status:'Rejected',next_level:'Finish'}).where(eq(expense.exp_id,id))
                  const add_status=await table.insert(expense_approve_history).values({status:'Rejected',exp_id:id,profile_id:user_id,remark:remark})
@@ -482,7 +509,7 @@ const admin_approve_expense=async(req,res,next)=>{
         else if(status_type=='Needs-info'){
             const {id}=req.params;
             const user_id=req.user
-            const {remark}=req.body
+            // const {remark}=req.body
             if(!id||!user_id||!remark){
                 return res.status(400).json({
                     msg:'some data missing'
@@ -593,7 +620,13 @@ const need_information=async(req,res,next)=>{
     try{
         const id=req.user
         const {to_id}=req.params
-        const {text}=req.body
+        let new_text=exp_needs_info.safeParse(req.body)
+        if(!new_text.success){
+            return res.status(400).json({
+                msg:'invalid'
+            })
+        }
+        let {text}=new_text.data
         const images=req.files
         if(!id||!to_id){
             return res.status(500).json({

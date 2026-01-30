@@ -13,8 +13,7 @@ const { dept } = require('../model/user/dept')
 const {allow_category}=require('../model/user/allowed_category')
 const {employee_config}=require('../model/user/emp_config')
 const {valitador_config}=require('../model/user/validator_config')
-const {signup_emp,signup_user,user_id,user_login,new_validator}=require('../zod_schema/user_schema');
-const { tr } = require('zod/v4/locales');
+const {signup_emp,signup_user,user_id,user_login,new_validator,login_schema}=require('../zod_schema/user_schema');
 
 
 const generate_emp_id=async(req,res,next)=>{
@@ -65,7 +64,7 @@ const signup=async(req,res,next)=>{
         console.log(sighnup_cre.data)
         if(!sighnup_cre.success){
             return res.status(400).json({
-                msg:'invalid data formate',
+                msg:'invalid data format',
                 err:sighnup_cre.error
 
             })
@@ -86,21 +85,13 @@ const signup=async(req,res,next)=>{
 
                 // check the user already exsit or not
                 const user_detail=await table.select().from(profile).where(or(eq(profile.profile_id,emp_id),eq(profile.email,email)))
-                console.log(user_detail)
-                if(user_detail.length!=0){
-                    return res.status(400).json({
-                        msg:"The user already existing"
-                    })
-                }
+                console.log(user_detail," : user")
+                if(user_detail.length!=0) throw new Error('user already existing')
 
                 // find the role detail
                 const role_detail=await table.select({role_id:roles.role_id}).from(roles).where(eq(roles.role_name,emp_status))
                 console.log(role_detail[0].role_id)
-                if(role_detail.length==0){
-                    return res.status(404).json({
-                        msg:'Invalid role or something went wrong'
-                    })
-                }
+                if(role_detail.length==0)throw new Error('Invalid role or something went wrong')
                 
                 const pro=await table.insert(profile).values({
                     profile_id:emp_id,
@@ -118,19 +109,10 @@ const signup=async(req,res,next)=>{
                 if(emp_status=='employee'){
                     const employee=signup_emp.safeParse(req.body)
                     console.log(employee.data)
-                    if(!employee.success){
-                        return res.status(400).json({
-                            msg:"Invalid data formate",
-                            err:employee.error
-                        })
-                    }
-                    let {reporting_manager,expense_limit,allow_cat}=req.body;
-                    if(!reporting_manager||!expense_limit||allow_cat.length==0){
-                        table.rollback();
-                        return res.status(400).json({
-                            msg:"Invalid data"
-                        })
-                    }
+                    if(!employee.success) throw new Error('Invalid data format')
+                    let {reporting_manager,expense_limit,allow_cat}=employee.data;
+
+                    if(!reporting_manager||!expense_limit||allow_cat.length==0)throw new Error('invalid data')
                     const emp=await table.insert(employee_config).values({
                         profile_id:emp_id,
                         reporting_manager:reporting_manager,
@@ -141,29 +123,12 @@ const signup=async(req,res,next)=>{
                             profile_id:emp_id,
                             category:cat
                         });
-                        if(value.rowCount==0){
-                            table.rollback()
-                            return res.status(400).json({
-                                msg:'Invalid'
-                            })
-                        }
+                        if(value.rowCount==0) throw new Error('Invalid')
                     }
 
-                    if(emp.rowCount==0){
-                        table.rollback()
-                        return res.status(400).json({
-                            msg:"Invalid data"
-                        })
-                    }
+                    if(emp.rowCount==0) throw new Error('Invalid')
                 }
-
-                if(!pro){
-                    table.rollback()
-                    return res.status(400).json({
-                        msg:'Invalid data'
-                    })
-                }
-                
+            
                 return
         })
         console.log("working")
@@ -197,7 +162,7 @@ const add_validator=async(req,res,next)=>{
          let validator=new_validator.safeParse(req.body)
             if(!validator.success){
                 return res.status(400).json({
-                    msg:'invalid data formate',
+                    msg:'invalid data format',
                     err:validator.error
                 })
             }
@@ -208,6 +173,24 @@ const add_validator=async(req,res,next)=>{
                     msg:"Invalid data"
                 })
             }
+            const user_detail=await db.select().from(profile)
+            .innerJoin(employee_roles,eq(employee_roles.profile_id,emp_id))
+            .innerJoin(roles,eq(employee_roles.role_id,roles.role_id))
+            .where(eq(profile.profile_id,emp_id))
+            console.log("user : ",user_detail)
+            if(user_detail.length==0){
+                return res.status(400).json({
+                    msg:"user doesn\'n exsit"
+                })
+            }
+            user_detail.map(val=>{
+                if(val.roles.role_name=='validator'){
+                    return res.status(400).json({
+                        msg:"The user existed on validator"
+                    })
+                }
+            })
+            
             const result=await db.transaction(async(table)=>{
                 const val=await table.insert(valitador_config).values({
                     profile_id:emp_id,
@@ -248,7 +231,6 @@ const add_validator=async(req,res,next)=>{
     }        
 }
 
-
  const login=async(req,res,next)=>{
     try{
         const {emp_id,password,emp_status}=req.body;
@@ -261,7 +243,8 @@ const add_validator=async(req,res,next)=>{
         .innerJoin(employee_roles,eq(employee_roles.profile_id,emp_id))
         .innerJoin(roles,eq(roles.role_id,employee_roles.role_id))
         .where(eq(profile.profile_id,emp_id))
-        if(!details){
+        console.log("detail : ",details)
+        if(details.length==0){
             res.status(403).json({
                 msg:"Unauthorzied Access"
             })

@@ -15,8 +15,8 @@ const check_user=require('../midleware/checking_user')
 const validate=require('../midleware/zod_validation')
 const {user_id,user_login,new_validator}=require('../zod_schema/user_schema')
 
-router.route('/signup').post(token_decode,check_user('admin'),signup)
-router.route('/add_validator').post(token_decode,check_user('admin'),validate(new_validator),add_validator)
+router.route('/signup').post(token_decode,check_user('Admin'),signup)
+router.route('/add_validator').post(token_decode,check_user('Admin'),validate(new_validator),add_validator)
 router.route('/login').post(validate(user_login),login)
 router.route('/profile').get(token_decode,my_profile)
 router.route('/logout').get(logout)
@@ -25,11 +25,11 @@ router.route('/overview').get(user_overview)
 router.route('/import-csv').post(upload.single('file'), import_csv);
 router.route('/export-csv').get(export_csv)
 router.route('/bulk-role').post(bulk_role)
-router.route('/generate_id').get(token_decode,check_user('admin'),generate_emp_id)
-router.route('/generate_dept').get(token_decode,check_user('admin'),generate_dept)
+router.route('/generate_id').get(token_decode,check_user('Admin'),generate_emp_id)
+router.route('/generate_dept').get(token_decode,check_user('Admin'),generate_dept)
 router.route('/search-emp-id').get(
   token_decode,
-  check_user("admin"),
+  check_user("Admin"),
   search_employee_ids
 );
 module.exports=router

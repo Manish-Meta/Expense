@@ -22,7 +22,8 @@ export default function ExpenseAproval({ exp_id,onClose }) {
   const category = expenseObj?.category
 
   return (
-    <div className="relative bg-[#fefdfc] h-120 px-6 py-4 text-sm">
+    <div className="relative bg-secondary approvalScroll h-120 w-110 overflow-scroll rounded-xl">
+    <div className=" p-3 text-sm">
 
       {/* Header */}
       <div className="mb-6">
@@ -38,10 +39,10 @@ export default function ExpenseAproval({ exp_id,onClose }) {
       </div>
 
       {/* Content Grid */}
-      <div className="max-w-5xl space-y-5 pb-28">
+      <div className="max-w-5xl space-y-5 pb-6">
 
         {/* Expense Info */}
-        <div className="bg-white border border-orange-100 rounded-2xl p-5 shadow-sm">
+        <div className="bg-white border border-borderLine/30 rounded-2xl p-5 shadow-sm">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-xs">
 
             <Info label="Amount" value={`₹ ${expense.amount}`} bold />
@@ -89,15 +90,15 @@ export default function ExpenseAproval({ exp_id,onClose }) {
       </div>
 
       {/* Action Bar (component-scoped) */}
-      <div className="sticky bottom-0 w- left-0 right-0 bg-white border-t border-orange-100 px-6 py-4">
-        <div className="max-w-5xl mx-auto flex justify-between gap-3">
+      <div className="sticky bottom-0 w-full left-0 right-0  bg-secondary px-3 py-2 ">
+        <div className="max-w-5xl mx-auto flex justify-between gap-3 py-2">
 
           <button className="px-4 py-2 text-xs rounded-xl border border-orange-200 hover:bg-orange-50 transition">
             Request Information
           </button>
 
           <div className="flex gap-3">
-            <button className="px-4 py-2 text-xs rounded-xl bg-red-100 text-red-700 hover:bg-red-200 transition">
+            <button className="px-4  py-2 text-xs rounded-xl bg-red-100 text-red-700 hover:bg-red-200 transition">
               Reject
             </button>
             <button className="px-5 py-2 text-xs rounded-xl bg-green-500 text-white hover:bg-green-600 transition">
@@ -106,6 +107,7 @@ export default function ExpenseAproval({ exp_id,onClose }) {
           </div>
         </div>
       </div>
+    </div>
     </div>
   )
 }

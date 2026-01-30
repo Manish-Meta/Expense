@@ -1,0 +1,17 @@
+[
+  {
+    "profile_id": "E_100001",
+    "reporting_manager": "E_100001",
+    "monthly_limit": 10000
+  },
+  {
+    "profile_id": "E_100002",
+    "reporting_manager": "E_100001",
+    "monthly_limit": 5000
+  },
+  {
+    "profile_id": "E_100003",
+    "reporting_manager": "E_100001",
+    "monthly_limit": 3000
+  }
+]

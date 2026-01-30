@@ -1,0 +1,19 @@
+[{
+  "profile_id": "E_100002",
+  "email": "employee1@company.com",
+  "dept_id": "D_100001",
+  "full_name": "John Doe",
+  "username":"John Doe",
+  "reporting_manager": "E_100001",
+  "expense_limit": 5000
+},
+{
+  "profile_id": "E_100003",
+  "email": "employee2@company.com",
+  "dept_id": "D_100002",
+  "full_name": "Jane Smith",
+  "username":"John",
+  "reporting_manager": "E_100001",
+  "expense_limit": 10000
+}
+]

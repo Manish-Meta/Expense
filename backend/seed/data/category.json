@@ -1,0 +1,47 @@
+[
+  {
+    "profile_id": "E_100001",
+    "category_id": "C_300001",
+    "cat_name": "TravelExpense",
+    "description": "Expenses related to business travel",
+    "limit": 5000,
+    "rec_req": true,
+    "is_active": true
+  },
+  {
+    "profile_id": "E_100001",
+    "category_id": "C_300002",
+    "cat_name": "OfficeSupplies",
+    "description": "Purchases for office supplies",
+    "limit": 1000,
+    "rec_req": true,
+    "is_active": true
+  },
+  {
+    "profile_id": "E_100001",
+    "category_id": "C_300003",
+    "cat_name": "TrainingExpense",
+    "description": "Expenses for employee training",
+    "limit": 2000,
+    "rec_req": false,
+    "is_active": true
+  },
+  {
+    "profile_id": "E_100001",
+    "category_id": "C_300004",
+    "cat_name": "ClientMeeting",
+    "description": "Expenses for client meetings and entertainment",
+    "limit": 3000,
+    "rec_req": true,
+    "is_active": true
+  },
+  {
+    "profile_id": "E_100001",
+    "category_id": "C_300005",
+    "cat_name": "MiscExpense",
+    "description": "Other miscellaneous expenses",
+    "limit": 1000,
+    "rec_req": false,
+    "is_active": true
+  }
+]

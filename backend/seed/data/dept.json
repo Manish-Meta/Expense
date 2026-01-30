@@ -1,0 +1,14 @@
+[
+  { "deptartment_id": "D_100001", "name": "HR" },
+  { "deptartment_id": "D_100002", "name": "Finance" },
+  { "deptartment_id": "D_100003", "name": "IT" },
+  { "deptartment_id": "D_100004", "name": "Operations" },
+  { "deptartment_id": "D_100005", "name": "Sales" },
+  { "deptartment_id": "D_100006", "name": "Marketing" },
+  { "deptartment_id": "D_100007", "name": "Support" },
+  { "deptartment_id": "D_100008", "name": "Legal" },
+  { "deptartment_id": "D_100009", "name": "Procurement" },
+  { "deptartment_id": "D_100010", "name": "R&D" },
+  { "deptartment_id": "D_100011", "name": "Compliance" },
+  { "deptartment_id": "D_100012", "name": "QA" }
+]
