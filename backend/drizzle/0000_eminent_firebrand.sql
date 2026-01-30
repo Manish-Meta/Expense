@@ -64,6 +64,24 @@ CREATE TABLE "expense_approve_history" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
+CREATE TABLE "expense_form_fields" (
+	"field_id" varchar(30) PRIMARY KEY NOT NULL,
+	"category_id" varchar(20),
+	"field_name" varchar(50) NOT NULL,
+	"field_key" varchar(50) NOT NULL,
+	"field_type" varchar(20) NOT NULL,
+	"required" boolean DEFAULT false,
+	"editable" boolean DEFAULT true,
+	"encrypted" boolean DEFAULT false,
+	"min_length" integer,
+	"max_length" integer,
+	"options" json,
+	"order_index" integer DEFAULT 0,
+	"is_active" boolean DEFAULT true,
+	"created_at" timestamp DEFAULT now(),
+	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
 CREATE TABLE "expense" (
 	"exp_id" varchar(20) PRIMARY KEY NOT NULL,
 	"profile_id" varchar(20),
@@ -289,6 +307,7 @@ ALTER TABLE "advance_option" ADD CONSTRAINT "advance_option_location_id_location
 ALTER TABLE "category" ADD CONSTRAINT "category_profile_id_profile_profile_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."profile"("profile_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "expense_approve_history" ADD CONSTRAINT "expense_approve_history_exp_id_expense_exp_id_fk" FOREIGN KEY ("exp_id") REFERENCES "public"."expense"("exp_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "expense_approve_history" ADD CONSTRAINT "expense_approve_history_profile_id_profile_profile_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."profile"("profile_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "expense_form_fields" ADD CONSTRAINT "expense_form_fields_category_id_category_category_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."category"("category_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "expense" ADD CONSTRAINT "expense_profile_id_profile_profile_id_fk" FOREIGN KEY ("profile_id") REFERENCES "public"."profile"("profile_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "expense" ADD CONSTRAINT "expense_category_id_category_category_id_fk" FOREIGN KEY ("category_id") REFERENCES "public"."category"("category_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "expense" ADD CONSTRAINT "expense_advance_option_advance_option_advance_opt_id_fk" FOREIGN KEY ("advance_option") REFERENCES "public"."advance_option"("advance_opt_id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

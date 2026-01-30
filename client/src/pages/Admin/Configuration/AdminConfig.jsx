@@ -1,4 +1,4 @@
-import { Bell, Building, Database, Download, RefreshCcw, Save, Settings2Icon, Shield, Upload, User, Workflow } from "lucide-react";
+import { Bell, FileText, Building, Database, Download, RefreshCcw, Save, Settings2Icon, Shield, Upload, User, Workflow } from "lucide-react";
 import { useState } from "react";
 import Organization from "./sub/Organization";
 import UserOverview from "./sub/UserOverview";
@@ -12,6 +12,7 @@ import PrivacyCompliance from "./sub/PrivacyCompliance";
 import System from "./sub/System";
 import WorkFlows from "./sub/WorkFlows";
 import Notification from "./sub/Notification";
+import FormBuilder from "./sub/FormBuilder";
 
 
 
@@ -49,6 +50,7 @@ export default function AdminConfig() {
           { key: "users", label: "Users" , icon: User},
           { key: "data", label: "Data & Privacy", icon: Database },
           { key: "system", label: "System", icon: Settings2Icon },
+          { key: "FormBuilder", label: "Form Builder", icon: FileText}
         ].map(tab => (
           <button
             key={tab.key}
@@ -65,6 +67,7 @@ export default function AdminConfig() {
           </button>
         ))}
       </div>
+      {activeTab =="FormBuilder" && <FormBuilder />}
       {activeTab == "organization" && <Organization/>}
      {activeTab=="users" && <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
   <UserOverview />
