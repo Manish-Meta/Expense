@@ -61,12 +61,13 @@ const seed = async () => {
     user_detail=await db.select().from(user)
     if(user_detail.length != 0){
         let value=user_detail[user_detail.length-1].user_id.split('_')[1]
-        user_id=`U_${Number(value)+1}`
+        user_id=Number(value)+1
     }
 
     for(let login_data of user_data){
         let pass=await encrypt(login_data.profile_id)
-        await db.insert(user).values({user_id:user_id,profile_id:login_data.profile_id,password_hash:pass})
+        await db.insert(user).values({user_id:`U_${user_id}`,profile_id:login_data.profile_id,password_hash:pass})
+        user_id+=1;
     }
 
     // add allow category each employee

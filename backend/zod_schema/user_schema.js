@@ -26,7 +26,7 @@ const new_validator=z.object({
     emp_status:z.string()
 })
 
-const user_enum=z.enum(['employee','validator','admin','vendor'])
+const user_enum=z.enum(['Employee','Validator','Admin','Vendor'])
 
 const user_login=z.object({
     emp_id:z.string(),
