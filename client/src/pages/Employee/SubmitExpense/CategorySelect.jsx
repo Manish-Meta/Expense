@@ -110,10 +110,10 @@ useEffect(()=>{
 
 // matching icons function
   const Ic = (name) => {
-  const category = name.toLowerCase();
+  const category = name?.toLowerCase();
 
   const match = iconMap.find(({ keywords }) =>
-    keywords.some((keyword) => category.includes(keyword))
+    keywords.some((keyword) => category?.includes(keyword))
   );
 
   return match ? match.icon:ListCollapse; // fallback icon

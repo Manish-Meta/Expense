@@ -25,33 +25,33 @@ const App = () => {
 
 
   return (
-    //  <Routes>
-    //   <Route element={<PublicRoute/>}>
-    //       <Route path="/" element={<AuthenticateUser/>} />
-    //       </Route>
-     
-    //     <Route element={<ProtectedRoute/>} >
-    // <Route path="/*" element={<Layout />}>
-    //   <Route path="*" element={<Routters />} /> 
-    //   </Route>
-    //   </Route>
-
-    //     </Routes>
-
-   <Routes>
+     <Routes>
       <Route element={<PublicRoute/>}>
           <Route path="/" element={<AuthenticateUser/>} />
           </Route>
      
-        {/* <Route element={<ProtectedRoute/>} > */}
+        <Route element={<ProtectedRoute/>} >
     <Route path="/*" element={<Layout />}>
       <Route path="*" element={<Routters />} /> 
       </Route>
-    
-    <Route path="admins" element={<AccesManagement/>}/>
+      </Route>
 
-<Route path="*" element={<NotFound/>} />
         </Routes>
+
+//    <Routes>
+//       <Route element={<PublicRoute/>}>
+//           <Route path="/" element={<AuthenticateUser/>} />
+//           </Route>
+     
+//         {/* <Route element={<ProtectedRoute/>} > */}
+//     <Route path="/*" element={<Layout />}>
+//       <Route path="*" element={<Routters />} /> 
+//       </Route>
+    
+//     <Route path="admins" element={<AccesManagement/>}/>
+
+// <Route path="*" element={<NotFound/>} />
+//         </Routes>
   ) 
 }
  
