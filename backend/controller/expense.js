@@ -4,7 +4,7 @@ const {category}=require('../model/expense/category')
 const {expense_approve_history}=require('../model/expense/expense_approve_history')
 const {advance_option}=require('../model/expense/advance_option')
 const {loc}=require('../model/location')
-const { eq,ne, or ,and, asc} = require('drizzle-orm')
+const { eq,ne, or ,and, asc, desc} = require('drizzle-orm')
 const {valitador_config}=require('../model/user/validator_config')
 const { profile } = require('../model/user/profile')
 const { employee_config } = require('../model/user/emp_config')
@@ -230,6 +230,23 @@ const show_particuler_expense=async(req,res,next)=>{
                 }
                 loc_detail=await table.select().from(loc).where(eq(loc.location_id,adv_detail[0].location))
             }
+            const comments = await table.select({
+                from: info.from,
+                to: info.to,
+                message: info.information,
+                attach: info.attach,
+                is_view: info.is_view,
+                exp_id: info.exp_id,
+                created_at: info.created_at,
+                updated_at: info.updated_at,
+                sender_name: profile.full_name,
+            })
+            .from(info)
+            .leftJoin(profile, eq(profile.profile_id, info.from))
+            .where(eq(info.exp_id, id))
+            .orderBy(desc(info.created_at));
+            console.log(comments)
+
             res.status(200).json({
                 msg:'expense',
                 
@@ -237,7 +254,9 @@ const show_particuler_expense=async(req,res,next)=>{
                     exp_detail:exp,
                     status_detail:status,
                     adv_option:adv_detail,
-                    loc_detail:loc_detail
+                    loc_detail:loc_detail,
+                    comments
+
                 }
             })
         })
@@ -276,11 +295,12 @@ const show_pending_expense=async(req,res,next)=>{
         }else if(value[0].scope=='ASSIGNED_TEAMS'){
             let pending_expense=await table.select({expense:expense,cat_name:category.cat_name,emp_name:profile.username,dept_name:dept.name}).from(expense)
             .innerJoin(employee_config,and(eq(employee_config.reporting_manager,id),eq(employee_config.profile_id,expense.profile_id)))
+            .innerJoin(profile,eq(profile.profile_id,expense.profile_id))
             .innerJoin(category,eq(category.category_id,expense.cat_id))
             .innerJoin(dept,eq(profile.dept_id,dept.deptartment_id))
             .where(and(ne(expense.profile_id,id),eq(expense.next_level,'Validator'),ne(expense.status,'Rejected')))
             if(!pending_expense){
-                return res.status(200).json({
+                return res.status(200).json({   
                     msg:'Pending expenses empty'
                 })
             }
@@ -626,7 +646,7 @@ const need_information=async(req,res,next)=>{
                 msg:'invalid'
             })
         }
-        let {text}=new_text.data
+        let {text,exp_id}=new_text.data
         const images=req.files
         if(!id||!to_id){
             return res.status(500).json({
@@ -636,7 +656,8 @@ const need_information=async(req,res,next)=>{
         const data=await db.insert(info).values({
             from:id,
             to:to_id,
-            information:text
+            information:text,
+            exp_id:exp_id
         })
     }catch(err){
         next(err)

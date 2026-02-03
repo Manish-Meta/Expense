@@ -8,6 +8,8 @@ import {
   Info,
   UserCheck,
 } from "lucide-react"
+import Comments from "./Comment"
+import { useEffect, useState } from "react"
 
 /* ---------------- DATE FORMAT ---------------- */
 
@@ -102,6 +104,18 @@ const stepUI = {
 }
 
 export default function ExpenseDetails({ expense, onClose }) {
+  const [data,setData] = useState([])
+
+  useEffect(() => {
+      fetch(
+        `${import.meta.env.VITE_BACKEND_URL}expenses/my_expense/${expense.exp_id}`,
+        { credentials: "include" }
+      )
+        .then((res) => res.json())
+        .then((res) => setData(res.data))
+    }, [expense.exp_id])
+    console.log(data)
+  
   /* ---------------- TIMELINE LOGIC ---------------- */
 
   const getTimelineState = (step) => {
@@ -142,7 +156,7 @@ export default function ExpenseDetails({ expense, onClose }) {
   const StatusIcon = statusCfg.icon
 
   return (
-    <div className="p-6 space-y-6 text-sm">
+    <div className="p-6 space-y-5 text-sm h-140 overflow-y-scroll pb-5">
 
       {/* Back
       <button
@@ -153,7 +167,7 @@ export default function ExpenseDetails({ expense, onClose }) {
       </button> */}
 
       {/* Header */}
-      <div className="flex gap-5 items-center">
+      <div className="flex gap-6 items-center">
         <div>
           <h1 className="text-lg font-semibold text-gray-800">
           Expense Details
@@ -263,6 +277,16 @@ export default function ExpenseDetails({ expense, onClose }) {
           </div>
         </div>
       </div>
+      {/* Comments */}
+      <Comments
+      exp_id={expense.exp_id}
+      com_data = {data.comments}
+      />
+      {/* <div className="bg-white rounded-xl p-5 shadow-sm border border-orange-100 space-y-4">
+        <h3 className="text-xs font-semibold text-gray-600">
+          Comments
+        </h3>
+      </div> */}
     </div>
   )
 }

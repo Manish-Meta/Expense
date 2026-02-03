@@ -13,7 +13,9 @@ const user_data=require('./data/user.json')
 const allow_cat_data =require('./data/allow_category.json')
 const emp_role_data=require('./data/emp_roles.json')
 const emp_config_data=require('./data/emp_config.json')
-const { expense_form } = require("../model/expense/expense_form");
+const val_config_data=require('./data/validator.json')
+const {valitador_config}=require('../model/user/validator_config')
+
 const {profile}=require('../model/user/profile')
 const { roles } = require('../model/user/role');
 const {user}=require('../model/user/user')
@@ -24,6 +26,7 @@ const {employee_config}=require('../model/user/emp_config')
 const {employee_roles}=require('../model/user/emp_role')
 const {allow_category}=require('../model/user/allowed_category')
 const {category}=require('../model/expense/category')
+const {info} = require('../model/info')
 const {encrypt}=require('../midleware/pass_enc');
 
 const seed = async () => {
@@ -66,9 +69,15 @@ await db.insert(expense_form_fields).values(expense_form_fields_data);
     
 
     // add employee
+    await db.delete(info).execute()
+    
     await db.insert(profile).values(user_data)
+    //add validator
+    await db.delete(valitador_config).execute()
+    await db.insert(valitador_config).values(val_config_data)
 
-    // add emp config
+    //add emp config
+    await db.delete(employee_config).execute()
     await db.insert(employee_config).values(emp_config_data)
    
 

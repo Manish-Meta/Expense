@@ -1,0 +1,9 @@
+[
+    {
+    "profile_id": "E_100003",
+    "validation_scope": "ASSIGNED_TEAMS",
+    "approval_limit": 5000,
+    "priority_level":"standard validator",
+    "notify": true
+  }
+]
