@@ -1,0 +1,2 @@
+ALTER TABLE "info" ADD COLUMN "exp_id" varchar(20);--> statement-breakpoint
+ALTER TABLE "info" ADD CONSTRAINT "info_exp_id_expense_exp_id_fk" FOREIGN KEY ("exp_id") REFERENCES "public"."expense"("exp_id") ON DELETE cascade ON UPDATE no action;
