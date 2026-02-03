@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { Check, X, AlertTriangle, CircleX, TicketCheck, CircleCheck } from "lucide-react"
 import { formatDateTime } from "../../utils/dateFormater"
+import Comments from "../Employee/Comment"
 
 /* ---------- Helpers ---------- */
 
@@ -21,8 +22,9 @@ const PriorityStyles = {
 
 /* ---------- Component ---------- */
 
-export default function ExpenseReview() {
-  const { id } = useParams()
+export default function ExpenseReview(id=0) {
+  // const { id } = useParams()
+  console.log(id)
   const navigate = useNavigate()
   const [data, setData] = useState(null)
   const [actionType, setActionType] = useState(null) // Approved | Rejected | Escalated | Needs-info
@@ -32,7 +34,7 @@ export default function ExpenseReview() {
 
   useEffect(() => {
     fetch(
-      `${import.meta.env.VITE_BACKEND_URL}expenses/my_expense/${id}`,
+      `${import.meta.env.VITE_BACKEND_URL}expenses/my_expense/${id.id}`,
       { credentials: "include" }
     )
       .then((res) => res.json())
@@ -99,11 +101,11 @@ export default function ExpenseReview() {
   }
 
   return (
-    <div className="relative px-6 pt-6 space-y-6 text-sm max-w-full bg-[#fefdfc] min-h-screen">
+    <div className="relative px-6 pt-6 space-y-6 text-sm max-w-full rounded-xl overflow-scroll h-140 bg-[#fefdfc]">
 
       {/* Back */}
       <button
-        onClick={() => navigate(-1)}
+        onClick={() => setOpen(false)}
         className="text-orange-600 text-xs hover:underline"
       >
         ← Back to Requests
@@ -240,6 +242,11 @@ export default function ExpenseReview() {
           </div>
         </div>
       </div>
+      {/* Comments */}
+      <Comments
+      com_data={data.comments}
+      exp_id={expense.exp_id}
+      />
 
       {/* Actions */}
         <div className="

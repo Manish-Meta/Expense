@@ -13,6 +13,10 @@ import AdminConfig from '../pages/Admin/Configuration/AdminConfig'
 import NotFound from '../pages/NotFoundPage'
 import Apporvals from '../pages/Admin/Apporvals/Apporvals'
 import ExpenseReview from '../pages/Validator/ExpenseReview'
+// import Forms from "../pages/Admin/Configuration/FormBuilder/Forms";
+// import Categories from "../pages/Admin/Configuration/FormBuilder/Categories";
+// import FormPreview from "../pages/Admin/Configuration/FormBuilder/FormPreview";
+
 
 const Routters = () => {
 const {selectedrole, localSelectedRole} = useGlobalContext()
@@ -45,7 +49,10 @@ const dashboardConfig = {
     { path: "analytics", label: "Analytics", element: <AdminAnalytics /> },
     { path: "audit", label: "Audit", element: <AdminAudit/> },
     { path: "configuration", label: "Configuration", element: <AdminConfig/>},
-    { path: "audit", label: "Audit", element: <AdminAudit/> },
+
+    // { path: "configuration/forms", element: <Forms /> },
+    // { path: "configuration/forms/:formType", element: <Categories /> },
+    // { path: "configuration/forms/:formType/:categoryId", element: <FormPreview /> },
       { path: "*", label: "Report", element: <NotFound/> }
   ],
 },

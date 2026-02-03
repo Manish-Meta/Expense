@@ -3,6 +3,9 @@ const fs = require('fs');
 const path = require('path');
 const { db } = require('../db/db');
 const role_data=require('./data/role.json')
+const expense_form_data = require('./data/expense_form.json');
+const expense_form_fields_data = require('./data/expense_form_fields.json');
+
 const category_data=require('../seed/data/category.json')
 const dept_data=require('./data/dept.json')
 const admin_data=require('./data/admin.json')
@@ -11,20 +14,26 @@ const allow_cat_data =require('./data/allow_category.json')
 const emp_role_data=require('./data/emp_roles.json')
 const emp_config_data=require('./data/emp_config.json')
 const val_config_data=require('./data/validator.json')
+const {valitador_config}=require('../model/user/validator_config')
 
 const {profile}=require('../model/user/profile')
 const { roles } = require('../model/user/role');
 const {user}=require('../model/user/user')
 const {dept}=require('../model/user/dept')
+const { expense_form_fields } = require("../model/expense/expense_form_fields");
+
 const {employee_config}=require('../model/user/emp_config')
 const {employee_roles}=require('../model/user/emp_role')
 const {valitador_config}=require('../model/user/validator_config')
 const {allow_category}=require('../model/user/allowed_category')
 const {category}=require('../model/expense/category')
+const {info} = require('../model/info')
 const {encrypt}=require('../midleware/pass_enc');
 
 const seed = async () => {
   try {
+    console.log("expense_form_fields:", expense_form_fields);
+
       // role
       await db.delete(roles).execute()
     await db.insert(roles).values(role_data).onConflictDoNothing();
@@ -47,20 +56,36 @@ const seed = async () => {
     }
     let hash_pass=await encrypt(admin_data[0].profile_id)
     await db.insert(user).values({user_id:user_id,profile_id:admin_data[0].profile_id,password_hash:hash_pass})
+    // categories FIRST
+await db.delete(category).execute();
+await db.insert(category).values(category_data);
 
-    // add category
-    await db.delete(category).execute()
-    await db.insert(category).values(category_data)
+// // expense_form SECOND
+await db.delete(expense_form).execute();
+await db.insert(expense_form).values(expense_form_data);
+
+// expense_form_fields LAST
+await db.delete(expense_form_fields).execute();
+await db.insert(expense_form_fields).values(expense_form_fields_data);
+    
 
     // add employee
+    await db.delete(info).execute()
+    
     await db.insert(profile).values(user_data)
+    //add validator
+    await db.delete(valitador_config).execute()
+    await db.insert(valitador_config).values(val_config_data)
 
-    // add emp config
+    //add emp config
+    await db.delete(employee_config).execute()
     await db.insert(employee_config).values(emp_config_data)
 
     // add validator
     await db.delete(valitador_config).execute()
     await db.insert(valitador_config).values(val_config_data)
+   
+
 
     // add emp credential
     user_id='U_111111'

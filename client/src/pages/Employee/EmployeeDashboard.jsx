@@ -392,7 +392,7 @@ ctg?.map((e)=>(
     {openExpense && (
       <div className="fixed inset-0 z-50 w-full mx-auto bg-black/30 flex items-center justify-center">
     {/* Expense Page Container */}
-    <div className="w-full max-w-md mx-auto h-fit bg-[#fff7ed] rounded-2xl shadow-xl overflow-y-auto relative">
+    <div className="w-full max-w-md mx-auto h-auto bg-[#fff7ed] rounded-xl shadow-xl relative">
       <button
         onClick={() => setopenExpense(false)}
         className=" cursor-pointer absolute top-4 right-4 text-gray-500 hover:text-gray-700"

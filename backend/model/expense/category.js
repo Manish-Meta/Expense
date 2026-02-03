@@ -3,7 +3,7 @@ const { profile } = require('../user/profile')
 
 const category=pgTable('category',{
     profile_id:varchar('profile_id',{length:20}).references(()=>profile.profile_id,{ onDelete: "cascade" }),
-    category_id:varchar('category_id',{lenght:20}).primaryKey(),
+    category_id: varchar("category_id", { length: 20 }).primaryKey(),
     description:text('description'),
     cat_name:varchar('cat_name',{length:50}).notNull().unique(),
     limit:integer('limit'),

@@ -3,17 +3,17 @@
   "dialect": "postgresql",
   "entries": [
     {
-      "idx": 0,
+      "idx": 1,
       "version": "7",
-      "when": 1770093209654,
-      "tag": "0000_ordinary_roland_deschain",
+      "when": 1770023675597,
+      "tag": "0001_quiet_ezekiel",
       "breakpoints": true
     },
     {
-      "idx": 1,
+      "idx": 2,
       "version": "7",
-      "when": 1770098812661,
-      "tag": "0001_remarkable_brother_voodoo",
+      "when": 1770027736624,
+      "tag": "0002_needy_morlun",
       "breakpoints": true
     }
   ]

@@ -6,6 +6,7 @@ const app = express();
 const cors = require("cors");
 const cookie_parser = require("cookie-parser");
 const limit = require("express-rate-limit");
+const expense_form_route=require("./router/expense_form.js");
 
 // router files
 const user_route = require("./router/user_route.js");
@@ -42,7 +43,7 @@ app.use(cookie_parser());
 
 app.use(
   cors({
-    origin: ["http://localhost:5174", "http://localhost:5173"],
+    origin: "http://localhost:5173",
     methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],
     credentials: true,
   })
