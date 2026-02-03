@@ -14,7 +14,9 @@ const {info}=require('../model/info')
 const {payment_info}=require('../model/payment/payment')
 const send_need_info=require('../utils/send_need_info')
 const { dept } = require('../model/user/dept')
+const {new_voucher}=require('../model/voucher/new_voucher')
 const {check_new_expense,check_advance_option,ckeck_recieve_exp_status,admin_send_status,exp_needs_info}=require('../zod_schema/expense_schema')
+const {show_exp_vou}=require('../component/vou_exp/show_exp_vou')
 
 const new_expense=async(req,res,next)=>{
     try{
@@ -160,15 +162,25 @@ const new_expense=async(req,res,next)=>{
 const my_exp=async(req,res,next)=>{
     try{
         const id=req.user
-        const result=await db.select({expense:expense,cat_name:category.cat_name}).from(expense).where(eq(expense.profile_id,id)).innerJoin(category,eq(category.category_id,expense.cat_id))
-       
-        if(result.length==0){
+        console.log(id)
+        const exp_det=await db.select({expense:expense,cat_name:category.cat_name}).from(expense)
+        .innerJoin(category,eq(category.category_id,expense.cat_id))
+        .where(eq(expense.profile_id,id))
+        
+        const vou_detail=await db.select({voucher:new_voucher,cat_name:category.cat_name}).from(new_voucher)
+        .innerJoin(category,eq(category.category_id,new_voucher.category))
+        .where(eq(new_voucher.profile_id,id))
+
+        if(exp_det.length==0 && vou_detail.length==0){
             return res.status(200).json({
                 msg:'the expenses empty'
             })
         }
         res.status(201).json({
-            data:result
+            data:{
+                expense:exp_det,
+                voucher:vou_detail
+            }
         })
     }catch(err){
         next(err)
@@ -184,9 +196,23 @@ const expense_withdraw=async(req,res,next)=>{
                 msg:'Invalid data'
             })
         }
-        const expense_detail=await db.update(expense).set({status:'Withdrawn',next_level:'Finish'}).where(eq(expense.exp_id,id))
-        const expense_status=await db.insert(expense_approve_history).values({status:'Withdrawn',profile_id:user_id,exp_id:id})
-        if(expense_detail.rowCount==0||expense_status.rowCount==0){
+
+        // find this data is expense or voucher
+        let expense_type=id.startsWith('V')
+        let expense_table=expense_type?new_voucher:expense
+        let exp_con=expense_type?new_voucher.voucher_id:expense.exp_id
+        let exp_history=expense_type?{status:'Withdrawn',profile_id:user_id,voucher_id:id}:{status:'Withdrawn',profile_id:user_id,exp_id:id}
+
+        const expense_detail=await db.update(expense_table).set({status:'Withdrawn',next_level:'Finish'}).where(and(eq(exp_con,id),eq(expense_table.profile_id,user_id)))
+        if(expense_detail.rowCount==0){
+            res.status(400).json({
+                msg:'Invalid information'
+            })
+            return
+        }
+        let add_exp_histroy={status:'Withdrawn',profile_id:user_id,exp_history:id}
+        const expense_status=await db.insert(expense_approve_history).values(exp_history)
+        if(expense_status.rowCount==0){
             return res.status(400).json({
                 msg:'Invalid data'
             })
@@ -203,11 +229,24 @@ const show_particuler_expense=async(req,res,next)=>{
     try{
         const {id}=req.params
         const user_id=req.user
-        console.log("id : ",id)
+        if(!id||!user_id){
+            res.status(400).json({
+                msg:'invalid data'
+            })
+            return
+        }
+
+        // find the type expense or voucher
+        const exp_type=id.startsWith('V')
+        const exp_table=exp_type?new_voucher:expense
+        const exp_table_id=exp_type?new_voucher.voucher_id:expense.exp_id
+        const expense_history=exp_type?expense_approve_history.voucher_id:expense_approve_history.exp_id
+        const exp_category=exp_type?new_voucher.category:expense.cat_id
         await db.transaction(async(table)=>{
-            const exp=await table.select({expense:expense,category:category}).from(expense)
-            .innerJoin(category,eq(category.category_id,expense.cat_id))
-            .where(eq(expense.exp_id,id))
+            const exp=await table.select({expense:exp_table,category:category.cat_name}).from(exp_table)
+            .innerJoin(category,eq(category.category_id,exp_category))
+            .where(eq(exp_table_id,id))
+
             if(exp.length==0){
                 return res.status(404).json({
                     msg:'The expense not found'
@@ -215,7 +254,7 @@ const show_particuler_expense=async(req,res,next)=>{
             }
             const status=await table.select({status:expense_approve_history,name:profile.username}).from(expense_approve_history)
             .innerJoin(profile,eq(profile.profile_id,expense_approve_history.profile_id))
-            .where(eq(expense_approve_history.exp_id,id))
+            .where(eq(expense_history,id))
             if(!status){
                 return res.status(404).json({
                     msg:'The expense not found'
@@ -223,7 +262,7 @@ const show_particuler_expense=async(req,res,next)=>{
             }
             let adv_detail=null;
             let loc_detail=null;
-            if(exp&&exp[0].advance_option){
+            if(!exp_table && exp && exp[0].advance_option){
                 adv_detail=await table.select().from(advance_option).where(eq(advance_option.advance_opt_id,exp[0].advance_option))
                 if(!adv_detail){
                     return 
@@ -249,7 +288,6 @@ const show_particuler_expense=async(req,res,next)=>{
 const show_pending_expense=async(req,res,next)=>{
     try{
         const id=req.user
-        console.log(id)
         await db.transaction(async(table)=>{
         let value=await table.select({scope:valitador_config.validation_scope}).from(valitador_config).where(eq(valitador_config.profile_id,id))
         if(!value){
@@ -258,35 +296,61 @@ const show_pending_expense=async(req,res,next)=>{
             })
         }
         if(value[0].scope=='ALL_DEPT'){
+
+            // find expense
             const all_dept=await table.select({expense:expense,cat_name:category.cat_name,emp_name:profile.username,dept_name:dept.name}).from(expense)
             .innerJoin(category,eq(expense.cat_id,category.category_id))
             .innerJoin(profile,eq(expense.profile_id,profile.profile_id))
             .innerJoin(dept,eq(profile.dept_id,dept.deptartment_id))
             .where(and(ne(expense.profile_id,id),eq(expense.next_level,'Validator'),ne(expense.status,'Rejected')))
+
+            // find vouchers
+            const all_dept_voucher=await table.select({expense:new_voucher,cat_name:category.cat_name,emp_name:profile.username,dept_name:dept.name}).from(new_voucher)
+            .innerJoin(category,eq(new_voucher.cat_id,category.category_id))
+            .innerJoin(profile,eq(new_voucher.profile_id,profile.profile_id))
+            .innerJoin(dept,eq(profile.dept_id,dept.deptartment_id))
+            .where(and(ne(new_voucher.profile_id,id),eq(new_voucher.next_level,'Validator'),ne(new_voucher.status,'Rejected')))
            
-            if(all_dept.length==0){
+            if(all_dept.length==0 || all_dept_voucher.length==0){
                 return res.status(201).json({
                     msg:'No pending expenses'
                 })
             }
             return res.status(200).json({
                 msg:"ALL_DEPT the all expenses are pending",
-                data:all_dept
+                data:{
+                    expense:all_dept,
+                    voucher:all_dept_voucher
+                }
             })
         }else if(value[0].scope=='ASSIGNED_TEAMS'){
+            // my team pending expenses
             let pending_expense=await table.select({expense:expense,cat_name:category.cat_name,emp_name:profile.username,dept_name:dept.name}).from(expense)
             .innerJoin(employee_config,and(eq(employee_config.reporting_manager,id),eq(employee_config.profile_id,expense.profile_id)))
             .innerJoin(category,eq(category.category_id,expense.cat_id))
+            .innerJoin(profile,eq(profile.profile_id,expense.profile_id))
             .innerJoin(dept,eq(profile.dept_id,dept.deptartment_id))
             .where(and(ne(expense.profile_id,id),eq(expense.next_level,'Validator'),ne(expense.status,'Rejected')))
-            if(!pending_expense){
+
+            // my team pending vouchers
+            let pending_voucher=await table.select({voucher:new_voucher,cat_name:category.cat_name,emp_name:profile.username,dept_name:dept.name}).from(new_voucher)
+            .innerJoin(employee_config,and(eq(employee_config.reporting_manager,id),eq(employee_config.profile_id,new_voucher.profile_id)))
+            .innerJoin(category,eq(category.category_id,new_voucher.category))
+            .innerJoin(profile,eq(profile.profile_id,new_voucher.profile_id))
+            .innerJoin(dept,eq(profile.dept_id,dept.deptartment_id))
+            .where(and(ne(new_voucher.profile_id,id),eq(new_voucher.next_level,'Validator'),ne(new_voucher.status,'Rejected')))
+
+            if(pending_expense.length==0 && pending_voucher.length==0){
                 return res.status(200).json({
                     msg:'Pending expenses empty'
                 })
             }
             return res.status(200).json({
                 msg:"ASSIGNED_TEAMS the all expenses are pending",
-                data:pending_expense
+                data:{
+                    expense:pending_expense,
+                    voucher:pending_voucher
+                }
             })
         }else{
             const val_dept_id=await table.select({dept_id:profile.dept_id}).from(profile).where(eq(profile.profile_id,id))
@@ -296,20 +360,32 @@ const show_pending_expense=async(req,res,next)=>{
                     msg:"Sorry,You not join any dept so i can't retreive which dept of you"
                 })
             }
+            // find own deptartment expenses
             const own_dept_exp=await table.select({expense:expense,cat_name:category.cat_name,emp_name:profile.username,dept_name:dept.name}).from(expense)
             .innerJoin(profile,and(eq(profile.dept_id,val_dept_id[0]?.dept_id),eq(profile.profile_id,expense.profile_id)))
             .innerJoin(category,eq(category.category_id,expense.cat_id))
             .innerJoin(dept,eq(profile.dept_id,dept.deptartment_id))
             .where(and(ne(expense.profile_id,id),eq(expense.next_level,'Validator'),ne(expense.status,'Rejected')))
-    
-            if(own_dept_exp.length === 0){
+            
+            // find own deptartment voucher
+            const own_dept_vou=await table.select({voucher:new_voucher,cat_name:category.cat_name,emp_name:profile.username,dept_name:dept.name}).from(new_voucher)
+            .innerJoin(profile,and(eq(profile.dept_id,val_dept_id[0]?.dept_id),eq(profile.profile_id,new_voucher.profile_id)))
+            .innerJoin(category,eq(category.category_id,new_voucher.category))
+            .innerJoin(dept,eq(profile.dept_id,dept.deptartment_id))
+            .where(and(ne(new_voucher.profile_id,id),eq(new_voucher.next_level,'Validator'),ne(new_voucher.status,'Rejected')))
+
+
+            if(own_dept_exp.length == 0 || own_dept_vou.length==0){
                 return res.status(200).json({
                     msg:'The pending expense is empty'
                 })
             }
             return res.status(200).json({
                 msg:"the all expenses are pending",
-                data:own_dept_exp
+                data:{
+                    expense:own_dept_exp,
+                    voucher:own_dept_vou
+                }
             })
         }
 
@@ -335,13 +411,8 @@ const expense_validate=async(req,res,next)=>{
                 msg:'Invalid expense data'
             })
         }
-        // const role_name=await db
-        //     .select({role: roles.role_name })
-        //     .from(employee_roles)
-        //     .innerJoin(roles, eq(roles.role_id, employee_roles.role_id))
-        //     .where(eq(employee_roles.profile_id, user_id));
-
-        if(receive_status=='Escaleded'){
+        
+        if(receive_status=='Escalated'){
             // const {remark}=req.body
             if(!remark){
                 return res.status(400).json({
@@ -349,8 +420,20 @@ const expense_validate=async(req,res,next)=>{
                 })
             }
             const detail=await db.transaction(async(table)=>{
-                const exp_status=await table.update(expense).set({status:'Escalated',next_level:'Admin'}).where(eq(expense.exp_id,id))
-                const add_status=await table.insert(expense_approve_history).values({status:'Escalated',remark:remark,exp_id:id,profile_id:user_id})
+                const data=await show_exp_vou(table,id,receive_status,remark,user_id,'Admin')
+                if(data=='exist'){
+                    res.status(400).json({
+                        msg:'the status already exist'
+                    })
+                    return
+                }
+                if(!data){
+                    res.status(400).json({
+                        msg:'invalid expense detail'
+                    })
+                    return false
+                }
+                const {add_status,exp_status}=data
                 if(add_status.rowCount==0||exp_status.rowCount==0){
                     table.rollback()
                     return res.status(400).json({
@@ -367,8 +450,8 @@ const expense_validate=async(req,res,next)=>{
         }
         else if(receive_status=='Approved'){
             const detail=await db.transaction(async(table)=>{
-                const exp_status=await table.update(expense).set({status:'Processing',next_level:'Admin'}).where(eq(expense.exp_id,id))
-                const add_status=await table.insert(expense_approve_history).values({status:'Validated',exp_id:id,profile_id:user_id})
+
+                const {exp_status,add_status}=await show_exp_vou(table,id,'Processing',null,user_id,'Admin')
                 if(add_status.rowCount==0||exp_status.rowCount==0){
                     table.rollback()
                     return res.status(400).json({
@@ -391,8 +474,8 @@ const expense_validate=async(req,res,next)=>{
                 })
             }
             const detail=await db.transaction(async(table)=>{
-                const exp_status=await table.update(expense).set({status:'Rejected',next_level:'Finish'}).where(eq(expense.exp_id,id))
-                const add_status=await table.insert(expense_approve_history).values({status:'Rejected',remark:remark,exp_id:id,profile_id:user_id})
+
+                const {add_status,exp_status}=await show_exp_vou(table,id,receive_status,remark,user_id,'Finish')
                 if(add_status.rowCount==0||exp_status.rowCount==0){
                     table.rollback()
                     return res.status(400).json({
@@ -408,10 +491,8 @@ const expense_validate=async(req,res,next)=>{
             }
         }
         else if(receive_status=='Needs-info'){
-            // const {remark}=req.body
             const detail=await db.transaction(async(table)=>{
-                const exp_status=await table.update(expense).set({status:'Needs-info'}).where(eq(expense.exp_id,id)).returning({id:expense.profile_id})
-                const add_status=await table.insert(expense_approve_history).values({status:'Needs-info',remark:remark,exp_id:id,profile_id:user_id})
+                const {exp_status,add_status}=await show_exp_vou(table,id,receive_status,remark,user_id,'Admin')
                 const result=await send_need_info(user_id,exp_status[0].id,remark,next)
                 if(add_status.rowCount==0||exp_status.rowCount==0||!result){
                     table.rollback()
@@ -443,14 +524,22 @@ const show_admin_expense=async(req,res,next)=>{
         .innerJoin(category,eq(expense.cat_id,category.category_id))
         .innerJoin(profile,eq(profile.profile_id,expense.profile_id))
         .where(or(eq(expense.status,'Escalated'),eq(expense.next_level,'Admin')))
-        if(admin_expenses.length==0){
+
+        const admin_voucher=await db.select({voucher:new_voucher,cat_name:category.cat_name,name:profile.username}).from(new_voucher)
+        .innerJoin(category,eq(new_voucher.category,category.category_id))
+        .innerJoin(profile,eq(profile.profile_id,new_voucher.profile_id))
+        .where(or(eq(new_voucher.status,'Escalated'),eq(new_voucher.next_level,'Admin')))
+        if(admin_expenses.length==0 && admin_voucher.length==0){
             return res.status(500).json({
                 msg:'The expenses is empty'
             })
         }
         res.status(200).json({
             msg:'This is pending expenses for your approval',
-            data:admin_expenses
+            data:{
+                expense:admin_expenses,
+                voucher:admin_voucher
+            }
         })
     }catch(err){
         next(err)
@@ -477,9 +566,23 @@ const admin_approve_expense=async(req,res,next)=>{
             const {payment_method,ref_num,payment_date,notes,amount}=req.body
             await db.transaction(async(table)=>{
                 const payment_detail=await table.insert(payment_info).values({payment_date:new Date(payment_date),payment_method:payment_method,ref_num:ref_num,amount:amount,notes:notes,profile_id:user_id,exp_id:id})
-                const add_status=await table.insert(expense_approve_history).values({status:'Paid',profile_id:user_id,exp_id:id})
-                const change_status=await table.update(expense).set({status:'Paid',next_level:'Finish'}).where(eq(expense.exp_id,id))
-                if(payment_detail.rowCount==0||change_status.rowCount==0||add_status.rowCount==0){
+
+                const data=await show_exp_vou(table,id,'Paid',remark,user_id,'Finish')
+                console.log(data)
+                if(data=='exist'){
+                    res.status(400).json({
+                        msg:'the status already exist'
+                    })
+                    return
+                }
+                if(!data){
+                    res.status(400).json({
+                        msg:'invalid expense detail'
+                    })
+                    return false
+                }
+                const {add_status,exp_status}=data
+                if(payment_detail.rowCount==0||exp_status.rowCount==0||add_status.rowCount==0){
                     table.rollback()
                     return res.status(400).json({
                         msg:"Send valid details"
@@ -493,9 +596,21 @@ const admin_approve_expense=async(req,res,next)=>{
         else if(status_type=='Reject'){
             // const {remark}=req.body;
             await db.transaction(async(table)=>{
-                 const change_expense_status=await table.update(expense).set({status:'Rejected',next_level:'Finish'}).where(eq(expense.exp_id,id))
-                 const add_status=await table.insert(expense_approve_history).values({status:'Rejected',exp_id:id,profile_id:user_id,remark:remark})
-                 if(add_status.rowCount==0||change_expense_status.rowCount==0){
+                 const data=await show_exp_vou(table,id,'Rejected',remark,user_id,'Finish')
+                if(data=='exist'){
+                    res.status(400).json({
+                        msg:'the status already exist'
+                    })
+                    return
+                }
+                if(!data){
+                    res.status(400).json({
+                        msg:'invalid expense detail'
+                    })
+                    return false
+                }
+                const {add_status,exp_status}=data
+                 if(add_status.rowCount==0||exp_status.rowCount==0){
                     table.rollback()
                     return res.status(400).json({
                         msg:'Invalid'
@@ -528,9 +643,22 @@ const admin_approve_expense=async(req,res,next)=>{
                         msg:'invalid'
                     })
                 }
-                const change_status=await table.update(expense).set({status:'Needs-info'}).where(eq(expense.exp_id,id))
-                const add_status=await table.insert(expense_approve_history).values({status:'Needs-info',exp_id:id,profile_id:user_id,remark:remark})
-                if(change_status.rowCount==0||add_status.rowCount==0){
+
+                const data=await show_exp_vou(table,id,'Needs_info',remark,user_id,'Finish')
+                if(data=='exist'){
+                    res.status(400).json({
+                        msg:'the status already exist'
+                    })
+                    return
+                }
+                if(!data){
+                    res.status(400).json({
+                        msg:'invalid expense detail'
+                    })
+                    return false
+                }
+                const {add_status,exp_status}=data
+                if(exp_status.rowCount==0||add_status.rowCount==0){
                     table.rollback()
                     return res.status(400).json({
                         msg:'something wrong'
@@ -637,6 +765,9 @@ const need_information=async(req,res,next)=>{
             from:id,
             to:to_id,
             information:text
+        })
+        res.status(200).json({
+            msg:'information sended'
         })
     }catch(err){
         next(err)

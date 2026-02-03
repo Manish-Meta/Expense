@@ -125,7 +125,11 @@ const permission_cat=async(req,res,next)=>{
         const id=req.user
         let send_category=[]
         const detail=await db.select({id:allow_category.category}).from(allow_category).where(eq(allow_category.profile_id,id))
-        
+        if(detail.length==0){
+            return res.status(200).json({
+                msg:'you don\'t have access to submit the expense' 
+            })
+        }
         for(let data of detail){
             if(data.id=='ALL'){
 
@@ -139,11 +143,11 @@ const permission_cat=async(req,res,next)=>{
                   data:category_filter  
                 })
             }
-            const uniq_category=await db.select({category_id:category.category_id,category:category.cat_name,category_limit:category.limit,description:category.description}).from(category).where(eq(category.category_id,data.id),eq(category.is_active,true))
+            const uniq_category=await db.select({category_id:category.category_id,category:category.cat_name,category_limit:category.limit,description:category.description}).from(category).where(and(eq(category.category_id,data.id),eq(category.is_active,true)))
             send_category.push(uniq_category)
         }
         res.status(200).json({
-            date:send_category
+            data:send_category
         })
     }catch(err){
         next(err)

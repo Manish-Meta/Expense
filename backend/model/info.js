@@ -7,8 +7,8 @@ const info=pgTable('info',{
     information:text('information'),
     attach:text('attach'),
     is_view:boolean('is_view').default(false),
-    created_at:timestamp('created_at',{mode:'date'}).default(),
-    updated_at:timestamp('updated_at',{mode:'date'}).default()
+    created_at:timestamp('created_at',{mode:'date'}).defaultNow(),
+    updated_at:timestamp('updated_at',{mode:'date'}).defaultNow()
 })
 
 module.exports={info}
