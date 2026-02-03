@@ -43,7 +43,7 @@ export default function ManualEntry({ category, onDone, fields, onSubmit }) {
           </span>
         )}
 
-      {/* Amount + Date
+      Amount + Date
       <div className="grid grid-cols-2 gap-3 w-full mt-3">
         <div className="relative">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
@@ -68,7 +68,7 @@ export default function ManualEntry({ category, onDone, fields, onSubmit }) {
           onChange={(e) => setDate(e.target.value)}
         />
         </div>
-      </div> */}
+      </div>
 
       {/* Merchant */}
       <input
@@ -88,14 +88,7 @@ export default function ManualEntry({ category, onDone, fields, onSubmit }) {
         )}
       </div>
 
-      {/* Purpose */}
-      <textarea
-        rows={4}
-        className="input"
-        placeholder="Business purpose (optional)"
-        value={purpose}
-        onChange={(e) => setPurpose(e.target.value)}
-      />
+      
       {fields?.length > 0 && (
   <DynamicForm
     fields={fields}
@@ -104,7 +97,16 @@ export default function ManualEntry({ category, onDone, fields, onSubmit }) {
     values={customFields}
     onChange={setCustomFields}
   />
+
 )}
+{/* Purpose */}
+      <textarea
+        rows={4}
+        className="input"
+        placeholder="Business purpose (optional)"
+        value={purpose}
+        onChange={(e) => setPurpose(e.target.value)}
+      />
 
     </div>
     

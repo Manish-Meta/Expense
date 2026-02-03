@@ -29,24 +29,27 @@ export default function FieldCard({ field, onEdit, onRemove }) {
         <div>
           <p className="text-sm font-medium">{field.field_name}</p>
           <p className="text-xs text-gray-500">
-            {field.field_type} • {field.required ? "Required" : "Optional"}
+            {field.field_type}  {field.required ? "Required" : "Optional"}
           </p>
         </div>
       </div>
 
       <div className="flex gap-2">
-        <button
-          onClick={() => onEdit(field)}
-          className="px-3 py-1 text-xs border rounded-md bg-white"
-        >
-          <Pencil size={12} /> Edit
-        </button>
+      
+        {field.editable && (
+          <button
+            onClick={() => onEdit(field)}
+            className="px-3 py-1 text-xs border rounded-lg cursor-pointer hover:shadow-lg transition hover:bg-orange-100"
+          >
+            Edit
+          </button>
+        )}
 
         <button
           onClick={() => onRemove(field.field_id)}
-          className="px-3 py-1 text-xs border rounded-md bg-red-100 text-red-600"
+          className="px-3 py-1 text-xs border border-red-500 text-red-500 rounded-lg cursor-pointer hover:shadow-lg transition hover:bg-red-100"
         >
-          <Trash2 size={12} /> Remove
+          Remove
         </button>
       </div>
     </div>
