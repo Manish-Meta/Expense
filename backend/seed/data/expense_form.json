@@ -1,0 +1,17 @@
+[
+  {
+    "form_id": "F_00001",
+    "form_name": "Business Manual Expense",
+    "module": "expense"
+  },
+  {
+    "form_id": "F_00002",
+    "form_name": "Trip",
+    "module": "Voucher"
+  },
+  {
+    "form_id": "F_00003",
+    "form_name": "Advance form",
+    "module": "Advance_form"
+  }
+]
