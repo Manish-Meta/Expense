@@ -29,6 +29,7 @@ const admin_send_status=z.object({
 })
 
 const exp_needs_info=z.object({
-    text:z.string()
+    text:z.string(),
+    exp_id:z.string()
 })
 module.exports={check_new_expense,check_advance_option,ckeck_recieve_exp_status,admin_send_status,exp_needs_info}

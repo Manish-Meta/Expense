@@ -1,12 +1,14 @@
 import { use, useEffect, useState } from "react"
-import { FileText, DollarSign, Clock, ShieldCheck, Download, Eye, IndianRupee, CircleCheck, AlertTriangle, XCircle } from "lucide-react"
+import { FileText, DollarSign, Clock, ShieldCheck, Download, Eye, IndianRupee, CircleCheck, AlertTriangle, XCircle, CircleXIcon } from "lucide-react"
 import { StatCard } from "../../components/StatCard"
 import Row from "../../components/Row"
 import { Navigate, useNavigate, useParams } from "react-router-dom"
+import ExpenseReview from "./ExpenseReview"
 
 export default function ValidatorDashboard() {
   const navigate=useNavigate()
-  const { id } = useParams()
+  const [open,setOpen] = useState(false)
+  const [id,setId] = useState()
   const [category, setCategory] = useState("All")
   const [employee, setEmployee] = useState("")
   const [sortBy, setSortBy] = useState("Date Submitted")
@@ -522,20 +524,23 @@ console.log(categories)
                     <td className="px-4 py-2 font-medium">
                       {e.cat_name}
                     </td>
-                    <td className="px-4 py-2">
-                      <div>
-                        <p className="font-bold">{e.emp_name}</p>
-                        <p className="text-yellow-600">{e.dept_name}</p>
+                    <td className="px-2 py-4">
+                      <div className="text-[11px] flex items-center font-bold p-2">
+                        {e.emp_name}
+                        <p className="border text-xs bg-orange-100 border-orange-200 px-2 py-0.5 text-yellow-600">{e.dept_name}</p>
                       </div>
                     </td>
                     <td className="px-4 py-2 text-gray-600 truncate max-w-[220px]">
                       {e.expense.business_purpose}
                     </td>
-                    <td className="px-4 py-4 font-medium flex items-center gap-1">
-                      <IndianRupee className="size-3" />
+                    <td className="px-4 py-4 font-medium">
+                      <div className="flex items-center font-bold">
+                        <IndianRupee className="size-3" />
                       {e.expense.amount}
+                      </div>
+                      
                     </td>
-                    <td className="px-4 py-2">
+                    <td className="">
                       {new Date(e.expense.date).toLocaleDateString("en-IN")}
                     </td>
                     <td className="px-4 py-2">
@@ -575,11 +580,11 @@ console.log(categories)
 
                     <td className="px-4 py-2">
                       <button className="flex font-semibold cursor-pointer border border-orange-300 p-2 rounded-xl items-center gap-1 hover:text-orange-500 bg-white"
-                      onClick={() =>navigate(`/review/${e.expense.exp_id}`)}
+                      // onClick={() =>navigate(`/review/${e.expense.exp_id}`)}
+                      onClick={()=>{setOpen(true),setId(e.expense.exp_id)}}
                       >
                         <Eye className="size-4"/>
-                        Review
-                        
+                        Review                        
                       </button>
                     </td>
                   </tr>
@@ -589,8 +594,25 @@ console.log(categories)
           </div>
         </div>
       )}
+      {open&& (
+      <div className="fixed inset-0 z-50 w-full mx-auto bg-black/30 flex items-center justify-center">
+          {/* Expense Page Container */}
+          <div className="">
+            <button
+              onClick={() => setOpen(false)}
+              className="cursor-pointer absolute right-4 p-2 rounded-2xl text-gray-500 hover:text-gray-700"
+            >
+              <CircleXIcon className='text-red-600 size-5'/>
+            </button>
+            <ExpenseReview
+                        id={id}
+                        />
+          </div>
+        </div>
+      )}
     </main>
   </div>
 )
+
 
 }
