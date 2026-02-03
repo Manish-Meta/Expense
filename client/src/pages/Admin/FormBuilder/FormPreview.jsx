@@ -68,6 +68,7 @@ export default function FormPreview({ category, formId, onBack }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
+    await fetchFields();
 
     if (isEdit) {
       setFields((prev) =>
@@ -76,10 +77,24 @@ export default function FormPreview({ category, formId, onBack }) {
         )
       );
     } else {
-      setFields((prev) => [...prev, payload]);
-    }
-  };
+      const handleSubmitField = async (payload, isEdit) => {
+  const url = isEdit
+    ? `${import.meta.env.VITE_BACKEND_URL}forms/form-field/${payload.field_id}`
+    : `${import.meta.env.VITE_BACKEND_URL}forms/form-field`;
 
+  await fetch(url, {
+    method: isEdit ? "PATCH" : "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  await fetchFields();  
+};
+      
+};
+
+    }
   
   const handleDragEnd = async (event) => {
     const { active, over } = event;
@@ -120,7 +135,7 @@ export default function FormPreview({ category, formId, onBack }) {
         <div>
           <button
             onClick={onBack}
-            className="text-sm text-red-500 hover:underline"
+            className="text-sm text-red-500 hover:underline cursor-pointer"
           >
             Back
           </button>
@@ -131,7 +146,7 @@ export default function FormPreview({ category, formId, onBack }) {
 
         <button
           onClick={openAddDialog}
-          className="flex items-center gap-2 px-4 py-2 text-xs rounded-lg border bg-white"
+          className="flex items-center gap-2 px-4 py-2 text-xs hover:bg-orange-100 rounded-lg border hover:shadow-lg transition bg-white cursor-pointer"
         >
           <Plus size={14} /> Add Field
         </button>

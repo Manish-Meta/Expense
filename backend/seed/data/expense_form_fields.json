@@ -2,7 +2,7 @@
   {
     "field_id": "FI_00001",
     "form_id": "F_00001",
-    "category_id": "C_300001",
+    "category_id": "C_300003",
     "field_name": "Amount",
     "field_key": "amount",
     "field_type": "currency",

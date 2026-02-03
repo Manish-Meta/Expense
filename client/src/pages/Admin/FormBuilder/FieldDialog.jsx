@@ -7,14 +7,14 @@ export default function FieldDialog({
   formId,
   categoryId,
   nextOrder,
-  editField = null,
+  editField,
 }) {
   const isEdit = Boolean(editField);
 
   const [field, setField] = useState({
     field_name: "",
     field_key: "",
-    field_type: "text",
+    field_type: "number",
     required: false,
     editable: true,
     min_length: "",
@@ -24,13 +24,23 @@ export default function FieldDialog({
   useEffect(() => {
     if (editField) {
       setField(editField);
+    } else {
+      setField({
+        field_name: "",
+        field_key: "",
+        field_type: "number",
+        required: false,
+        editable: true,
+        min_length: "",
+        max_length: "",
+      });
     }
-  }, [editField]);
+  }, [editField, open]);
 
   if (!open) return null;
 
   const handleChange = (key, value) => {
-    setField(prev => ({ ...prev, [key]: value }));
+    setField((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleSubmit = async () => {
@@ -47,94 +57,137 @@ export default function FieldDialog({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
-      <div className="bg-white w-full max-w-lg rounded-2xl p-6 space-y-4">
-
-        <h4 className="text-lg font-semibold">
+    <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center">
+      <div className="bg-white w-full max-w-md rounded-2xl p-5 space-y-4">
+        <h4 className="text-sm font-semibold">
           {isEdit ? "Edit Field" : "Add Field"}
         </h4>
 
         {/* Field Name */}
         <input
-          className="w-full border p-2 rounded-lg"
-          placeholder="Field Name"
+          className="border w-full p-2 rounded-lg text-sm"
+          placeholder="Field name"
           value={field.field_name}
-          onChange={e => handleChange("field_name", e.target.value)}
+          onChange={(e) => handleChange("field_name", e.target.value)}
         />
 
         {/* Field Key */}
         <input
-          className="w-full border p-2 rounded-lg"
-          placeholder="Field Key (e.g amount, remarks)"
+          className="border w-full p-2 rounded-lg text-sm"
+          placeholder="Field key"
           value={field.field_key}
-          onChange={e => handleChange("field_key", e.target.value)}
+          disabled={isEdit} 
+          onChange={(e) => handleChange("field_key", e.target.value)}
         />
 
-        {/* Field Type */}
+        {/* Field Type
         <select
-          className="w-full border p-2 rounded-lg"
+          className="border w-full p-2 rounded-lg text-sm"
           value={field.field_type}
-          onChange={e => handleChange("field_type", e.target.value)}
+          onChange={(e) => handleChange("field_type", e.target.value)}
         >
           <option value="text">Text</option>
-          <option value="textarea">Text Area</option>
+          <option value="number">Number</option>
           <option value="currency">Currency</option>
           <option value="date">Date</option>
           <option value="email">Email</option>
-          <option value="number">Number</option>
-          <option value="dropdown">Dropdown</option>
-        </select>
+        </select> */}
+        <select
+  value={field.field_type}
+  onChange={(e) =>
+    setField({ ...field, field_type: e.target.value })
+  }
+  className="w-full border rounded-lg p-2 text-xs"
+>
+  <option value="text">Text</option>
+  <option value="number">Number</option>
+  <option value="currency">Currency</option>
+  <option value="date">Date</option>
+  <option value="email">Email</option>
+  <option value="file">File</option>
+</select>
+{field.field_type === "text" && (
+  <div className="grid grid-cols-2 gap-3">
+    <div>
+      <label className="text-xs font-medium">
+        Minimum Length
+      </label>
+      <input
+        type="number"
+        min={0}
+        value={field.min_length || ""}
+        onChange={(e) =>
+          setField({
+            ...field,
+            min_length: e.target.value,
+          })
+        }
+        className="w-full border rounded-lg p-2 text-xs"
+      />
+    </div>
 
-        {/* Conditional Length Fields */}
-        {["text", "textarea"].includes(field.field_type) && (
-          <div className="grid grid-cols-2 gap-3">
-            <input
-              type="number"
-              placeholder="Min Length"
-              className="border p-2 rounded-lg"
-              value={field.min_length || ""}
-              onChange={e => handleChange("min_length", e.target.value)}
-            />
-            <input
-              type="number"
-              placeholder="Max Length"
-              className="border p-2 rounded-lg"
-              value={field.max_length || ""}
-              onChange={e => handleChange("max_length", e.target.value)}
-            />
-          </div>
-        )}
+    <div>
+      <label className="text-xs font-medium">
+        Maximum Length
+      </label>
+      <input
+        type="number"
+        min={0}
+        value={field.max_length || ""}
+        onChange={(e) =>
+          setField({
+            ...field,
+            max_length: e.target.value,
+          })
+        }
+        className="w-full border rounded-lg p-2 text-xs"
+      />
+    </div>
+  </div>
+)}
 
-        {/* Toggles */}
-        <div className="flex items-center gap-6 text-sm">
-          <label>
-            <input
-              type="checkbox"
-              checked={field.required}
-              onChange={e => handleChange("required", e.target.checked)}
-            /> Required
-          </label>
 
-          <label>
-            <input
-              type="checkbox"
-              checked={field.editable}
-              onChange={e => handleChange("editable", e.target.checked)}
-            /> Editable
-          </label>
-        </div>
+        {/* Required */}
+        <label className="flex items-center gap-2 text-xs">
+          <input
+            type="checkbox"
+            checked={field.required}
+            onChange={(e) => handleChange("required", e.target.checked)}
+          />
+          Required
+        </label>
+        {/* Editable
+        <label className="flex items-center gap-2 text-xs">
+          <input
+            type="checkbox"
+            checked={field.editable}
+            onChange={(e) => handleChange("editable", e.target.checked)}
+          />
+          Editable
+        </label> */}
+        <label className="flex items-center gap-2 text-xs">
+  <input
+    type="checkbox"
+    checked={field.editable}
+    onChange={(e) =>
+      setField(prev => ({ ...prev, editable: e.target.checked }))
+    }
+  />
+  Editable
+</label>
 
-        {/* Actions */}
-        <div className="flex justify-end gap-3 pt-4">
+
+
+        <div className="flex justify-end gap-2 pt-3">
           <button
             onClick={onClose}
-            className="px-4 py-2 border rounded-lg"
+            className="text-xs border-red-500 hover:bg-red-100 px-4 py-2 border rounded-lg border:shadow transition cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 bg-orange-500 text-white rounded-lg"
+            className="text-xs px-4 py-2 bg-orange-500 text-white rounded-lg cursor-pointer hover:shadow transition hover:bg-orange-200"
           >
             {isEdit ? "Update Field" : "Create Field"}
           </button>

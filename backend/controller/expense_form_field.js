@@ -1,6 +1,7 @@
 const { db } = require("../db/db");
 const { expense_form_fields } = require("../model/expense/expense_form_fields");
 const { eq, and } = require("drizzle-orm");
+const {v4:uuid}=require("uuid");
 
 const getFieldsByCategory = async (req, res) => {
   const { formId, categoryId } = req.params;
@@ -71,8 +72,21 @@ const getFormFields = async (req, res, next) => {
     next(err);
   }
 };
-const createField = async (req, res) => {
-  await db.insert(expense_form_fields).values(req.body);
-  res.status(201).json({ msg: "Field created" });
+const createField = async (req, res, next) => {
+  try {
+    const payload = {
+      field_id: `FI_${uuid().slice(0, 8)}`,
+      ...req.body,
+    };
+
+    await db.insert(expense_form_fields).values(payload);
+
+    return res.status(201).json({
+      msg: "Field created",
+      data: payload,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 module.exports={reorderFields,getFieldsByCategory,createField,getFormFields};

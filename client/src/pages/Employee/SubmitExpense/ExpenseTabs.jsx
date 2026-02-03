@@ -16,13 +16,23 @@ export default function ExpenseTabs({ category, onNext, onBack }) {
   const { valid, setValid } = useGlobalContext();
 
   useEffect(() => {
+    if (!category?.category_id) return;
+
+    setLoadingFields(true);
+    setFields([]); // reset when category changes
+
     fetch(
-      `${import.meta.env.VITE_BACKEND_URL}forms/F_00001/${category.category_id}/fields`,
+      `${import.meta.env.VITE_BACKEND_URL}forms/${FORM_ID}/${category.category_id}/fields`,
       { credentials: "include" }
     )
       .then(res => res.json())
       .then(json => setFields(json.data || []))
-  }, [category.category_id])
+      .catch(err => {
+        console.error("Failed to load fields", err);
+        setFields([]);
+      })
+      .finally(() => setLoadingFields(false));
+  }, [category.category_id]);
 
   const handleDone = (payload, isValid) => {
     setData(payload);
@@ -31,7 +41,7 @@ export default function ExpenseTabs({ category, onNext, onBack }) {
 
   return (
     <div className="p-3 space-y-4">
-      {/* Back + Category pill */}
+     
       <div className="flex gap-4 mb-6 items-center">
         <button
           onClick={onBack}
@@ -82,7 +92,7 @@ export default function ExpenseTabs({ category, onNext, onBack }) {
       {tab === "manual" && (
         <ManualEntry
           category={category}
-          fields={fields}             
+          fields={fields}
           loadingFields={loadingFields}
           onDone={handleDone}
         />
