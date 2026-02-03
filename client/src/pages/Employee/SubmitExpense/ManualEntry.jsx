@@ -1,33 +1,38 @@
 import { useEffect, useState } from "react"
 import { validateExpense } from "../../../utils/expenseValidator"
+import DynamicForm from "../../../form/engine/DynamicForm";
 
-export default function ManualEntry({ category, onDone }) {
+export default function ManualEntry({ category, onDone, fields, onSubmit }) {
   const [merchant, setMerchant] = useState("")
   const [amount, setAmount] = useState("")
   const [date, setDate] = useState("")
   const [purpose, setPurpose] = useState("")
+  const [customFields, setCustomFields] = useState({})
+  
 
-  useEffect(() => {
-    const numericAmount = Number(amount)
-    const validLimit = validateExpense(numericAmount, category).valid
+ useEffect(() => {
+  const numericAmount = Number(amount)
+  const validLimit = validateExpense(numericAmount, category).valid
 
-    const valid =
-      merchant &&
-      date &&
-      amount &&
-      validLimit
+  const valid =
+    merchant &&
+    date &&
+    amount &&
+    validLimit
 
-    onDone(
-      {
-        amount: numericAmount,
-        date, // yyyy-mm-dd
-        merchant,
-        business_purpose: purpose,
-        category_id: category.category_id,
-      },
-      valid
-    )
-  }, [merchant, amount, date, purpose, category])
+  onDone(
+    {
+      amount: numericAmount,
+      date,
+      merchant,
+      business_purpose: purpose,
+      category_id: category.category_id,
+      custom_fields: customFields, 
+    },
+    valid
+  )
+}, [merchant, amount, date, purpose, customFields, category])
+
 
   return (
     <div className="bg-white border border-borderLine/60  shadow rounded-2xl p-4 space-y-6">
@@ -38,7 +43,7 @@ export default function ManualEntry({ category, onDone }) {
           </span>
         )}
 
-      {/* Amount + Date */}
+      {/* Amount + Date
       <div className="grid grid-cols-2 gap-3 w-full mt-3">
         <div className="relative">
           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
@@ -63,7 +68,7 @@ export default function ManualEntry({ category, onDone }) {
           onChange={(e) => setDate(e.target.value)}
         />
         </div>
-      </div>
+      </div> */}
 
       {/* Merchant */}
       <input
@@ -91,6 +96,16 @@ export default function ManualEntry({ category, onDone }) {
         value={purpose}
         onChange={(e) => setPurpose(e.target.value)}
       />
+      {fields?.length > 0 && (
+  <DynamicForm
+    fields={fields}
+    mode="entry"
+    role="employee"
+    values={customFields}
+    onChange={setCustomFields}
+  />
+)}
+
     </div>
     
   )

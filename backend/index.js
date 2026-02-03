@@ -5,6 +5,7 @@ const app = express();
 const cors = require("cors");
 const cookie_parser = require("cookie-parser");
 const limit = require("express-rate-limit");
+const expense_form_route=require("./router/expense_form.js");
 
 const user_route = require("./router/user_route.js");
 const expense_route = require("./router/expense_route.js");
@@ -52,7 +53,7 @@ app.use("/workflow", work_flow_router);
 app.use("/feedback", feedback_router);
 app.use("/send_email", email_route);
 app.use("/organization", org_router);
-// app.use("form-fields",expense_form_field)
+app.use("/forms",expense_form_route);
 app.use("/analytics", analyticsRouter);
 
 app.use(handle_error);
