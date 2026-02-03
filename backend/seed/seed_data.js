@@ -10,6 +10,7 @@ const user_data=require('./data/user.json')
 const allow_cat_data =require('./data/allow_category.json')
 const emp_role_data=require('./data/emp_roles.json')
 const emp_config_data=require('./data/emp_config.json')
+const val_config_data=require('./data/validator.json')
 
 const {profile}=require('../model/user/profile')
 const { roles } = require('../model/user/role');
@@ -17,6 +18,7 @@ const {user}=require('../model/user/user')
 const {dept}=require('../model/user/dept')
 const {employee_config}=require('../model/user/emp_config')
 const {employee_roles}=require('../model/user/emp_role')
+const {valitador_config}=require('../model/user/validator_config')
 const {allow_category}=require('../model/user/allowed_category')
 const {category}=require('../model/expense/category')
 const {encrypt}=require('../midleware/pass_enc');
@@ -55,6 +57,10 @@ const seed = async () => {
 
     // add emp config
     await db.insert(employee_config).values(emp_config_data)
+
+    // add validator
+    await db.delete(valitador_config).execute()
+    await db.insert(valitador_config).values(val_config_data)
 
     // add emp credential
     user_id='U_111111'

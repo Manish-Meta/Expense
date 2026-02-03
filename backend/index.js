@@ -2,10 +2,12 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 
+// application leve; middleware
 const cors = require("cors");
 const cookie_parser = require("cookie-parser");
 const limit = require("express-rate-limit");
 
+// router files
 const user_route = require("./router/user_route.js");
 const expense_route = require("./router/expense_route.js");
 const roles = require("./router/router_for_role.js");
@@ -15,15 +17,18 @@ const work_flow_router = require("./router/workflow.js");
 const feedback_router = require("./router/feedback.js");
 const email_route = require("./router/emailRoute.js");
 const org_router = require("./router/org.js");
-
+const policy_router=require('./router/policy.js')
 const analyticsRouter = require("./router/analytics.js");
+const voucher_route=require('./router/voucher.js')
 // const expense_forn_field=require("./router/expense_form_field.js")
 
+// middleware
 const handle_error = require("./utils/handle_error.js");
 const file_not_found = require("./utils/file_not_fount.js");
 require("./jobs/aiScheduler");
 
 const port = process.env.port;
+
 
 const set_limit = limit({
   windowMs: 10 * 60 * 1000,
@@ -52,6 +57,8 @@ app.use("/workflow", work_flow_router);
 app.use("/feedback", feedback_router);
 app.use("/send_email", email_route);
 app.use("/organization", org_router);
+app.use('/policy',policy_router)
+app.use('/voucher',voucher_route)
 // app.use("form-fields",expense_form_field)
 app.use("/analytics", analyticsRouter);
 

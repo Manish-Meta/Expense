@@ -5,8 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1769774412118,
-      "tag": "0000_eminent_firebrand",
+      "when": 1770093209654,
+      "tag": "0000_ordinary_roland_deschain",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1770098812661,
+      "tag": "0001_remarkable_brother_voodoo",
       "breakpoints": true
     }
   ]

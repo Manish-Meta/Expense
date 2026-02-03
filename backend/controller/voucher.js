@@ -45,7 +45,7 @@ const add_voucher=async(req,res,next)=>{
         console.log("transaction")
         let result=await db.transaction(async(table)=>{
             let emergency=null
-            
+        
             const voucher_detail=await table.insert(new_voucher).values({
                 voucher_id:new_voucher_id,
                 profile_id:id,
