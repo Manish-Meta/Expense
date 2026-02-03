@@ -152,7 +152,7 @@ function openAproval(exp_id){
   </thead>
 
  <tbody>
-  {Mypending.map((e, idx) => (
+  {Mypending?.map((e, idx) => (
     <tr
       key={idx}
       className={`hover:bg-gray-50 transition ${
