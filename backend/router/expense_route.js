@@ -10,8 +10,8 @@ const check_user_role=require('../midleware/checking_user')
 
 
 router.route('/new_expense').post(token_decode,upload.array('receipt',10),new_expense)
-router.route('/my_expense').get(token_decode,my_exp)
 router.route('/my_expense/:id').get(token_decode,show_particuler_expense)
+router.route('/my_expense').get(token_decode,my_exp)
 router.route('/withdraw/:id').get(token_decode,expense_withdraw)
 router.route('/show_pending').get(token_decode,show_pending_expense)
 router.route('/change_status/:id').post(token_decode,expense_validate);

@@ -1,0 +1,2 @@
+ALTER TABLE "expense_approve_history" ADD COLUMN "voucher_id" varchar(20);--> statement-breakpoint
+ALTER TABLE "expense_approve_history" ADD CONSTRAINT "expense_approve_history_voucher_id_voucher_voucher_id_fk" FOREIGN KEY ("voucher_id") REFERENCES "public"."voucher"("voucher_id") ON DELETE cascade ON UPDATE no action;
