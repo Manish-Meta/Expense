@@ -88,14 +88,7 @@ export default function ManualEntry({ category, onDone, fields, onSubmit }) {
         )}
       </div>
 
-      {/* Purpose */}
-      <textarea
-        rows={4}
-        className="input"
-        placeholder="Business purpose (optional)"
-        value={purpose}
-        onChange={(e) => setPurpose(e.target.value)}
-      />
+      
       {fields?.length > 0 && (
   <DynamicForm
     fields={fields}
@@ -104,7 +97,16 @@ export default function ManualEntry({ category, onDone, fields, onSubmit }) {
     values={customFields}
     onChange={setCustomFields}
   />
+
 )}
+{/* Purpose */}
+      <textarea
+        rows={4}
+        className="input"
+        placeholder="Business purpose (optional)"
+        value={purpose}
+        onChange={(e) => setPurpose(e.target.value)}
+      />
 
     </div>
     

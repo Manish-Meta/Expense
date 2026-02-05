@@ -24,6 +24,7 @@ const { expense_form_fields } = require("../model/expense/expense_form_fields");
 
 const {employee_config}=require('../model/user/emp_config')
 const {employee_roles}=require('../model/user/emp_role')
+const {valitador_config}=require('../model/user/validator_config')
 const {allow_category}=require('../model/user/allowed_category')
 const {category}=require('../model/expense/category')
 const {info} = require('../model/info')
@@ -79,6 +80,10 @@ await db.insert(expense_form_fields).values(expense_form_fields_data);
     //add emp config
     await db.delete(employee_config).execute()
     await db.insert(employee_config).values(emp_config_data)
+
+    // add validator
+    await db.delete(valitador_config).execute()
+    await db.insert(valitador_config).values(val_config_data)
    
 
 
