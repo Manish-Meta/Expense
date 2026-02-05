@@ -24,7 +24,7 @@ const handle_error = require("./utils/handle_error.js");
 const file_not_found = require("./utils/file_not_fount.js");
 require("./jobs/aiScheduler");
 
-const port = process.env.port;
+const port = 5000;
 
 const set_limit = limit({
   windowMs: 10 * 60 * 1000,

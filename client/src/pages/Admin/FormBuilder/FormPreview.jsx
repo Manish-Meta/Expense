@@ -53,7 +53,7 @@ export default function FormPreview({ category, formId, onBack }) {
       }
     );
 
-    setFields((prev) => prev.filter((f) => f.field_id !== fieldId));
+    await fetchFields();
   };
 
  

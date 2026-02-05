@@ -89,4 +89,30 @@ const createField = async (req, res, next) => {
     next(err);
   }
 };
-module.exports={reorderFields,getFieldsByCategory,createField,getFormFields};
+const updateExpenseField = async (req, res, next) => {
+  try {
+    const { fieldId } = req.params;
+    const payload = req.body;
+
+    await db
+      .update(expense_form_fields)
+      .set(payload)
+      .where(eq(expense_form_fields.field_id, fieldId));
+
+    res.json({ msg: "Field updated successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+const deleteExpenseField = async (req, res, next) => {
+  console.log("DELETE HIT:", req.params.fieldId);
+
+  await db
+    .update(expense_form_fields)
+    .set({ is_active: false })
+    .where(eq(expense_form_fields.field_id, req.params.fieldId));
+
+  res.json({ msg: "Field deleted successfully" });
+};
+
+module.exports={reorderFields,getFieldsByCategory,createField,getFormFields,updateExpenseField,deleteExpenseField};

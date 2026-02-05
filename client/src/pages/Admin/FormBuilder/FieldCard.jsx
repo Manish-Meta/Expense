@@ -10,7 +10,7 @@ export default function FieldCard({ field, onEdit, onRemove }) {
     transform,
     transition,
   } = useSortable({ id: field.field_id });
-
+  
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
