@@ -362,7 +362,6 @@ const show_pending_expense=async(req,res,next)=>{
             .innerJoin(employee_config,and(eq(employee_config.reporting_manager,id),eq(employee_config.profile_id,expense.profile_id)))
             .innerJoin(profile,eq(profile.profile_id,expense.profile_id))
             .innerJoin(category,eq(category.category_id,expense.cat_id))
-            .innerJoin(profile,eq(profile.profile_id,expense.profile_id))
             .innerJoin(dept,eq(profile.dept_id,dept.deptartment_id))
             .where(and(ne(expense.profile_id,id),eq(expense.next_level,'Validator'),ne(expense.status,'Rejected')))
 

@@ -29,7 +29,7 @@ const ExpenseData = ()=>{
   .then((res)=> res.json())
   .then((res)=> {
     setRefresh(true);
-    setMyExpenseData(res.data)
+    setMyExpenseData(res.data.expense)
     setRefresh(false)
   })
   .catch(()=>{

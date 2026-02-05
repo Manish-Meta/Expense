@@ -25,7 +25,7 @@ const Apporvals = () => {
       credentials: "include",
     })
       .then((res) => res.json())
-      .then((res) => setMypending(res.data));
+      .then((res) => setMypending(res.data.expense));
   };
 
   useEffect(() => {
