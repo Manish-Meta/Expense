@@ -15,6 +15,27 @@
       "when": 1770027736624,
       "tag": "0002_needy_morlun",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1770275732843,
+      "tag": "0003_zippy_squadron_sinister",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1770280715584,
+      "tag": "0004_skinny_sunfire",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1770286361590,
+      "tag": "0005_gifted_boom_boom",
+      "breakpoints": true
     }
   ]
 }

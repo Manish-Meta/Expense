@@ -13,6 +13,7 @@ import AdminConfig from '../pages/Admin/Configuration/AdminConfig'
 import NotFound from '../pages/NotFoundPage'
 import Apporvals from '../pages/Admin/Apporvals/Apporvals'
 import ExpenseReview from '../pages/Validator/ExpenseReview'
+import User_management from '../pages/Admin/User Management/userManagement'
 // import Forms from "../pages/Admin/Configuration/FormBuilder/Forms";
 // import Categories from "../pages/Admin/Configuration/FormBuilder/Categories";
 // import FormPreview from "../pages/Admin/Configuration/FormBuilder/FormPreview";
@@ -49,6 +50,7 @@ const dashboardConfig = {
     { path: "analytics", label: "Analytics", element: <AdminAnalytics /> },
     { path: "audit", label: "Audit", element: <AdminAudit/> },
     { path: "configuration", label: "Configuration", element: <AdminConfig/>},
+    {path:"user_management",label: "User Management", element: <User_management/>},
 
     // { path: "configuration/forms", element: <Forms /> },
     // { path: "configuration/forms/:formType", element: <Categories /> },

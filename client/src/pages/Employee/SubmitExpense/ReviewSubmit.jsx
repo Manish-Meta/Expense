@@ -1,13 +1,13 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-export default function ReviewSubmit({ data, onBack }) {
+export default function ReviewSubmit({ data, onBack,cat }) {
   const [form, setForm] = useState({
     amount: data.amount,
     date: data.date,
     merchant: data.merchant,
     business_purpose: data.business_purpose,
-    category_id: data.category_id,
+    category_id: cat.category_id,
   })
 
   const [loading, setLoading] = useState(false)
@@ -17,6 +17,7 @@ export default function ReviewSubmit({ data, onBack }) {
   const handleSubmit = async () => {
     setError("")
     setLoading(true)
+    console.log(form)
 
     try {
       const res = await fetch(

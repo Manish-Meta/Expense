@@ -14,6 +14,8 @@ const {info}=require('../model/info')
 const {payment_info}=require('../model/payment/payment')
 const send_need_info=require('../utils/send_need_info')
 const { dept } = require('../model/user/dept')
+const runPolicies = require("../midleware/policies/runPolicies");
+const saveViolations = require("../utils/saveViolations");
 const {check_new_expense,check_advance_option,ckeck_recieve_exp_status,admin_send_status,exp_needs_info}=require('../zod_schema/expense_schema')
 
 const new_expense=async(req,res,next)=>{
@@ -111,7 +113,7 @@ const new_expense=async(req,res,next)=>{
                 advance_option:adv_option?adv_id:null,
                 status:'Pending',
                 priority:'Low',
-                compliance:compilant==null?'Compliant':compilant?'Warning':'Violation',
+                compliance:compilant==null?'Checking':compilant?'Warning':'Violation',
                 next_level:'Validator',
                 reciept:images?images.originalname:null
             }).returning({profile_id:expense.profile_id})
@@ -135,22 +137,34 @@ const new_expense=async(req,res,next)=>{
                 exp_id:new_id,
                 status:'Submited'
             })
+            // // 2. Run policies
+            // const violations = await runPolicies(amount,category_id);
+            // console.log("submit: cat:",category_id,"amount",amount)
+            // console.log("violations",violations)
+
+            // // 3. Save violations
+            // await saveViolations(table, new_id, violations);
             if(!sta){
                 table.rollback()
                 return res.status(400).json({
                     msg:'inavlid'
                 })
             }
-            return true
+            return new_id
         })
         if(!result){
             return res.status(400).json({
                 msg:'Bad request'
             })
         }
+        runPolicies(amount, category_id)
+        .then(violations => saveViolations(result, violations))
+        .catch(console.error);
+        
         res.status(200).json({
-            msg:'the expense added'
-        })
+            msg:'the expense added',
+            // violations: violations
+        })  
 
     }catch(err){
         next(err)

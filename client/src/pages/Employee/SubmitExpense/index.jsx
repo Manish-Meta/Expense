@@ -35,7 +35,7 @@ export default function SubmitExpense() {
 
       {step === 3 && (
         <ReviewSubmit
-          category={category}
+          cat={category}
           data={expenseData}
           onBack={() => setStep(2)}
         />

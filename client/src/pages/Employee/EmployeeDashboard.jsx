@@ -1,4 +1,4 @@
-import { ArrowUp, Calendar, CircleXIcon, DollarSign, Download, Edit3, Eye, PlusCircle, RefreshCw, Search, Ticket, TicketCheck, Timer  } from 'lucide-react'
+import { ArrowUp, BadgeIndianRupeeIcon, Calendar, CircleXIcon, DollarSign, Download, Edit3, Eye, PlusCircle, RefreshCw, Search, Ticket, TicketCheck, Timer  } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import useGlobalContext from '../../config/GlobalStateContext';
@@ -17,111 +17,6 @@ const EmployeeDashboard = () => {
     const [selectedCategory , setSelectedCategory ] = useState("")
     const [selectedStatus , setSelectedStatus ] = useState("")
     const {userData,SingleExpenseData, setSingleExpenseData} = useGlobalContext()
-
-    // sample data
-//     const expenses = [
-//   {
-//     date: "2026-01-02",
-//     merchant: "Uber",
-//     category: "Travel",
-//     amount: "$25.00",
-//     status: "Pending",
-//     compliance: "Yes",
-//     receipt: "Uploaded",
-//     actions: "View",
-//   },
-//   {
-//     date: "2026-01-03",
-//     merchant: "Starbucks",
-//     category: "Food",
-//     amount: "$12.50",
-//     status: "Approved",
-//     compliance: "Yes",
-//     receipt: "Uploaded",
-//     actions: "View",
-//   },
-//   {
-//     date: "2026-01-04",
-//     merchant: "Amazon",
-//     category: "Office Supplies",
-//     amount: "$45.00",
-//     status: "Rejected",
-//     compliance: "No",
-//     receipt: "Missing",
-//     actions: "Resubmit",
-//   },
-//   {
-//     date: "2026-01-05",
-//     merchant: "Hilton Hotel",
-//     category: "Accommodation",
-//     amount: "$220.00",
-//     status: "Processing",
-//     compliance: "Yes",
-//     receipt: "Uploaded",
-//     actions: "View",
-//   },
-//   {
-//     date: "2026-01-06",
-//     merchant: "Dominos",
-//     category: "Food",
-//     amount: "$18.00",
-//     status: "Paid",
-//     compliance: "Yes",
-//     receipt: "Uploaded",
-//     actions: "View",
-//   },
-//   {
-//     date: "2026-01-07",
-//     merchant: "Indigo Airlines",
-//     category: "Travel",
-//     amount: "$150.00",
-//     status: "Pending",
-//     compliance: "Yes",
-//     receipt: "Uploaded",
-//     actions: "Approve",
-//   },
-//   {
-//     date: "2026-01-08",
-//     merchant: "Office Depot",
-//     category: "Stationery",
-//     amount: "$30.00",
-//     status: "Approved",
-//     compliance: "Yes",
-//     receipt: "Uploaded",
-//     actions: "View",
-//   },
-//   {
-//     date: "2026-01-09",
-//     merchant: "Ola Cabs",
-//     category: "Travel",
-//     amount: "$20.00",
-//     status: "Escalated",
-//     compliance: "No",
-//     receipt: "Missing",
-//     actions: "Review",
-//   },
-//   {
-//     date: "2026-01-10",
-//     merchant: "KFC",
-//     category: "Food",
-//     amount: "$22.00",
-//     status: "Draft",
-//     compliance: "No",
-//     receipt: "Missing",
-//     actions: "Edit",
-//   },
-//   {
-//     date: "2026-01-11",
-//     merchant: "Marriott",
-//     category: "Accommodation",
-//     amount: "$180.00",
-//     status: "Paid",
-//     compliance: "Yes",
-//     receipt: "Uploaded",
-//     actions: "View",
-//   },
-// ];
-
 
 const ExpenseData = ()=>{
 
@@ -212,24 +107,24 @@ const today = new Date().toLocaleDateString('en-GB', {
 
   return (
    <div className='p-3 space-y-4 '>
-       <section className='py-7 space-y-7 lg:space-y-0 bg-linear-to-r  from-orange-50 via-50% to-white border-[#d9770633]  borders p-4 rounded-md  lg:flex items-center justify-between '>
+       <section className='py-7 space-y-7 lg:space-y-0 bg-linear-to-r  from-indigo-50 via-50% to-white border-[#d9770633]  borders p-4 rounded-md  lg:flex items-center justify-between '>
                 {/* icon */}
                
                  <div className="flex items-center gap-2">
-                       <span className='  w-10 h-10 inline-flex items-center justify-center rounded-md p-1 bg-[#d97706] shadow-xl text-white'><DollarSign className='size-5'/> </span>
+                       <span className='  w-10 h-10 inline-flex items-center justify-center rounded-md p-1 bg-indigo-600 shadow-xl text-white'><BadgeIndianRupeeIcon className='size-6'/> </span>
 
 
                 <div className="space-y-">
-                    <h1 className='font-semibold text-2xl'>Hi 👋, <span className='text-orange-600'>{userData?.profile?.full_name}</span></h1>
-                    <p className=''>Welcome to your expense dashboard <span className='text-lg ml-2'>•{today}</span></p>
+                    <h1 className='font-semibold text-2xl'>Hi , <span className='text-indigo-600'>{userData?.profile?.full_name}</span></h1>
+                    <p className='text-gray-600'>Welcome to your expense dashboard <span className='text-lg ml-2'>•{today}</span></p>
                 </div>
                  </div>
                     {/* buttons for applies */}
 
                 <div className="flex gap-2">
 
-                    <button className='p-1 text-xs border bg-white border-[#d9770633]  rounded-md flex items-center gap-2'><Calendar  className='size-3'/> This Month</button>
-                    <button type="button" onClick={()=>navigate("/expense")} className='cursor-pointer p-2 text-xs  bg-[#d97706] text-white flex items-center gap-2 rounded-md' ><PlusCircle className='size-3'/> New Expense</button>
+                    <button className='p-1 text-xs border bg-white border-indigo-200  rounded-md flex items-center gap-2'><Calendar  className='size-3'/> This Month</button>
+                    <button type="button" onClick={()=>navigate("/expense")} className='cursor-pointer p-2 text-xs font-medium bg-indigo-500 text-white flex items-center gap-2 rounded-md' ><PlusCircle className='size-4'/> New Expense</button>
                 </div>
             </section>
 
@@ -246,16 +141,16 @@ const today = new Date().toLocaleDateString('en-GB', {
 
 {/* filter section */}
 
- <div className="w-full bg-white rounded-lg p-4 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-6 border-[#d9770633]  border">
+ <div className="w-full bg-white rounded-lg p-4 flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-6 border-indigo-300  border border-b-2">
        
       {/* Left side - Search */}
       <div className="flex items-center w-full md:w-2/3 relative">
-        <Search className="text-[#92400E] mr-2 absolute top-2 left-2" size={16} />
+        <Search className="text-indigo-400 mr-2 absolute top-2 left-2" size={16} />
         <input
           type="text"
           onChange={(e)=> setSearchKeys(e.target.value)}
           placeholder="Search expenses, merchants..."
-          className="w-full pl-7 py-2 text-xs border text-[#92400E] border-[#d9770633]  rounded px-2 focus:outline-none focus:ring focus:ring-[#92400E]"
+          className="w-full pl-7 py-2 text-xs border text-gray-600 border-indigo-300  rounded px-2 focus:outline-none focus:ring focus:ring-indigo-500"
         />
       </div>
 
@@ -264,7 +159,7 @@ const today = new Date().toLocaleDateString('en-GB', {
         <div className="grid grid-cols-5 w-full  gap-3">
         {/* Status Filters */}
        
-          <select className="px-3 col-span-2 py-1 rounded-md border border-[#d9770633]  bg-white  text-xs  focus:outline-none focus:ring focus:ring-[#92400E]" onChange={(e) => setSelectedStatus(e.target.value.toLowerCase())}>
+          <select className="px-3 col-span-2 py-1 rounded-md border border-indigo-200  bg-white  text-xs  focus:outline-none focus:ring focus:ring-[#92400E]" onChange={(e) => setSelectedStatus(e.target.value.toLowerCase())}>
             
             {
 statuses?.map((e)=>(
@@ -277,7 +172,7 @@ statuses?.map((e)=>(
           
 
         {/* Categories Dropdown */}
-        <select className="px-3 col-span-2 py-1 rounded-md border border-[#d9770633]  bg-white  text-xs  focus:outline-none focus:ring focus:ring-[#92400E]">
+        <select className="px-3 col-span-2 py-1 rounded-md border border-indigo-300  bg-white  text-xs  focus:outline-none focus:ring focus:ring-[#92400E]">
             
             {
 ctg?.map((e)=>(
@@ -299,7 +194,7 @@ ctg?.map((e)=>(
 
     {/*TABLE --- list of Submited Expense */}
 
-    <section className='p-5 border border-[#d9770633] rounded-xl '>
+    <section className='p-5 border-t-2 border-indigo-300 shadow rounded-xl '>
 
 <div className=" space-y-6 ">
 
@@ -321,7 +216,7 @@ ctg?.map((e)=>(
 :<div className="overflow-scroll border border-[#d9770633] rounded-xl">
 <table className="w-full bg-white  border-[#d9770633] rounded-xl tbscroll">
   <thead>
-    <tr className="bg-orange-50 text-left">
+    <tr className="bg-indigo-50 text-left">
       <th className="px-4 py-2 text-xs font-semibold text-gray-600 ">Date</th>
       <th className="px-4 py-2 text-xs font-semibold text-gray-600">Merchant</th>
       <th className="px-4 py-2 text-xs font-semibold text-gray-600">Category</th>
@@ -422,20 +317,20 @@ export default EmployeeDashboard
 
 export const CardComp =({Icons, title, count, inc, bg, txt})=>{
     return (
-        <div className='p-2 space-y-2  bg-white shadow rounded-xl border border-[#d9770633]'>
-            <div className="p-3  flex justify-between">
+        <div className='p-2 space-y-2  bg-white shadow-md shadow-indigo-200 rounded-xl border-indigo-300'>
+            <div className="p-4 pb-2  flex justify-between">
                 <div className="">
-                    <h5 className='text-xs lg:text-md font-medium text-[#92400E] uppercase'>{title}</h5>
-                    <p className='text-xl font-bold'>{count}</p>
-                    <span className='text-[12px] text-[#b3693b] font-medium '>{inc}</span>
+                    <h5 className='text-xs lg:text-md font-medium text-gray-600 uppercase'>{title}</h5>
+                    <p className='text-xl text-indigo-600 font-bold'>{count}</p>
+                    <span className='text-[12px] text-gray-600 font-medium '>{inc}</span>
                 </div>
 
-                <div className={` bg-${[bg]} text-${[txt]}  border border-[#d9770633] text-amber-700 w-10 h-10 flex items-center justify-center rounded-md p-1`}>
+                <div className={` bg-${[bg]} text-${[txt]}  border border-[#d9770633] text-indigo-700 w-10 h-10 flex items-center justify-center rounded-md p-1`}>
                     <Icons className={`size-5 `}/>
                 </div>
             </div>
-            <div className="bg-orange-50 w-full rounded-full h-1 relative">
-                <div className="bg-[#ff8234] rounded-full overflow-hidden w-24  h-full absolute top-0 left-0 "></div>
+            <div className="bg-indigo-50 w-full rounded-full h-1 relative">
+                <div className="bg-indigo-500 rounded-full overflow-hidden w-24  h-full absolute top-0 left-0 "></div>
             </div>
         </div>
     )

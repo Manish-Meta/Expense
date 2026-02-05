@@ -1,32 +1,36 @@
 import React, { useEffect, useState } from "react";
 import useGlobalContext from "../../config/GlobalStateContext";
 import { useNavigate } from "react-router-dom";
-import { Info, LockKeyhole, LogIn, ReceiptIndianRupee, ShieldCheck, User2Icon, UserCheck2, UserCheck2Icon } from "lucide-react";
-
+import {
+  Info,
+  LockKeyhole,
+  LogIn,
+  ReceiptIndianRupee,
+  ShieldCheck,
+  User2Icon,
+  UserCheck2,
+  UserCheck2Icon,
+} from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [LoginLoading, setLoginLoading] = useState(false);
-  const [ErrorCode, setErrorCode] = useState('');
-  const { selectedrole,setSelectedRole, setUserData, userData ,setUserLoggedIn } = useGlobalContext();
+  const [ErrorCode, setErrorCode] = useState("");
+  const { selectedrole, setSelectedRole, setUserData, userData, setUserLoggedIn } =
+    useGlobalContext();
   const navigate = useNavigate();
 
-  // isActive
- 
-const APIs = import.meta.env.VITE_BACKEND_URL
-
+  const APIs = import.meta.env.VITE_BACKEND_URL;
 
   const handleSubmit = (e) => {
-   localStorage.setItem("rolee", selectedrole)
-    setLoginLoading(true)
+    localStorage.setItem("rolee", selectedrole);
+    setLoginLoading(true);
     e.preventDefault();
     fetch(`${APIs}user/login`, {
       method: "POST",
       credentials: "include",
-      headers: {
-        "content-type": "application/json",
-      },
+      headers: { "content-type": "application/json" },
       body: JSON.stringify({
         emp_id: email,
         password: password,
@@ -36,266 +40,214 @@ const APIs = import.meta.env.VITE_BACKEND_URL
       .then((e2) => {
         if (e2.status == 200) {
           fetch(`${APIs}user/profile?emp_status=${selectedrole}`, {
-          method:"GET",
-          credentials:'include'})
-          .then((e)=> e.json())
-          .then((data)=>{console.log(data.data[0]), setUserData(data.data[0])})
-          setUserLoggedIn(true)
-          
-          localStorage.setItem("login", true)
-           setLoginLoading(false)
-          
-          navigate('/dashboard')
-           }
-        else if (e2.status == 400){
-            setErrorCode("400")
-        }
-        else if (e2.status == 500){
-            setErrorCode("500")
-            console.log("Dispallllllll")
-        }
-           else{
-             setLoginLoading(false)
-            setError(true)
+            method: "GET",
+            credentials: "include",
+          })
+            .then((e) => e.json())
+            .then((data) => {
+              console.log(data.data[0]), setUserData(data.data[0]);
+            });
+          setUserLoggedIn(true);
+
+          localStorage.setItem("login", true);
+          setLoginLoading(true);
+          navigate("/dashboard");
+        } else if (e2.status == 400) {
+          setErrorCode("400");
+        } else if (e2.status == 500) {
+          setErrorCode("500");
+        } else {
+          setLoginLoading(false);
+          setError(true);
         }
       })
       .catch((e) => {
-        setLoginLoading(false)
-        setErrorCode(e.message)
-         setLoginLoading(true)
-      }
-      
-      )
-      .finally(()=>{ 
-        setTimeout(()=>{
-          setErrorCode("")
-        },3000)
-        setLoginLoading(false)})
-    
+        setLoginLoading(false);
+        setErrorCode(e.message);
+        setLoginLoading(true);
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setErrorCode("");
+        }, 3000);
+        setLoginLoading(false);
+      });
   };
 
-  console.log(userData);
-
-
   const empData = [
-    {
-      icon:User2Icon,
-      title:"Employee Portal",
-      desc:"Expense Submitter"
-    },
-      {
-      icon:UserCheck2,
-      title:"Validator Portal",
-      desc:"Pre-Validation & Review"
-    },
-      {
-      icon:ShieldCheck,
-      title:"Admin Dashboard",
-      desc:"Management & Configuration "
-    }
-  ]
-  
-  // console.log(selectedrole)
+    { icon: User2Icon, title: "Employee Portal", desc: "Expense Submitter" },
+    { icon: UserCheck2, title: "Validator Portal", desc: "Pre-Validation & Review" },
+    { icon: ShieldCheck, title: "Admin Dashboard", desc: "Management & Configuration" },
+  ];
 
-  const matchedEmpData = empData.filter(e => (e?.title.toLocaleLowerCase()).includes(selectedrole?.toLowerCase()) )
-const Icon = matchedEmpData[0]?.icon;
+  const matchedEmpData = empData.filter((e) =>
+    e?.title.toLowerCase().includes(selectedrole?.toLowerCase())
+  );
+
+  const Icon = matchedEmpData[0]?.icon;
 
   return (
-  <div className=" h-screen rounded-xl flex items-center justify-center ">
-      <div className="lg:w-1/2 w-full h-full hidden  lg:flex bg-gradient-to-r from-orange-400 to-orange-600 p-7 justify-center items-center">
+    <div className="h-screen flex">
 
+      {/* LEFT PANEL */}
+      <div className="hidden lg:flex w-1/2 bg-indigo-600 text-white p-12 items-center">
+        <div className="max-w-xl space-y-6">
+          <div className="flex items-center gap-3">
+            <div className="p-3 bg-white/10 rounded-md">
+              <ReceiptIndianRupee size={28} />
+            </div>
+            <div>
+              <h2 className="text-3xl font-bold">Xpenra</h2>
+              <p className="text-xs text-gray-50 opacity-80">Enterprise Expense Suite</p>
+            </div>
+          </div>
 
-<div className="text-white space-y-4  max-w-2xl mx-auto">
-   <div className=" pt-2  flex flex-col self-start ">
-        <div className="flex items-center gap-2">
-         <p className=" w-12 h-12 flex items-center justify-center rounded-xl bg-orange-500 text-white text-xl font-bold"> 
-          <ReceiptIndianRupee className="
-           size-8"/> </p>
+          <h3 className="text-4xl font-bold leading-tight">
+            Streamline Your Expense Management
+          </h3>
 
-         <div className="f">
-           <h2 className="text-xl font-bold ">
-          Xpenra
-        </h2>
-        <p className="text-xs">Expense suite</p>
-        
-         </div>
+          <p className="text-gray-50 opacity-80 text-sm">
+            Banking-grade expense platform with AI-powered validation,
+            real-time approvals, and enterprise compliance workflows.
+          </p>
         </div>
-        
-        
       </div>
 
-  <h5 className="text-4xl font-bold ">Streamline Your
-Expense Management</h5>
+      {/* RIGHT PANEL */}
+      <div className="flex-1 flex items-center justify-center bg-gray-50 px-6">
+        <div className="w-full max-w-md bg-white border-t-2 border-indigo-600 rounded-md shadow-lg">
 
-<p className="font-bold opacity-80">Banking-grade expense platform with AI-powered validation, real-time approvals, and comprehensive compliance.</p>
-</div>
-    </div>
-<div className="lg:w-1/2 w-full h-full pb-2  bg-orange-50/50   flex items-center flex-col">
-{/* Header */}
-<div className="mt-3 w-[350px] lg:w-[400px] rounded-xl overflow-hidden">
-      <div className=" pt-2 pb-4 left-0 ">
-        <div className="flex flex-col ">
-        
-         <h2 className="text-xl font-bold ">
-          Welcome Back
-        </h2>
-        <p className="text-xs  text-gray-500 mt-1">
-          Sign in as <span className="font-medium text-orange-600">{selectedrole}</span>
-        </p>
+          {/* HEADER */}
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-800">
+              Welcome back
+            </h2>
+            <p className="text-xs text-gray-500 mt-1">
+              Sign in as{" "}
+              <span className="font-medium text-indigo-600">
+                {selectedrole}
+              </span>
+            </p>
+          </div>
+
+          {/* ROLE SELECTOR */}
+          <div className="grid grid-cols-3 font-medium text-xs border-b border-gray-200 cursor-pointer">
+            {["Employee", "Validator", "Admin"].map((role) => (
+              <button
+                key={role}
+                onClick={() => setSelectedRole(role.toLowerCase())}
+                className={`py-3 transition ${
+                  selectedrole === role.toLocaleLowerCase()
+                    ? "bg-indigo-100 border-b-2 border-indigo-600 text-indigo-600 font-semibold"
+                    : "hover:bg-gray-50 text-gray-500"
+                }`}
+              >
+                {role}
+              </button>
+            ))}
+          </div>
+
+          {/* ROLE INFO */}
+          <div className="p-4 border-b border-gray-200">
+            <div className="flex gap-3 bg-gray-50 p-3 rounded-md">
+              <div className="p-2 bg-white border rounded-md">
+                {Icon && <Icon size={16} />}
+              </div>
+              <div>
+                <p className="text-xs text-indigo-600 font-medium">
+                  {matchedEmpData[0]?.title}
+                </p>
+                <p className="text-[11px] text-gray-500">
+                  {matchedEmpData[0]?.desc}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* FORM */}
+          <form onSubmit={handleSubmit} className="p-6 space-y-4">
+
+            {/* Employee ID */}
+            <div>
+              <label className="text-xs font-medium text-gray-600">
+                Employee ID
+              </label>
+              <div className="relative mt-1">
+                <User2Icon size={14} className="absolute left-3 top-3 text-gray-400"/>
+                <input
+                  type="text"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="EXP-7894-90"
+                  className="w-full pl-9 py-2 border border-gray-200 rounded-md text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Password */}
+            <div>
+              <label className="text-xs font-medium text-gray-600">
+                Password
+              </label>
+              <div className="relative mt-1">
+                <LockKeyhole size={14} className="absolute left-3 top-3 text-gray-400"/>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="w-full pl-9 py-2 border border-gray-200 rounded-md text-xs focus:ring-1 focus:ring-indigo-500 outline-none"
+                  required
+                />
+              </div>
+            </div>
+
+            {/* ERROR */}
+            {ErrorCode !== "" && (
+              <div className="text-xs text-red-600 bg-red-50 border border-red-200 p-2 rounded-md flex gap-2 items-center">
+                <Info size={14} />
+                {ErrorCode == "400"
+                  ? "Unauthorized Access"
+                  : ErrorCode == "500"
+                  ? "Invalid Username / password"
+                  : "Unable to login"}
+              </div>
+            )}
+
+            {/* ACTIONS */}
+            <div className="flex justify-between text-xs text-gray-500">
+              <label className="flex gap-2 items-center">
+                <input type="checkbox" />
+                Remember me
+              </label>
+              <button type="button" className="hover:text-indigo-600">
+                Forgot password?
+              </button>
+            </div>
+
+            {/* SUBMIT */}
+            <button
+              type="submit"
+              disabled={LoginLoading}
+              className="w-full py-3 cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-md flex justify-center gap-2 items-center transition"
+            >
+              {!LoginLoading ? (
+                  <>
+                    <LogIn size={14} /> Sign In
+                  </>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    <span>Loading</span>
+                  </div>
+                )}
+
+            </button>
+
+          </form>
         </div>
-        
-         </div>
-        </div>
-        
-
-
-  <div className=" rounded-xl shadow gap-2 flex bg-white/70  justify-center overflow-hidden flex-col border border-borderLine/30 ">
-  
-       
-
-      <div className="  rounded-2xl  w-[350px] sm:w-[400px]">
-         
-        {
-          LoginLoading &&  <div className="loader"></div>
-      
-        }
-
-         {/* tab */}
-
-      <div className="grid grid-cols-3 place-items-center rounded-t-xl  gap-4 bg-gray-100">
-  
-<div className={`${selectedrole == "employee" ? "bg-white shadow border-b-2 rounded-tl-xl border-borderLine" :"bg-none"} flex items-center flex-col  w-full p-4`}
-onClick={()=> setSelectedRole("employee")}>
-          {/* icon */}
-          <span className=""><User2Icon className="size-4"/></span>
-          <p className="text-[10px] font-medium">Employee</p>
-        </div>
-
-<div className={`${selectedrole == "validator" ? "bg-white shadow border-b-2 border-borderLine" :"bg-none"} flex items-center flex-col  w-full p-4`}
-onClick={()=> {
-  setSelectedRole("validator")}}>
-          {/* icon */}
-          <span className=""><UserCheck2Icon className="size-4"/></span>
-          <p className="text-[10px] font-medium">Validator</p>
-        </div>
-
-
-     
-<div className={`${selectedrole == "admin" ? "bg-white border-b-2 shadow rounded-tr-xl border-borderLine" :"bg-none"} flex items-center flex-col  w-full p-4`}
-onClick={()=> setSelectedRole("admin")}>
-          {/* icon */}
-          <span className=""><ShieldCheck className="size-4"/></span>
-          <p className="text-[10px] font-medium">Admin</p>
-        </div>
-
-
       </div>
-
- 
-
-  {/* hints */}
-
-
- <div className="p-2 my-3">
-    <div className={`flex  w-full p-4 rounded-xl items-center gap-2 bg-orange-50/30 `}>
-          {/* icon */}
-          <span className="bg-orange-100 rounded-md p-3">{Icon && <Icon className="size-4"/>}</span> 
-          <div className="flex flex-col gap-1">
-            <p className="text-[12px] font-medium">{matchedEmpData[0]?.title}</p>
-          <p className="text-[10px] font-medium">{matchedEmpData[0]?.desc}</p>
-          </div>
-          
-        </div></div>
-  
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="px-4 pb-8 space-y-5">
-        {/* Employee ID */}
-        <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">
-            Employee ID
-          </label>
-          <div className="relative">
-          <span className=" h-full p-2 roun-md absolute flex items-center justify-center top-0 left-2 "><User2Icon className="size-3"/></span>
-          
-          <input
-            type="text"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="EXP-7894-90"
-            className="w-full rounded-lg pl-8 border border-gray-200 px-4 py-2.5 text-xs
-                       focus:outline-none focus:ring-0.5 focus:ring-orange-400 focus:border-borderLine "
-            required
-          />
-          </div>
-        </div>
-
-        {/* Password */}
-        <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1">
-            Password
-          </label>
-         <div className="relative">
-          <span className=" h-full p-2 roun-md absolute flex items-center justify-center top-0 left-2 "><LockKeyhole className="size-3"/></span>
-           <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-            className="w-full text-xs rounded-lg pl-8 border border-gray-200 px-4 py-2.5 
-                       focus:outline-none focus:ring-0.5 focus:ring-orange-400 focus:border-borderLine"
-            required
-          />
-         </div>
-        </div>
-
-        {/* Error */}
-        {ErrorCode !="" && (
-          <div className="text-sm text-red-600 bg-red-50 border border-borderLine rounded-lg px-3 py-2 flex items-center gap-2 transition-all">
-             <Info className="size-4"/> {
-              ErrorCode == "400" ? "Unauthorized Access": ErrorCode == "500" ?"Invaild Username / password": ErrorCode == "Failed to fetch"? "Unable to Fetch": "Invaild Username / password"
-            }
-          </div>
-        )}
-
- <div className="flex justify-between">
-       <div className="flex items-center">
-            <input
-            type="checkbox"
-            id={"btn"}
-            className=" text-gray-500 hover:text-orange-600 transition"
-          />
-          <label htmlFor="btn " className="text-xs text-gray-500">Remeber me</label>
-         
-            
-       </div>
-          
-          <button
-            type="button"
-            className="text-xs text-gray-500 hover:text-orange-600 transition"
-          >
-            Forgot password?
-          </button>
-        </div>
-        {/* Submit */}
-        <button
-          type="submit"
-         disabled={LoginLoading}
-          className="w-full mt-2 rounded-lg bg-primary  py-2.5 font-medium
-                     text-white flex justify-center gap-4 text-xs hover:bg-primary/70 active:scale-[0.98] transition"
-        >
-           {!LoginLoading ? <p className="flex items-center gap-3"> <LogIn className="size-4"/> Sign In</p>: <div>signing....</div>}
-        </button>
-
-     
-       
-      </form>
-
-
     </div>
-  </div></div>
-  </div>
-  
-
-);
-
+  );
 }

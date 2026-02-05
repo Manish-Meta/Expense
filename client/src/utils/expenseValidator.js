@@ -3,12 +3,12 @@ export function validateExpense(amount, category) {
     return { valid: true }
   }
 
-  if (amount > category.limit) {
-    return {
-      valid: false,
-      message: `Amount exceeds ${category.currency}${category.limit}} limit`,
-    }
-  }
+  // if (amount > category.limit) {
+  //   return {
+  //     valid: false,
+  //     message: `Amount exceeds ${category.currency}${category.limit}} limit`,
+  //   }
+  // }
 
   return { valid: true }
 }

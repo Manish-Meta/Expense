@@ -1,0 +1,1 @@
+ALTER TYPE "public"."compliance" ADD VALUE 'Checking' BEFORE 'Compliant';
