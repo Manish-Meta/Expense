@@ -15,7 +15,8 @@ import { DollarSign,
   Icon,
   Timer,
   UserCircle2Icon,
-  UserCogIcon,} from 'lucide-react'
+  UserCogIcon,
+GitBranch} from 'lucide-react'
 
 export   const employeeNavLink = [
     {
@@ -48,7 +49,8 @@ export const validatorNavLink = [
     nav : "validation history",
     link :"/history",
     Icon : History
-  }
+  },
+ 
 
 
 ]
@@ -85,6 +87,11 @@ export const adminNavLink = [
     nav:"User Management",
     link:"/user_management",
     Icon: UserCogIcon
+  },
+  {
+    nav:"Approval Routing",
+    link:"/approval-routing",
+    Icon: GitBranch
   }
 
 ]

@@ -36,6 +36,7 @@ const Sidebar = () => {
       break;
     case "admin":
       selectedRoleFields = adminNavLink;
+      
       break;
     case "validator":
       selectedRoleFields = validatorNavLink;
