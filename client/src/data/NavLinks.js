@@ -13,6 +13,7 @@ import { DollarSign,
   ShieldUser, 
   UserCheck,
   Icon,
+  GitBranch,
   Timer,} from 'lucide-react'
 
 export   const employeeNavLink = [
@@ -78,6 +79,11 @@ export const adminNavLink = [
     nav:"Configuration",
     link:"/configuration",
     Icon : Settings2
+  },
+  {
+    nav:"Approval Routing",
+    link:"/approval-routing",
+    Icon : GitBranch
   }
 
 ]
