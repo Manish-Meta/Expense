@@ -148,6 +148,7 @@ const permission_cat=async(req,res,next)=>{
         }
         res.status(200).json({
             data:send_category
+        
         })
     }catch(err){
         next(err)
