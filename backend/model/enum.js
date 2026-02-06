@@ -14,7 +14,7 @@ const priority_level=pgEnum('priority_level',['standard validator','senior valid
 
 const exp_status=pgEnum('status',['Submited','Validated','Approved','Draft','Escalated','Needs-info','Paid','Pending','Rejected','Processing','Withdrawn'])
 
-const compliance=pgEnum('compliance',['Compliant','Warning','Violation'])
+const compliance=pgEnum('compliance',['Violation Found','Checking','Compliant','Warning','Violation'])
 
 const priority=pgEnum('priority',['Low','Medium','High'])
 

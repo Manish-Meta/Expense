@@ -3,7 +3,7 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const {profile}=require('../model/user/profile')
 const {user}=require('../model/user/user')
-const {sql,eq,and, or}=require('drizzle-orm')
+const {sql,eq,and,or,ne}=require('drizzle-orm')
 const {DrizzleQueryError}=require('drizzle-orm')
 const {encrypt,decrypt} = require('../midleware/pass_enc')
 const {token_generate} = require('../midleware/jwt')
@@ -13,6 +13,7 @@ const { dept } = require('../model/user/dept')
 const {allow_category}=require('../model/user/allowed_category')
 const {employee_config}=require('../model/user/emp_config')
 const {valitador_config}=require('../model/user/validator_config')
+const {category}=require("../model/expense/category")
 const {signup_emp,signup_user,user_id,user_login,new_validator,login_schema}=require('../zod_schema/user_schema');
 
 
@@ -429,6 +430,133 @@ const search_employee_ids = async (req, res) => {
   res.json(data);
 };
 
+const all_employees = async(req,res,next) => {
+    try {
+    const data = await db
+      .selectDistinct({profile_id: profile.profile_id,full_name: profile.full_name,email: profile.email,designation: profile.designation,
+        status: profile.profile_status,
+        department: dept.name,
+        role: employee_roles.role_id,
+      })
+      .from(profile)
+      .leftJoin(
+        employee_roles,
+        eq(employee_roles.profile_id, profile.profile_id)
+      )
+      .leftJoin(
+        dept,
+        eq(profile.dept_id, dept.deptartment_id)
+      ).where(ne(employee_roles.role_id,'R_111113'));
+      
+
+    const filtered = data
+    const result = Object.values(
+    data.reduce((acc, row) => {
+        if (!acc[row.profile_id]) {
+        acc[row.profile_id] = {
+            ...row,
+            roles: [row.role],
+        };
+        } else {
+        acc[row.profile_id].roles.push(row.role);
+        }
+        return acc;
+    }, {})
+    );
+
+
+
+    res.json({
+      success: true,
+      count: filtered.length,
+      data: result,
+    });
+    // console.log(data)
+  } catch (err) {
+    next(err);
+  }
+    
+
+}
+
+const employee_info = async (req, res, next) => {
+  try {
+    const { profile_id } = req.params;
+    if (!profile_id) {
+      return res.status(400).json({
+        msg: "profile_id required",
+      });
+    }
+
+    //basic_info
+    const basic = await db
+      .select({
+        profile_id: profile.profile_id,
+        name: profile.full_name,
+        email: profile.email,
+        department: dept.name,
+        created_at: profile.created_at,
+        updated_at: profile.updated_at,
+        reporting_manager_id: employee_config.reporting_manager,
+      })
+      .from(profile)
+      .leftJoin(
+        dept,
+        eq(profile.dept_id, dept.deptartment_id)
+      )
+      .leftJoin(
+        employee_config,
+        eq(employee_config.profile_id, profile.profile_id)
+      )
+      .where(eq(profile.profile_id, profile_id));
+
+    if (!basic.length) {
+      return res.status(404).json({ msg: "Employee not found" });
+    }
+
+    //manager
+    let reporting_manager = null;
+
+    if (basic[0].reporting_manager_id) {
+      const mgr = await db
+        .select({
+          name: profile.full_name,
+        })
+        .from(profile)
+        .where(eq(profile.profile_id, basic[0].reporting_manager_id));
+
+      reporting_manager = mgr?.[0]?.name || null;
+    }
+
+    //allowed_categories
+    const cats = await db
+      .select({
+        cat_name: category.cat_name,
+      })
+      .from(allow_category)
+      .leftJoin(
+        category,
+        eq(category.category_id, allow_category.category)
+      )
+      .where(eq(allow_category.profile_id, profile_id));
+
+    res.json({
+      data: {
+        code: basic[0].profile_id,
+        name: basic[0].name,
+        email: basic[0].email,
+        department: basic[0].department,
+        created_at: basic[0].created_at,
+        updated_at: basic[0].updated_at,
+        reporting_manager,
+        allowed_categories: cats.map(c => c.cat_name),
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+}
+
 const bulk_role = async (req, res) => {
   const { emp_ids, role_name } = req.body;
   console.log(req.body);
@@ -466,5 +594,5 @@ const reporting_manager=async(req,res,next)=>{
     }
 }
 
-module.exports={signup,login,logout,my_profile,user_overview,import_csv,export_csv,bulk_role,generate_emp_id,search_employee_ids,generate_dept,add_validator,reporting_manager}
+module.exports={signup,login,logout,my_profile,user_overview,import_csv,export_csv,bulk_role,generate_emp_id,search_employee_ids,generate_dept,add_validator,reporting_manager,all_employees,employee_info}
 

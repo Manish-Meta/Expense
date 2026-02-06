@@ -13,38 +13,86 @@ import { useEffect, useState } from "react"
 
 /* ---------------- DATE FORMAT ---------------- */
 
+// const formatDate = (date) => {
+//   if (!date) return "-"
+
+//   const input = new Date(date)
+//   const today = new Date()
+
+//   const inputDay = new Date(
+//     input.getFullYear(),
+//     input.getMonth(),
+//     input.getDate()
+//   )
+
+//   const todayDay = new Date(
+//     today.getFullYear(),
+//     today.getMonth(),
+//     today.getDate()
+//   )
+
+//   const diffDays = Math.round(
+//     (todayDay - inputDay) / 86400000
+//   )
+
+//   if (diffDays === 0) return "Today"
+//   if (diffDays === 1) return "Yesterday"
+
+//   return inputDay.toLocaleDateString("en-IN", {
+//     day: "2-digit",
+//     month: "short",
+//     year: "numeric",
+//   })
+// }
 const formatDate = (date) => {
-  if (!date) return "-"
+  if (!date) return "-";
+  console.log(date)
 
-  const input = new Date(date)
-  const today = new Date()
+  const now = new Date();
 
-  const inputDay = new Date(
-    input.getFullYear(),
-    input.getMonth(),
-    input.getDate()
-  )
+  // original date
+  const dObj = new Date(date);
 
-  const todayDay = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate()
-  )
+  // subtract 5h 30m
+  dObj.setMinutes(dObj.getMinutes() - 330);
 
-  const diffDays = Math.round(
-    (todayDay - inputDay) / 86400000
-  )
+  const diffMs = now - dObj;
+  const diffMin = Math.floor(diffMs / 60000);
 
-  if (diffDays === 0) return "Today"
-  if (diffDays === 1) return "Yesterday"
+  if (diffMin < 1) return "Just now";
+  if (diffMin < 60) return `${diffMin} min ago`;
 
-  return inputDay.toLocaleDateString("en-IN", {
+  // Today
+  const isToday =
+    now.toDateString() === dObj.toDateString()
+
+  if (isToday) {
+    return `Today, ${dObj.toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`
+  }
+
+  // Yesterday
+  const yesterday = new Date()
+  yesterday.setDate(now.getDate() - 1)
+
+  if (yesterday.toDateString() === dObj.toDateString()) {
+    return `Yesterday, ${dObj.toLocaleTimeString("en-IN", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`
+  }
+
+  return dObj.toLocaleString("en-IN", {
+    timeZone: "UTC",
     day: "2-digit",
     month: "short",
     year: "numeric",
-  })
-}
-
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 /* ---------------- STATUS CONFIG ---------------- */
 
 export const StatusConfig = {

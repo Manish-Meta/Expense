@@ -13,8 +13,9 @@ import { DollarSign,
   ShieldUser, 
   UserCheck,
   Icon,
-  GitBranch,
-  Timer,} from 'lucide-react'
+  Timer,
+  UserCircle2Icon,
+  UserCogIcon,} from 'lucide-react'
 
 export   const employeeNavLink = [
     {
@@ -81,9 +82,9 @@ export const adminNavLink = [
     Icon : Settings2
   },
   {
-    nav:"Approval Routing",
-    link:"/approval-routing",
-    Icon : GitBranch
+    nav:"User Management",
+    link:"/user_management",
+    Icon: UserCogIcon
   }
 
 ]

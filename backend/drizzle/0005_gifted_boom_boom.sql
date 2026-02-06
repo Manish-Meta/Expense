@@ -1,0 +1,1 @@
+ALTER TYPE "public"."compliance" ADD VALUE 'Violation Found' BEFORE 'Checking';
