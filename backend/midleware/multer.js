@@ -1,27 +1,24 @@
-const multer=require('multer')
-const multer_mid=multer.diskStorage({
-   destination:function(req,file,cb){
-      cb(null,'./upload')
-   },
-   filename:function(req,file,cb){
-      let name=file.originalname
-      cb(null,name)
-   }
+const multer = require("multer");
+
+const upload = multer({
+  storage: multer.memoryStorage(),   
+  limits: {
+    fileSize: 10 * 1024 * 1024,      //10MB
+  },
+  fileFilter: function (req, file, cb) {
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/jpg",
+      "application/pdf",
+    ];
+
+    if (!allowedTypes.includes(file.mimetype)) {
+      return cb(new Error("Invalid file type"), false);
+    }
+
+    cb(null, true);
+  },
 });
 
-const upload=multer({
-   dest:'',
-   storage:multer_mid,
-   limits:10*1024*1024,
-   fileFilter:function(req,file,cb){
-      let type=['image/jpg','image/png','image/jpeg']
-      if(!type.includes(file.mimetype)){
-         return cb(new Error('Invalid file type'),false)
-      }
-      if(file.size>10*1024*1024){
-         return cb(new Error('The file size is high'),false)
-      }
-      cb(null,true)
-   }
-})
-module.exports=upload
+module.exports = upload;

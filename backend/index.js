@@ -62,7 +62,7 @@ app.use('/policy',policy_router)
 app.use('/voucher',voucher_route)
 // app.use("form-fields",expense_form_field)
 app.use("/analytics", analyticsRouter);
-
+app.use("/forms",expense_form_route);
 app.use(handle_error);
 app.get('/server', (req, res)=>{
   res.send("The port is Working.....")
