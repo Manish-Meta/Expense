@@ -5,7 +5,7 @@ const { eq } = require("drizzle-orm");
 
 async function saveViolations(exp_id, violations) {
     // console.log("save",exp_id,violations)
-  if (!violations.length) return;
+  if (violations.length) {
 
   await db.insert(policyViolations).values(
     violations.map(v => ({
@@ -15,6 +15,7 @@ async function saveViolations(exp_id, violations) {
       severity: v.severity,
     }))
   );
+}
   const complianceStatus =
   violations.length > 0 ? "Violation Found" : "Compliant";
   console.log(complianceStatus,violations)
